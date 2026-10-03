@@ -1,0 +1,23 @@
+services:
+  zeebee-app:
+    build: .
+    image: zeebee-app:latest
+    container_name: zeebee-app
+    restart: unless-stopped
+    ports:
+      - "8131:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - ZEEBEE_APP_DB_PATH=/app/data/zeebee-app.db
+    volumes:
+      - zeebee-app-data:/app/data
+    networks:
+      - homelab-net
+
+networks:
+  homelab-net:
+    external: true
+
+volumes:
+  zeebee-app-data:
