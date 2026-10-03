@@ -28,6 +28,11 @@
   lệnh dev/deploy, quy ước backup, việc tồn đọng).
 - Backup    : ⏳ GitHub — PR đang mở (chờ merge). Drive — chưa có asset ngoài
   logo kế thừa, chưa cần tạo folder riêng ở vòng này.
+- Ghi chú quy trình: commit scaffold đầu tiên đã lên thẳng `main` vì repo
+  GitHub lúc tạo hoàn toàn trống (chưa có commit nào để nhánh riêng). PR này
+  (branch `claude/app-zeebee-vn-setup-vong1`) là bước Human Node merge chính
+  thức cho VÒNG 1 — từ vòng sau, mọi thay đổi đều đi qua branch + PR trước khi
+  vào `main`, không push thẳng nữa.
 - Quyết định override (nếu có, do lặp >3 lần) : không có.
 - Tồn đọng cho vòng sau:
   - Cloudflare Tunnel ingress `app.zeebee.vn` trên Dell CHƯA tạo (Human Node).
