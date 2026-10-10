@@ -30,6 +30,76 @@ db.exec(`
   );
 `);
 
+// VÒNG 2: đơn mua sản phẩm đóng gói (kind=product) và yêu cầu build theo nhu cầu (kind=custom).
+// Khách dừng ở bước gửi; Seller nhận Telegram, tự liên hệ chốt rồi cập nhật status sau.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT NOT NULL UNIQUE,
+    kind TEXT NOT NULL CHECK (kind IN ('product', 'custom')),
+    product_slug TEXT,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    details TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'new',
+    telegram_sent INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL
+  );
+`);
+
+export interface OrderRecord {
+  id: number;
+  code: string;
+  kind: "product" | "custom";
+  productSlug: string | null;
+  name: string;
+  phone: string;
+  details: Record<string, string>;
+  status: string;
+  createdAt: string;
+}
+
+export function createOrder(input: {
+  kind: "product" | "custom";
+  productSlug?: string;
+  name: string;
+  phone: string;
+  details: Record<string, string>;
+}): OrderRecord {
+  const now = new Date().toISOString();
+  const code = `ZB-APP-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 10)}`;
+  const result = db
+    .prepare(
+      `INSERT INTO orders (code, kind, product_slug, name, phone, details, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(code, input.kind, input.productSlug ?? null, input.name, input.phone, JSON.stringify(input.details), now);
+  return {
+    id: Number(result.lastInsertRowid),
+    code,
+    kind: input.kind,
+    productSlug: input.productSlug ?? null,
+    name: input.name,
+    phone: input.phone,
+    details: input.details,
+    status: "new",
+    createdAt: now,
+  };
+}
+
+export function markOrderTelegramSent(id: number, sent: boolean) {
+  db.prepare("UPDATE orders SET telegram_sent = ? WHERE id = ?").run(sent ? 1 : 0, id);
+}
+
+// Chống gửi rác: đếm số đơn cùng SĐT trong N phút gần nhất.
+export function countRecentOrdersByPhone(phone: string, minutes: number): number {
+  const since = new Date(Date.now() - minutes * 60_000).toISOString();
+  const row = db
+    .prepare("SELECT COUNT(*) AS c FROM orders WHERE phone = ? AND created_at >= ?")
+    .get(phone, since) as unknown as { c: number };
+  return row.c;
+}
+
 export interface LeadRecord {
   id: number;
   name: string;

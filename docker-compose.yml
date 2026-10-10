@@ -6,6 +6,10 @@ services:
     restart: unless-stopped
     ports:
       - "8131:3000"
+    # TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID (dùng chung bot Decor) — file .env KHÔNG commit
+    env_file:
+      - path: .env
+        required: false
     environment:
       - NODE_ENV=production
       - PORT=3000

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Zee Bee Agency — Build Web / Tool / App",
+  title: "Zee Bee App — App & game nhỏ, build theo yêu cầu",
   description:
-    "Thiết kế & thi công website, tool, app theo yêu cầu — gói cấu hình cơ bản, module mở rộng, hoặc nền tảng tùy biến hoàn toàn.",
+    "Mini app và game dùng được ngay, dùng thử miễn phí trước khi mua. Build website, tool, app theo yêu cầu — báo giá theo nhu cầu cụ thể.",
 };
 
 export default function RootLayout({
