@@ -61,7 +61,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             ) : (
               !soon && (
                 <p className="text-sm" style={{ color: "var(--zb-muted)" }}>
-                  Bản dùng thử online đang được chuẩn bị — đặt mua để Seller gửi video demo qua Zalo.
+                  {isSub
+                    ? "Bản dùng thử online đang được chuẩn bị — đặt mua để Seller gửi video demo qua Zalo."
+                    : "Muốn xem trước? Đặt mua — Seller gửi ảnh chụp và video demo qua Zalo trước khi bạn thanh toán."}
                 </p>
               )
             )}

@@ -48,7 +48,7 @@ export const PRODUCTS: Product[] = [
     price: 79000,
     delivery: "1 file HTML + hướng dẫn sử dụng, gửi qua Zalo",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
   },
   {
     slug: "excel-so-thu-chi-gia-dinh",
@@ -62,7 +62,7 @@ export const PRODUCTS: Product[] = [
     price: 49000,
     delivery: "File .xlsx + hướng dẫn, gửi qua Zalo",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
   },
   {
     slug: "excel-quan-ly-ban-hang",
@@ -76,7 +76,7 @@ export const PRODUCTS: Product[] = [
     price: 149000,
     delivery: "File .xlsx + hướng dẫn, gửi qua Zalo",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
   },
   {
     slug: "excel-cham-cong-tinh-luong",
@@ -90,7 +90,7 @@ export const PRODUCTS: Product[] = [
     price: 99000,
     delivery: "File .xlsx + hướng dẫn, gửi qua Zalo",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
   },
   {
     slug: "game-xep-hinh-ca-go",
