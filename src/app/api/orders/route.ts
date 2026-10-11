@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createOrder, countRecentOrdersByPhone, markOrderTelegramSent } from "@/lib/db";
-import { getProduct, formatVnd } from "@/lib/catalog";
+import { getProduct, formatVnd, MODEL_LABEL } from "@/lib/catalog";
 import { sendTelegram } from "@/lib/telegram";
 
 // VÒNG 2: một endpoint cho cả 2 loại:
@@ -52,14 +52,27 @@ export async function POST(req: NextRequest) {
     if (!product) return NextResponse.json({ error: "Sản phẩm không tồn tại." }, { status: 400 });
     productSlug = product.slug;
     details.productName = product.name;
-    details.price = product.status === "coming_soon" ? "Đăng ký chờ ra mắt" : formatVnd(product.price);
+    details.model = MODEL_LABEL[product.model];
+    if (product.status === "coming_soon") {
+      details.price = `Đăng ký chờ ra mắt (giá dự kiến ${formatVnd(product.price)})`;
+    } else if (product.model === "subscription") {
+      const yearly = str(body.plan, 10) === "year";
+      details.price = yearly
+        ? `${formatVnd(product.yearlyPrice ?? product.price * 10)}/năm`
+        : `${formatVnd(product.price)}/tháng`;
+    } else {
+      details.price = `${formatVnd(product.price)} (trả 1 lần)`;
+    }
     details.note = str(body.note, 1000);
     title =
       product.status === "coming_soon"
         ? "🔔 <b>KHÁCH ĐĂNG KÝ CHỜ RA MẮT — APP.ZEEBEE.VN</b>"
-        : "🛍️ <b>ĐƠN SẢN PHẨM SỐ MỚI — APP.ZEEBEE.VN</b>";
+        : product.model === "subscription"
+          ? "☁️ <b>ĐĂNG KÝ THUÊ BAO MỚI — APP.ZEEBEE.VN</b>"
+          : "⬇️ <b>ĐƠN TẢI VỀ DÙNG MỚI — APP.ZEEBEE.VN</b>";
     lines = [
       ["Sản phẩm", product.name],
+      ["Loại", details.model],
       ["Giá", details.price],
       ["Khách hàng", name],
       ["SĐT / Zalo", phone],

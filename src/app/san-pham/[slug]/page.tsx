@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Check, ExternalLink, Gamepad2, AppWindow } from "lucide-react";
-import { PRODUCTS, getProduct, formatVnd } from "@/lib/catalog";
+import { ArrowLeft, Check, ExternalLink, Gamepad2, AppWindow, FileSpreadsheet, Palette } from "lucide-react";
+import { PRODUCTS, MODEL_LABEL, getProduct, formatVnd } from "@/lib/catalog";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import OrderForm from "@/components/OrderForm";
 
@@ -19,13 +19,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = getProduct((await params).slug);
   if (!product) notFound();
   const soon = product.status === "coming_soon";
-  const Icon = product.kind === "Game" ? Gamepad2 : AppWindow;
+  const Icon = { "Mini app": AppWindow, Game: Gamepad2, "File Excel": FileSpreadsheet, "Mẫu thiết kế": Palette }[product.kind];
+  const isSub = product.model === "subscription";
 
   return (
     <main className="min-h-screen">
       <SiteHeader />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-10">
-        <Link href="/#san-pham" className="inline-flex items-center gap-1 text-sm mb-4" style={{ color: "var(--zb-muted)" }}>
+        <Link href={isSub ? "/#thue-bao" : "/#san-pham"} className="inline-flex items-center gap-1 text-sm mb-4" style={{ color: "var(--zb-muted)" }}>
           <ArrowLeft size={16} /> Tất cả sản phẩm
         </Link>
 
@@ -34,7 +35,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="flex items-center gap-3">
               <Icon size={36} style={{ color: "var(--zb-gold)" }} />
               <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", color: "var(--zb-muted)" }}>
-                {soon ? "Sắp ra mắt" : product.kind}
+                {MODEL_LABEL[product.model]} · {soon ? "Sắp ra mắt" : product.kind}
               </span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold">{product.name}</h1>
@@ -68,14 +69,29 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           <aside className="space-y-3 md:sticky md:top-4">
             <div className="text-2xl font-bold" style={{ color: "var(--zb-gold)" }}>
-              {soon ? "Sắp ra mắt" : formatVnd(product.price)}
+              {formatVnd(product.price)}
+              {isSub && <span className="text-base font-normal">/tháng</span>}
             </div>
-            {!soon && (
-              <p className="text-xs" style={{ color: "var(--zb-muted)" }}>
-                Thanh toán một lần. Seller bàn giao và hướng dẫn cài đặt sau khi xác nhận.
-              </p>
-            )}
-            <OrderForm productSlug={product.slug} comingSoon={soon} priceLabel={formatVnd(product.price)} />
+            <p className="text-xs" style={{ color: "var(--zb-muted)" }}>
+              {soon
+                ? "Giá dự kiến khi ra mắt. Đăng ký để được báo đầu tiên kèm ưu đãi."
+                : isSub
+                  ? `Hoặc ${formatVnd(product.yearlyPrice ?? product.price * 10)}/năm. Seller tạo tài khoản và hướng dẫn sau khi xác nhận.`
+                  : `Trả một lần, dùng trọn đời. Nhận: ${product.delivery}.`}
+            </p>
+            <OrderForm
+              productSlug={product.slug}
+              comingSoon={soon}
+              plans={
+                isSub && !soon
+                  ? [
+                      { id: "month", label: `Theo tháng — ${formatVnd(product.price)}` },
+                      { id: "year", label: `Theo năm — ${formatVnd(product.yearlyPrice ?? product.price * 10)}` },
+                    ]
+                  : undefined
+              }
+              priceLabel={formatVnd(product.price)}
+            />
           </aside>
         </div>
       </div>

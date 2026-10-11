@@ -8,10 +8,13 @@ export default function OrderForm({
   productSlug,
   comingSoon,
   priceLabel,
+  plans,
 }: {
   productSlug: string;
   comingSoon: boolean;
   priceLabel: string;
+  /** Thuê bao: cho khách chọn gói tháng/năm. Tải về: không truyền. */
+  plans?: { id: string; label: string }[];
 }) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
@@ -32,6 +35,7 @@ export default function OrderForm({
           name: data.get("name"),
           phone: data.get("phone"),
           note: data.get("note"),
+          plan: data.get("plan"),
         }),
       });
       const body = await res.json().catch(() => ({}));
@@ -45,6 +49,15 @@ export default function OrderForm({
 
   return (
     <form onSubmit={handleSubmit} className="zb-card p-5 space-y-3">
+      {plans && (
+        <fieldset className="space-y-2">
+          {plans.map((pl, i) => (
+            <label key={pl.id} className="flex items-center gap-2 text-sm cursor-pointer">
+              <input type="radio" name="plan" value={pl.id} defaultChecked={i === 0} /> {pl.label}
+            </label>
+          ))}
+        </fieldset>
+      )}
       <input name="name" required className="zb-input" placeholder="Họ tên *" autoComplete="name" />
       <input
         name="phone"
@@ -61,7 +74,7 @@ export default function OrderForm({
         </p>
       )}
       <button type="submit" disabled={submitting} className="zb-btn-primary w-full py-3">
-        {submitting ? "Đang gửi..." : comingSoon ? "Báo tôi khi ra mắt" : `Đặt mua — ${priceLabel}`}
+        {submitting ? "Đang gửi..." : comingSoon ? "Báo tôi khi ra mắt" : plans ? "Đăng ký thuê bao" : `Đặt mua — ${priceLabel}`}
       </button>
       <p className="text-xs text-center" style={{ color: "var(--zb-muted)" }}>
         {comingSoon
