@@ -3,6 +3,8 @@ import { createOrder, countRecentOrdersByPhone, markOrderTelegramSent } from "@/
 import { getProduct, formatVnd, MODEL_LABEL } from "@/lib/catalog";
 import { sendTelegram } from "@/lib/telegram";
 
+export const dynamic = "force-dynamic";
+
 // VÒNG 2: một endpoint cho cả 2 loại:
 //  - kind=product: đặt mua sản phẩm đóng gói (giá lấy từ catalog phía server, không tin client)
 //  - kind=custom : yêu cầu build theo nhu cầu (thu đủ thông tin để Seller báo giá được ngay)

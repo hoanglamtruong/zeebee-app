@@ -11,41 +11,61 @@ declare global {
   var __zeebeeAppDb: DatabaseSync | undefined;
 }
 
-const db = global.__zeebeeAppDb ?? new DatabaseSync(DB_PATH);
-if (process.env.NODE_ENV !== "production") {
-  global.__zeebeeAppDb = db;
+let _db: DatabaseSync | null = null;
+
+export function getDb(): DatabaseSync {
+  if (!_db) {
+    if (global.__zeebeeAppDb) {
+      _db = global.__zeebeeAppDb;
+    } else {
+      fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+      _db = new DatabaseSync(DB_PATH);
+      if (process.env.NODE_ENV !== "production") {
+        global.__zeebeeAppDb = _db;
+      }
+      try {
+        _db.exec("PRAGMA busy_timeout = 10000;");
+        _db.exec("PRAGMA journal_mode = WAL;");
+      } catch {
+        // Ignore if locked during concurrent init
+      }
+      _db.exec(`
+        CREATE TABLE IF NOT EXISTS leads (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          contact TEXT NOT NULL,
+          package_interest TEXT NOT NULL,
+          message TEXT,
+          created_at TEXT NOT NULL
+        );
+      `);
+      _db.exec(`
+        CREATE TABLE IF NOT EXISTS orders (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          code TEXT NOT NULL UNIQUE,
+          kind TEXT NOT NULL CHECK (kind IN ('product', 'custom')),
+          product_slug TEXT,
+          name TEXT NOT NULL,
+          phone TEXT NOT NULL,
+          details TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'new',
+          telegram_sent INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL
+        );
+      `);
+    }
+  }
+  return _db;
 }
 
-db.exec("PRAGMA busy_timeout = 5000;");
-db.exec("PRAGMA journal_mode = WAL;");
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS leads (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    contact TEXT NOT NULL,
-    package_interest TEXT NOT NULL,
-    message TEXT,
-    created_at TEXT NOT NULL
-  );
-`);
-
-// VÒNG 2: đơn mua sản phẩm đóng gói (kind=product) và yêu cầu build theo nhu cầu (kind=custom).
-// Khách dừng ở bước gửi; Seller nhận Telegram, tự liên hệ chốt rồi cập nhật status sau.
-db.exec(`
-  CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    code TEXT NOT NULL UNIQUE,
-    kind TEXT NOT NULL CHECK (kind IN ('product', 'custom')),
-    product_slug TEXT,
-    name TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    details TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'new',
-    telegram_sent INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL
-  );
-`);
+// Proxy để các lời gọi db.prepare / db.exec hoạt động bình thường nhưng không mở file SQLite khi Next.js build
+const db = new Proxy({} as DatabaseSync, {
+  get(_target, prop) {
+    const realDb = getDb();
+    const val = (realDb as unknown as Record<string | symbol, unknown>)[prop];
+    return typeof val === "function" ? (val as (...args: unknown[]) => unknown).bind(realDb) : val;
+  },
+});
 
 export interface OrderRecord {
   id: number;

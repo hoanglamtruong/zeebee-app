@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
     DECOR_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
     (pathname.startsWith("/san-pham/") && !APP_SLUGS.has(pathname.slice("/san-pham/".length)));
   if (isOldDecorPath) {
-    return NextResponse.redirect(`https://decor.zeebee.vn${pathname}${search}`, 301);
+    return NextResponse.redirect(`https://home.zeebee.vn${pathname}${search}`, 301);
   }
 
   if (pathname === "/") {

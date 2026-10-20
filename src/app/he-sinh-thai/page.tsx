@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Flower2, AppWindow, Megaphone, Users, UserCircle2, ArrowRight } from "lucide-react";
+import { Home, Flower2, AppWindow, Megaphone, Users, UserCircle2, ArrowRight } from "lucide-react";
 
 // VÒNG 2: trang chủ zeebee.vn (middleware rewrite "/" theo host) — cổng giới thiệu hệ sinh thái.
 // Về sau thêm đăng ký member chung (lịch sử mua, ưu đãi, tích điểm) — CEO: không gấp.
 
 export const metadata: Metadata = {
   title: "Zeebee — Hệ sinh thái sản phẩm & dịch vụ",
-  description: "Decor thủ công, app & game nhỏ, build theo yêu cầu, marketing online — tất cả trong hệ sinh thái Zeebee.",
+  description: "Không gian sống Zeebee Home, app & game nhỏ, build theo yêu cầu, marketing online — tất cả trong hệ sinh thái Zeebee.",
 };
 
 const PRODUCTS = [
   {
-    href: "https://decor.zeebee.vn",
-    icon: Flower2,
-    name: "Zeebee Decor",
-    desc: "Đồ trang trí thủ công: gỗ tái chế, gốm, trang sức handmade, sen đá mini.",
-    cta: "Mua đồ decor",
+    href: "https://home.zeebee.vn",
+    icon: Home,
+    name: "Zeebee Home",
+    desc: "Decor thủ công, nội thất trọn gói, thiết kế kiến trúc & thi công xây dựng nhà.",
+    cta: "Khám phá tổ ấm",
   },
   {
     href: "https://app.zeebee.vn",
