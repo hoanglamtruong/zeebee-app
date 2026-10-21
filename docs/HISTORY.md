@@ -60,6 +60,19 @@ Mô tả sản phẩm được đối chiếu với app thật (không bịa tí
 3. Build theo yêu cầu là **custom** — không bán theo gói; chìa khóa là lấy yêu cầu cụ thể.
 4. Flow đơn: tên + SĐT → Telegram → Seller tự chốt. Thành viên ở `zeebee.vn` là tùy chọn, làm sau; định danh theo SĐT.
 
+### Vòng 4 (21/10/2026) — TÁI ĐỊNH VỊ TOÀN DIỆN 100% OFFLINE-FIRST (CỬA HÀNG SỐ 2026)
+- **Tái định vị 100% Cửa hàng số**: Loại bỏ hoàn toàn các dịch vụ SaaS thuê bao online khỏi giao diện bán lẻ để không làm loãng thông điệp; chuyển toàn bộ 5 app SaaS cũ (MoBo, zQR Online, Ztodo, Mind Flow, Zlink) thành **Case Study / Mẫu giải pháp tham khảo** trong trang `/build` để minh chứng năng lực công nghệ.
+- **Kho sản phẩm 17 sản phẩm**:
+  - 4 sản phẩm có sẵn giao ngay: zQR Offline (79k), Quản lý bán hàng shop nhỏ (149k), Bảng chấm công & tính lương (99k), Sổ thu chi gia đình (49k).
+  - 13 sản phẩm Android APK, Game Bluetooth & Mini Game chuẩn bị ra mắt với nhãn **Sắp ra mắt** và phễu đăng ký nhận mã giảm giá 50% khi xuất xưởng.
+- **Cấu trúc giao diện mới**:
+  - Header: Thêm liên kết Sản phẩm Tải về, Combo giảm 35%, Build theo yêu cầu, Kích hoạt & Hướng dẫn; nút CTA cam `#fb8500`.
+  - Hero: H1 định vị mới, 3 cam kết biểu tượng (100% Offline-First, Bảo mật cục bộ, Mua 1 lần dùng mãi mãi).
+  - Tabs danh mục: Bộ lọc client tức thì 5 tab chuyên biệt.
+  - Combo Bundle: 3 gói combo giảm 35% (Shop khởi nghiệp, Kỹ sư xây dựng, Giải trí Bluetooth).
+  - Trang `/build`: Nâng cấp thành trang dịch vụ may đo phần mềm chuyên nghiệp (4 cam kết, 5 hạng mục, 3 gói giá minh bạch, case studies, form thu yêu cầu).
+  - Form đặt hàng & Telegram: Tối ưu thông điệp đặt mua có sẵn và đăng ký sớm nhận ưu đãi 50%.
+
 ## Bài học
 | Sự cố | Bài học |
 |---|---|
@@ -68,3 +81,4 @@ Mô tả sản phẩm được đối chiếu với app thật (không bịa tí
 | Thư viện QR cắt tiếng Việt | Luôn test nội dung tiếng Việt có dấu, giải mã ngược để xác nhận |
 | Click giả lập mobile trong trình duyệt test không trúng nút | Xác nhận lại bằng click thật ở khung desktop trước khi kết luận là lỗi |
 | Repo chưa cấu hình tên tác giả → commit lỗi sau khi đã deploy | Kiểm tra `git config user.name` trước khi deploy; commit trước, deploy sau |
+

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createOrder, countRecentOrdersByPhone, markOrderTelegramSent } from "@/lib/db";
-import { getProduct, formatVnd, MODEL_LABEL } from "@/lib/catalog";
+import { getProduct, formatVnd } from "@/lib/catalog";
 import { sendTelegram } from "@/lib/telegram";
 
 export const dynamic = "force-dynamic";
 
-// VÒNG 2: một endpoint cho cả 2 loại:
-//  - kind=product: đặt mua sản phẩm đóng gói (giá lấy từ catalog phía server, không tin client)
-//  - kind=custom : yêu cầu build theo nhu cầu (thu đủ thông tin để Seller báo giá được ngay)
+// Endpoint xử lý đơn hàng & yêu cầu:
+//  - kind=product: đặt mua sản phẩm tải về hoặc đăng ký nhận mã ưu đãi 50% sản phẩm sắp ra mắt
+//  - kind=custom : yêu cầu build phần mềm / mini tool theo yêu cầu riêng
 
 const PHONE_RE = /^(0|84)(3|5|7|8|9)\d{8}$/;
 const CUSTOM_FIELDS: [string, string][] = [
@@ -35,11 +35,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Vui lòng nhập họ tên và số điện thoại." }, { status: 400 });
   }
   if (!PHONE_RE.test(phone)) {
-    return NextResponse.json({ error: "Số điện thoại chưa đúng (VD: 0912345678)." }, { status: 400 });
+    return NextResponse.json({ error: "Số điện thoại chưa đúng định dạng (VD: 0912345678)." }, { status: 400 });
   }
   if (countRecentOrdersByPhone(phone, 10) >= 3) {
     return NextResponse.json(
-      { error: "Bạn vừa gửi nhiều yêu cầu. Seller sẽ liên hệ sớm, vui lòng chờ trong giây lát." },
+      { error: "Bạn vừa gửi nhiều yêu cầu. Đội ngũ Zeebee sẽ liên hệ sớm qua Zalo, vui lòng chờ trong giây lát." },
       { status: 429 }
     );
   }
@@ -54,47 +54,42 @@ export async function POST(req: NextRequest) {
     if (!product) return NextResponse.json({ error: "Sản phẩm không tồn tại." }, { status: 400 });
     productSlug = product.slug;
     details.productName = product.name;
-    details.model = MODEL_LABEL[product.model];
+    details.format = product.format;
+    details.kind = product.kind;
+
     if (product.status === "coming_soon") {
-      details.price = `Đăng ký chờ ra mắt (giá dự kiến ${formatVnd(product.price)})`;
-    } else if (product.model === "subscription") {
-      const yearly = str(body.plan, 10) === "year";
-      details.price = yearly
-        ? `${formatVnd(product.yearlyPrice ?? product.price * 10)}/năm`
-        : `${formatVnd(product.price)}/tháng`;
+      details.price = `Đăng ký ưu đãi 50% khi ra mắt (Giá niêm yết: ${formatVnd(product.price)})`;
+      title = "🎁 <b>KHÁCH ĐĂNG KÝ NHẬN MÃ ƯU ĐÃI 50% (SẮP RA MẮT) — APP.ZEEBEE.VN</b>";
     } else {
       details.price = `${formatVnd(product.price)} (trả 1 lần)`;
+      title = "⬇️ <b>ĐƠN ĐẶT MUA SẢN PHẨM TẢI VỀ — APP.ZEEBEE.VN</b>";
     }
+
     details.note = str(body.note, 1000);
-    title =
-      product.status === "coming_soon"
-        ? "🔔 <b>KHÁCH ĐĂNG KÝ CHỜ RA MẮT — APP.ZEEBEE.VN</b>"
-        : product.model === "subscription"
-          ? "☁️ <b>ĐĂNG KÝ THUÊ BAO MỚI — APP.ZEEBEE.VN</b>"
-          : "⬇️ <b>ĐƠN TẢI VỀ DÙNG MỚI — APP.ZEEBEE.VN</b>";
     lines = [
       ["Sản phẩm", product.name],
-      ["Loại", details.model],
-      ["Giá", details.price],
+      ["Định dạng", product.format],
+      ["Trạng thái", product.status === "coming_soon" ? "SẮP RA MẮT (Ưu đãi 50%)" : "CÓ SẴN (Giao file Zalo)"],
+      ["Giá niêm yết", details.price],
       ["Khách hàng", name],
       ["SĐT / Zalo", phone],
-      ["Ghi chú", details.note],
+      ["Ghi chú", details.note || "(Không có)"],
     ];
   } else {
     for (const [key] of CUSTOM_FIELDS) details[key] = str(body[key]);
     if (!details.productType || !details.purpose) {
       return NextResponse.json({ error: "Vui lòng chọn loại sản phẩm và mô tả mục đích." }, { status: 400 });
     }
-    title = "🛠️ <b>YÊU CẦU BUILD THEO NHU CẦU — APP.ZEEBEE.VN</b>";
+    title = "🛠️ <b>YÊU CẦU BUILD PHẦN MỀM / MINI TOOL THEO YÊU CẦU — APP.ZEEBEE.VN</b>";
     lines = [
       ["Khách hàng", name],
       ["SĐT / Zalo", phone],
-      ...CUSTOM_FIELDS.map(([key, label]) => [label, details[key]] as [string, string]),
+      ...CUSTOM_FIELDS.map(([key, label]) => [label, details[key] || "(Chưa điền)"] as [string, string]),
     ];
   }
 
   const order = createOrder({ kind, productSlug, name, phone, details });
-  const sent = await sendTelegram(title, [["Mã", order.code], ...lines], phone);
+  const sent = await sendTelegram(title, [["Mã đơn", order.code], ...lines], phone);
   markOrderTelegramSent(order.id, sent);
 
   return NextResponse.json({ ok: true, code: order.code });

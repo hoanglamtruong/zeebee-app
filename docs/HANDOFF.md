@@ -89,10 +89,12 @@ Kiểm thử đã làm: zQR quét ngược bằng jsQR (VietQR — CRC khớp t�
 | Vòng 1 — Setup | Trang dịch vụ Build Web/Tool/App + form tư vấn (SQLite) | `4eff990` |
 | Vòng 2 (11/10/2026) | Cửa hàng sản phẩm số + `/build` + `/cam-on` + Telegram; `zeebee.vn` → trang hệ sinh thái; 301 link Decor cũ; thêm route `app.zeebee.vn` | `06d02e6` |
 | Vòng 3 (11/10/2026) | Phân loại Tải về dùng / Thuê bao (giá tháng/năm); build zQR Offline + 3 file Excel, mở bán | `2ca2e65`, `c512106` |
+| Vòng 4 (21/10/2026) | Tái định vị 100% Offline-First (17 sản phẩm: 4 có sẵn, 13 sắp ra mắt); Tabs danh mục; Combo Bundle giảm 35%; Nâng cấp trang `/build` chuyên nghiệp; Phễu đăng ký nhận ưu đãi 50% | `vong-4` |
 
 ### Việc còn lại để HOÀN THIỆN
-1. **Bàn giao thuê bao**: 5 app thuê bao hiện chỉ có 1 bản dùng chung — cần quyết cách cấp riêng cho từng khách (tài khoản riêng trong app hay instance riêng) trước khi có đơn thật.
-2. **Game "Xếp Hình Cá Gỗ"** (tải về, 29k) — chưa build.
+1. **Lộ trình hoàn thiện 13 sản phẩm Android APK / Bluetooth**: Ưu tiên đóng gói các sản phẩm có lượng đăng ký trước (pre-order) cao nhất.
+2. **Game "Xếp Hình Cá Gỗ"** (tải về, 29k) — đang ở trạng thái Sắp ra mắt.
+
 3. Bộ **mẫu thiết kế** (Canva/PSD) — đề xuất, cần đội content.
 4. **Danh sách Seller riêng** cho app (hiện Telegram chỉ vào nhóm admin) — để báo thẳng Seller như Decor.
 5. **zQR Online** chưa có link dùng thử công khai — cần route Cloudflare cho cổng 8122.
