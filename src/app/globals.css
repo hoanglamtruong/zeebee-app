@@ -60,3 +60,31 @@ body {
   outline: none;
   border-color: var(--zb-gold);
 }
+
+/* Fix lỗi hiển thị select dropdown trên Windows / Chromium dark mode */
+select,
+select.zb-input {
+  background-color: #0a243a !important;
+  color: #f8fafc !important;
+  appearance: auto;
+}
+
+select option,
+.zb-input option {
+  background-color: #0a243a !important;
+  color: #f8fafc !important;
+  padding: 8px 12px;
+}
+
+select option:checked,
+select option:hover {
+  background-color: #12406a !important;
+  color: #eabd17 !important;
+}
+
+select optgroup {
+  background-color: #061928 !important;
+  color: #eabd17 !important;
+  font-weight: 700;
+  padding: 6px 10px;
+}

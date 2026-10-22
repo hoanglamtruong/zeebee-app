@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createOrder, countRecentOrdersByPhone, markOrderTelegramSent } from "@/lib/db";
 import { getProduct, formatVnd } from "@/lib/catalog";
+import { validateCoupon } from "@/lib/coupons";
 import { sendTelegram, TelegramButton } from "@/lib/telegram";
 import { generateLicenseKey } from "@/lib/license";
 import { getTransferSyntax } from "@/lib/payment-config";
@@ -78,26 +79,55 @@ export async function POST(req: NextRequest) {
     licenseKey = generateLicenseKey(deviceCode);
     amount = product.price;
 
+    // Xử lý mã giảm giá (KOL, KOC, CTV, Khách quen)
+    const rawCoupon = str(body.couponCode, 50).toUpperCase();
+    if (rawCoupon) {
+      const couponResult = validateCoupon(rawCoupon, product.price);
+      if (couponResult.valid) {
+        amount = couponResult.finalPrice;
+        details.couponCode = couponResult.code;
+        details.couponLabel = couponResult.label || "";
+        details.discountAmount = formatVnd(couponResult.discountAmount);
+        details.originalPrice = formatVnd(couponResult.originalPrice);
+      }
+    }
+
+    const isFreeKOL = amount === 0;
+
     details.productName = product.name;
     details.deviceCode = deviceCode;
-    details.price = formatVnd(amount);
+    details.price = isFreeKOL ? "0đ (Miễn phí KOL)" : formatVnd(amount);
     details.format = product.format;
     details.note = str(body.note, 1000);
 
     const tempCode = `ZB-KEY-${Date.now().toString().slice(-6)}`;
     const transferSyntax = getTransferSyntax(tempCode);
 
-    title = "🔑 <b>YÊU CẦU MUA KEY MỞ KHÓA BẢN QUYỀN TRỌN ĐỜI — APP.ZEEBEE.VN</b>";
+    title = isFreeKOL
+      ? "🎁 <b>KHÁCH MỜI KOL / KOC KÍCH HOẠT KEY MIỄN PHÍ — APP.ZEEBEE.VN</b>"
+      : "🔑 <b>YÊU CẦU MUA KEY MỞ KHÓA BẢN QUYỀN TRỌN ĐỜI — APP.ZEEBEE.VN</b>";
+
     lines = [
       ["Sản phẩm", product.name],
       ["Mã thiết bị (Device Code)", deviceCode],
-      ["Giá thanh toán", formatVnd(amount)],
-      ["Cú pháp CK yêu cầu", `ZB [MÃ ĐƠN]`],
+    ];
+
+    if (details.couponCode) {
+      lines.push(
+        ["Mã giảm giá", `${details.couponCode} (${details.couponLabel})`],
+        ["Giá niêm yết", details.originalPrice || formatVnd(product.price)],
+        ["Mức giảm", `-${details.discountAmount}`]
+      );
+    }
+
+    lines.push(
+      ["Giá thanh toán", isFreeKOL ? "0đ (Tài trợ 100% cho KOL)" : formatVnd(amount)],
+      ["Cú pháp CK yêu cầu", isFreeKOL ? "Không yêu cầu (Tài trợ)" : `ZB [MÃ ĐƠN]`],
       ["Khách hàng", name],
       ["SĐT / Zalo", phone],
       ["Ghi chú", details.note || "(Không có)"],
-      ["Key mở khóa dự kiến", licenseKey],
-    ];
+      ["Key mở khóa", licenseKey]
+    );
 
     const order = createOrder({
       kind: "key_purchase",
@@ -108,17 +138,18 @@ export async function POST(req: NextRequest) {
       name,
       phone,
       details,
-      status: "pending_payment",
+      status: isFreeKOL ? "paid" : "pending_payment",
     });
 
-    lines[3] = ["Cú pháp CK yêu cầu", getTransferSyntax(order.code)];
-
-    customButtons = [
-      {
-        text: "⚡ Xác Nhận Tiền & Xuất Key",
-        url: `https://app.zeebee.vn/admin/xac-nhan?ma=${order.code}&secret=${adminSecret}`,
-      },
-    ];
+    if (!isFreeKOL) {
+      lines[lines.findIndex((l) => l[0] === "Cú pháp CK yêu cầu")][1] = getTransferSyntax(order.code);
+      customButtons = [
+        {
+          text: "⚡ Xác Nhận Tiền & Xuất Key",
+          url: `https://app.zeebee.vn/admin/xac-nhan?ma=${order.code}&secret=${adminSecret}`,
+        },
+      ];
+    }
 
     const sent = await sendTelegram(title, [["Mã đơn hàng", order.code], ...lines], phone, customButtons);
     markOrderTelegramSent(order.id, sent);

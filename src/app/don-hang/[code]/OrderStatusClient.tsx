@@ -14,6 +14,8 @@ import {
   HelpCircle,
   QrCode,
   Download,
+  Tag,
+  Gift,
 } from "lucide-react";
 import type { BankAccount } from "@/lib/payment-config";
 import { formatVnd } from "@/lib/catalog";
@@ -32,6 +34,10 @@ export default function OrderStatusClient({
   transferSyntax,
   customerName,
   customerPhone,
+  couponCode,
+  couponLabel,
+  discountAmount,
+  originalPrice,
 }: {
   orderCode: string;
   kind: string;
@@ -46,12 +52,17 @@ export default function OrderStatusClient({
   transferSyntax: string;
   customerName: string;
   customerPhone: string;
+  couponCode?: string;
+  couponLabel?: string;
+  discountAmount?: string;
+  originalPrice?: string;
 }) {
   const [status, setStatus] = useState<string>(initialStatus);
   const [licenseKey, setLicenseKey] = useState<string>(initialKey);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const isPaid = status === "paid" || status === "completed";
+  const isFree = amount === 0;
 
   // Polling check trạng thái đơn hàng khi đang chờ thanh toán
   useEffect(() => {
@@ -107,11 +118,17 @@ export default function OrderStatusClient({
             </div>
             <div>
               <span className="text-[11px] font-bold tracking-wider uppercase text-[var(--zb-gold)]">
-                {isPaid ? "Đã Xác Nhận Thanh Toán" : "Đang Chờ Chuyển Khoản"}
+                {isPaid
+                  ? isFree
+                    ? "Đặc Quyền Tài Trợ KOL / KOC"
+                    : "Đã Xác Nhận Thanh Toán"
+                  : "Đang Chờ Chuyển Khoản"}
               </span>
               <h1 className="text-xl sm:text-2xl font-black text-white mt-0.5">
                 {isPaid
-                  ? "Thanh Toán Thành Công — Nhận Key Bản Quyền"
+                  ? isFree
+                    ? "Kích Hoạt Thành Công — Nhận Key Bản Quyền Miễn Phí"
+                    : "Thanh Toán Thành Công — Nhận Key Bản Quyền"
                   : "Chuyển Khoản Theo Cú Pháp Để Nhận Key"}
               </h1>
             </div>
@@ -154,7 +171,7 @@ export default function OrderStatusClient({
               <button
                 type="button"
                 onClick={() => copyToClipboard(licenseKey, "license")}
-                className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[var(--zb-gold)] to-[var(--zb-orange)] text-slate-950 hover:brightness-110 shadow-lg inline-flex items-center gap-2 transition"
+                className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[var(--zb-gold)] to-[var(--zb-orange)] text-slate-950 hover:brightness-110 shadow-lg inline-flex items-center gap-2 transition cursor-pointer"
               >
                 {copiedField === "license" ? (
                   <>
@@ -215,7 +232,7 @@ export default function OrderStatusClient({
                 <button
                   type="button"
                   onClick={() => copyToClipboard(transferSyntax, "syntax")}
-                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition shrink-0"
+                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition shrink-0 cursor-pointer"
                 >
                   {copiedField === "syntax" ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                   <span>{copiedField === "syntax" ? "Đã chép" : "Sao chép"}</span>
@@ -242,7 +259,7 @@ export default function OrderStatusClient({
                   <button
                     type="button"
                     onClick={() => copyToClipboard(bank.accountNumber, "stk")}
-                    className="p-1 rounded hover:bg-white/10 text-[var(--zb-gold)]"
+                    className="p-1 rounded hover:bg-white/10 text-[var(--zb-gold)] cursor-pointer"
                     title="Sao chép số tài khoản"
                   >
                     {copiedField === "stk" ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
@@ -255,6 +272,18 @@ export default function OrderStatusClient({
                 <strong className="text-white font-bold">{bank.accountName}</strong>
               </div>
 
+              {/* Chi tiết giá & mã giảm giá */}
+              {couponCode && (
+                <div className="flex items-center justify-between pb-2 border-b border-white/5 text-emerald-400">
+                  <span className="flex items-center gap-1">
+                    <Tag size={13} /> Mã giảm giá ({couponCode}):
+                  </span>
+                  <span className="font-bold">
+                    {discountAmount ? `-${discountAmount}` : couponLabel}
+                  </span>
+                </div>
+              )}
+
               <div className="flex items-center justify-between pt-0.5">
                 <span className="text-[var(--zb-muted)]">Số tiền thanh toán:</span>
                 <div className="flex items-center gap-2">
@@ -264,7 +293,7 @@ export default function OrderStatusClient({
                   <button
                     type="button"
                     onClick={() => copyToClipboard(amount.toString(), "amount")}
-                    className="p-1 rounded hover:bg-white/10 text-[var(--zb-gold)]"
+                    className="p-1 rounded hover:bg-white/10 text-[var(--zb-gold)] cursor-pointer"
                     title="Sao chép số tiền"
                   >
                     {copiedField === "amount" ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}

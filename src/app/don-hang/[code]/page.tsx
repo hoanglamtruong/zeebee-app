@@ -25,7 +25,7 @@ export default async function OrderDetailPage({
 
   const product = order.productSlug ? getProduct(order.productSlug) : null;
   const productName = product?.name || order.details.productName || "Ứng dụng Zeebee";
-  const amount = order.amount || product?.price || 0;
+  const amount = typeof order.amount === "number" ? order.amount : (product?.price || 0);
   const syntax = getTransferSyntax(order.code);
   const qrUrl = getVietQrUrl(amount, order.code);
   const isPaid = order.status === "paid" || order.status === "completed";
@@ -48,6 +48,10 @@ export default async function OrderDetailPage({
           transferSyntax={syntax}
           customerName={order.name}
           customerPhone={order.phone}
+          couponCode={order.details.couponCode}
+          couponLabel={order.details.couponLabel}
+          discountAmount={order.details.discountAmount}
+          originalPrice={order.details.originalPrice}
         />
       </div>
       <SiteFooter />

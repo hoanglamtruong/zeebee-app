@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, ShieldCheck, Key, Copy, Check, MessageCircle, AlertCircle } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Key, Copy, Check, MessageCircle, AlertCircle, Tag } from "lucide-react";
 import type { OrderRecord } from "@/lib/db";
 import { formatVnd } from "@/lib/catalog";
 
@@ -23,6 +23,10 @@ export default function AdminApprovalClient({
   const [error, setError] = useState("");
 
   const isPaid = status === "paid" || status === "completed";
+  const couponCode = order.details?.couponCode;
+  const couponLabel = order.details?.couponLabel;
+  const discountAmount = order.details?.discountAmount;
+  const originalPrice = order.details?.originalPrice;
 
   async function handleApprove() {
     setSubmitting(true);
@@ -67,7 +71,7 @@ export default function AdminApprovalClient({
         </div>
         {isPaid ? (
           <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5">
-            <CheckCircle2 size={14} /> ĐÃ XUẤT KEY
+            <CheckCircle2 size={14} /> {order.amount === 0 ? "TÀI TRỢ KOL / MIỄN PHÍ" : "ĐÃ XUẤT KEY"}
           </span>
         ) : (
           <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 flex items-center gap-1.5">
@@ -85,8 +89,13 @@ export default function AdminApprovalClient({
         <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
           <span className="text-[var(--zb-muted)]">Số tiền thanh toán:</span>
           <p className="font-bold text-sm text-[var(--zb-gold)]">
-            {formatVnd(order.amount || 0)}
+            {order.amount === 0 ? "0đ (Miễn phí KOL / KOC)" : formatVnd(order.amount || 0)}
           </p>
+          {couponCode && (
+            <p className="text-[11px] text-emerald-300 flex items-center gap-1 pt-0.5">
+              <Tag size={12} /> Mã {couponCode}: {couponLabel} (-{discountAmount})
+            </p>
+          )}
         </div>
         <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
           <span className="text-[var(--zb-muted)]">Khách hàng:</span>
@@ -108,7 +117,7 @@ export default function AdminApprovalClient({
           </span>
           <button
             onClick={() => handleCopy(key)}
-            className="text-[11px] px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white flex items-center gap-1 font-mono transition"
+            className="text-[11px] px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white flex items-center gap-1 font-mono transition cursor-pointer"
           >
             {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
             <span>{copied ? "Đã chép" : "Sao chép"}</span>

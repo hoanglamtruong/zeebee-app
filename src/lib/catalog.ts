@@ -69,6 +69,7 @@ export const PRODUCTS: Product[] = [
   // ─── 01. zQR Offline Generator ───
   {
     slug: "zqr-offline",
+    devicePrefix: "QR",
     name: "zQR Offline — Tạo Mã QR Cục Bộ (zQR Offline Generator)",
     model: "download",
     kind: "Mini App",
@@ -95,6 +96,7 @@ export const PRODUCTS: Product[] = [
   // ─── 02. Quản Lý Bán Hàng Shop Nhỏ ───
   {
     slug: "excel-quan-ly-ban-hang",
+    devicePrefix: "EX",
     name: "Quản Lý Bán Hàng Shop Nhỏ",
     model: "download",
     kind: "File Excel",
@@ -121,6 +123,7 @@ export const PRODUCTS: Product[] = [
   // ─── 03. Bảng Chấm Công & Tính Lương ───
   {
     slug: "excel-cham-cong-tinh-luong",
+    devicePrefix: "LC",
     name: "Bảng Chấm Công & Tính Lương",
     model: "download",
     kind: "File Excel",
@@ -147,6 +150,7 @@ export const PRODUCTS: Product[] = [
   // ─── 04. Sổ Thu Chi Gia Đình Tự Động ───
   {
     slug: "excel-so-thu-chi-gia-dinh",
+    devicePrefix: "TC",
     name: "Sổ Thu Chi Gia Đình Tự Động",
     model: "download",
     kind: "File Excel",
@@ -284,6 +288,7 @@ export const PRODUCTS: Product[] = [
   // ─── 09. Room Paint & Tile Calculator ───
   {
     slug: "room-paint-tile-calculator",
+    devicePrefix: "SG",
     name: "Tính Sơn & Gạch Ốp Lát (Room Paint & Tile Calculator)",
     model: "download",
     kind: "Android APK",
@@ -303,13 +308,14 @@ export const PRODUCTS: Product[] = [
     price: 39000,
     delivery: "File cài đặt APK Android / Web App + hướng dẫn",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "Căn phòng 3D với các mảng tường màu sơn và sàn gạch cùng số lượng vật tư cần mua.",
   },
 
   // ─── 09. Freelance Project & Timesheet Tracker ───
   {
     slug: "freelance-project-tracker",
+    devicePrefix: "FL",
     name: "Quản Lý Dự Án Freelancer (Freelance Project & Timesheet)",
     model: "download",
     kind: "Android APK",
@@ -329,13 +335,14 @@ export const PRODUCTS: Product[] = [
     price: 59000,
     delivery: "File cài đặt APK Android / Web App + hướng dẫn",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "Đồng hồ bấm giờ dự án đang chạy kèm danh sách checklist công việc hoàn thành.",
   },
 
   // ─── 10. Mini Inventory Offline Pro ───
   {
     slug: "mini-inventory-offline",
+    devicePrefix: "MK",
     name: "Sổ Kho Mini Offline — Quét Mã (Mini Inventory Pro)",
     model: "download",
     kind: "Android APK",
@@ -355,13 +362,14 @@ export const PRODUCTS: Product[] = [
     price: 99000,
     delivery: "File cài đặt APK Android / Web App + hướng dẫn",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "Giao diện quét mã vạch và danh sách tồn kho hiển thị trực quan các cảnh báo màu vàng/đỏ.",
   },
 
   // ─── 11. 3D Print Cost Calculator ───
   {
     slug: "3d-print-cost-calculator",
+    devicePrefix: "3D",
     name: "Tính Giá In 3D (3D Print Cost Calculator)",
     model: "download",
     kind: "Android APK",
@@ -381,13 +389,14 @@ export const PRODUCTS: Product[] = [
     price: 39000,
     delivery: "File cài đặt APK Android / Web App + hướng dẫn",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "Cuộn nhựa in 3D filament đặt cạnh mô hình in kèm bảng chi phí chi tiết.",
   },
 
   // ─── 12. Electrical Engineering Calculator ───
   {
     slug: "electrical-calculator",
+    devicePrefix: "DT",
     name: "Sổ Tay Tính Điện Kỹ Thuật (Electrical Engineering Calculator)",
     model: "download",
     kind: "Android APK",
@@ -407,13 +416,14 @@ export const PRODUCTS: Product[] = [
     price: 39000,
     delivery: "File cài đặt APK Android / Web App + hướng dẫn",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "Sơ đồ mạch điện tử với các đồng hồ đo Vôn, Ampe, Watt hiển thị trực quan.",
   },
 
   // ─── 13. Tailor Measurement Book ───
   {
     slug: "tailor-measurement-book",
+    devicePrefix: "MM",
     name: "Sổ Đo May Mặc — Nhà May (Tailor Measurement Book)",
     model: "download",
     kind: "Android APK",
@@ -433,13 +443,14 @@ export const PRODUCTS: Product[] = [
     price: 59000,
     delivery: "File cài đặt APK Android / Web App + hướng dẫn",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "Cuộn thước dây may mặc đặt cạnh giao diện sổ ghi số đo khách hàng trên điện thoại.",
   },
 
   // ─── 14. Bluetooth Battleship Duel: Classic & Salvo ───
   {
     slug: "game-battleship-duel",
+    devicePrefix: "BS",
     name: "Bắn Thuyền Hải Chiến (Bluetooth Battleship Duel)",
     model: "download",
     kind: "Android APK Game",
@@ -459,7 +470,7 @@ export const PRODUCTS: Product[] = [
     price: 39000,
     delivery: "File cài đặt APK game Android",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "2 điện thoại đặt cạnh nhau trong tư thế đối kháng, hiển thị radar bản đồ biển và tàu chiến bắn nhau.",
   },
 
@@ -494,6 +505,7 @@ export const PRODUCTS: Product[] = [
   // ─── 16. Bluetooth Quiz & English Vocab Duel ───
   {
     slug: "game-quiz-english-duel",
+    devicePrefix: "TA",
     name: "Đấu Trí Từ Vựng Tiếng Anh (Bluetooth Quiz & Vocab Duel)",
     model: "download",
     kind: "Android APK Game",
@@ -513,13 +525,14 @@ export const PRODUCTS: Product[] = [
     price: 39000,
     delivery: "File cài đặt APK game Android",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "2 bạn trẻ cầm 2 điện thoại đang tranh nhau bấm nút chọn đáp án trắc nghiệm.",
   },
 
   // ─── 17. Xếp Hình Cá Gỗ (Zeebee Woodfish Puzzle) ───
   {
     slug: "game-xep-hinh-ca-go",
+    devicePrefix: "CG",
     name: "Xếp Hình Cá Gỗ (Zeebee Woodfish Puzzle)",
     model: "download",
     kind: "Mini Game",
@@ -538,9 +551,143 @@ export const PRODUCTS: Product[] = [
     price: 29000,
     delivery: "File game APK Android / HTML5 offline",
     demoUrl: null,
-    status: "coming_soon",
+    status: "available",
     mockupIdea: "Những chú cá gỗ thủ công nhiều màu sắc ghép khít vào nhau thành bức tranh nghệ thuật.",
   },
+
+  // ─── 18. Rebar & Steel Weight Estimator ───
+  {
+    slug: "thep-xay-dung",
+    name: "Tính Thép Xây Dựng Pro (Rebar & Steel Weight Estimator)",
+    model: "download",
+    kind: "Kỹ Thuật / Xây Dựng",
+    category: "pro-tools",
+    format: "Web App / Android APK · Chạy 100% Offline",
+    tagline: "Tra barem thép cây, thép cuộn, thép hình H-I-U-V, tính khối lượng mác thép và chi phí dự toán công trình tức thì.",
+    description:
+      "Công cụ bỏ túi chuyên dụng cho kỹ sư hiện trường, cai thầu xây dựng và thợ sắt: tra cứu barem trọng lượng tiêu chuẩn TCVN cho thép cây D6 - D36, thép cuộn, thép hộp vuông, chữ nhật và thép hình công nghiệp (H, I, U, V). Tự động tính toán tổng khối lượng theo từng cấu kiện dầm, cột, móng, sàn và ước tính ngân sách vật tư nhanh chóng.",
+    features: [
+      "Bảng tra barem trọng lượng tiêu chuẩn TCVN cho thép cây D6 đến D36",
+      "Tính khối lượng thép hình H, I, U, V và thép hộp quy cách chuẩn",
+      "Tính tổng khối lượng theo cấu kiện dầm, cột, sàn, móng thực tế",
+      "Ước tính chi phí vật tư theo đơn giá thép thị trường cập nhật",
+      "Hoạt động 100% offline, không cần internet trên công trình",
+    ],
+    price: 59000,
+    delivery: "File cài đặt APK Android / Web App + Hướng dẫn",
+    demoUrl: null,
+    devicePrefix: "TX",
+    status: "available",
+    mockupIdea: "Mockup bó thép xây dựng đặt cạnh bảng tra barem trọng lượng trên điện thoại.",
+  },
+
+  // ─── 19. Rental & Utility Manager Pro ───
+  {
+    slug: "quan-ly-phong-tro",
+    name: "Quản Lý Nhà Trọ & Điện Nước Pro (Rental & Utility Manager)",
+    model: "download",
+    kind: "Quản Lý / Bán Hàng",
+    category: "business",
+    format: "Web App / Android APK · Chạy 100% Offline",
+    tagline: "Chốt số điện nước, tính tiền phòng trọ theo bậc thang, in/xuất phiếu thu tiền gửi khách qua Zalo tự động.",
+    description:
+      "Giải pháp quản lý nhà trọ, căn hộ dịch vụ và phòng cho thuê bỏ túi độc lập: theo dõi danh sách phòng trống/đã thuê, ghi nhận chỉ số công tơ điện nước đầu kỳ - cuối kỳ, tự động tính tiền điện theo giá bậc thang EVN hoặc giá thỏa thuận, cộng tiền rác, internet, dịch vụ vệ sinh và xuất hóa đơn phiếu thu PDF/ảnh gửi trực tiếp qua Zalo cho từng người thuê.",
+    features: [
+      "Quản lý danh sách phòng trọ, trạng thái phòng và thông tin người thuê",
+      "Ghi chỉ số điện nước nhanh, tự động tính số chữ điện và khối nước",
+      "Hỗ trợ tính tiền điện theo biểu giá bậc thang hoặc giá cố định",
+      "Cộng dồn tự động tiền phòng, internet, vệ sinh và phí phát sinh",
+      "Xuất phiếu thu tiền hình ảnh/PDF đính kèm mã VietQR nhận tiền qua Zalo",
+      "100% offline, bảo mật tuyệt đối danh sách khách thuê và dòng tiền thu",
+    ],
+    price: 79000,
+    delivery: "File cài đặt APK Android / Web App + Hướng dẫn",
+    demoUrl: null,
+    devicePrefix: "PT",
+    status: "available",
+    mockupIdea: "Mẫu phiếu tính tiền phòng trọ có mã QR thanh toán trên màn hình điện thoại.",
+  },
+
+  // ─── 20. Barista Recipe & Cost Pro ───
+  {
+    slug: "cong-thuc-pha-che",
+    name: "Sổ Tay Pha Chế & Cost Đồ Uống (Barista Recipe & Cost Pro)",
+    model: "download",
+    kind: "F&B / Quản Lý",
+    category: "business",
+    format: "Web App / Android APK · Chạy 100% Offline",
+    tagline: "Định lượng nguyên liệu từng ly nước, tự động tính giá vốn cost món và định giá bán cho quán cafe, trà sữa.",
+    description:
+      "Sổ tay công thức và quản trị giá vốn món uống dành cho chủ quán cafe, trà sữa và barista: lưu trữ hơn 200 công thức chuẩn, nhập đơn giá nguyên liệu (siro, trà, sữa đặc, cà phê hạt) để tự động tính chính xác giá vốn (Food Cost) trên từng ly cho từng size (S, M, L), từ đó đề xuất giá bán niêm yết đạt tỷ suất lợi nhuận mong muốn 65-75%.",
+    features: [
+      "Kho lưu trữ công thức pha chế không giới hạn số lượng món",
+      "Tự động tính giá cost nguyên liệu chính xác đến từng gram, từng ml",
+      "Tùy biến công thức và tỷ lệ hao hụt theo kích thước ly (Size S, M, L)",
+      "Đề xuất giá bán menu chuẩn theo tỷ lệ Food Cost mục tiêu của quán",
+      "Xuất công thức chuẩn hóa dạng bảng định lượng cho nhân viên pha chế",
+      "Hoạt động offline hoàn toàn, bảo mật bí quyết công thức riêng của quán",
+    ],
+    price: 49000,
+    delivery: "File cài đặt APK Android / Web App + Hướng dẫn",
+    demoUrl: null,
+    devicePrefix: "PC",
+    status: "available",
+    mockupIdea: "Ly cà phê capuchino nghệ thuật đặt cạnh bảng bóc tách nguyên liệu và giá cost trên app.",
+  },
+
+  // ─── 21. Loan & EMI Repayment Pro ───
+  {
+    slug: "lai-suat-tra-gop",
+    name: "Máy Tính Lãi Suất & Trả Góp Vay (Loan & EMI Repayment Pro)",
+    model: "download",
+    kind: "Tài Chính / Tiện Ích",
+    category: "utility",
+    format: "Web App / Android APK · Chạy 100% Offline",
+    tagline: "Lập bảng trả góp vay mua nhà, xe hơi theo dư nợ giảm dần hoặc cố định, tính phí phạt trả nợ trước hạn.",
+    description:
+      "Công cụ lập kế hoạch tài chính và kiểm soát nợ vay ngân hàng: tính toán chi tiết lịch trả góp gốc và lãi hàng tháng theo phương thức dư nợ giảm dần hoặc niên kim cố định. Mô phỏng tác động khi trả nợ gốc trước hạn, tính phí phạt trả nợ sớm và so sánh lãi suất giữa các gói vay mua nhà, mua xe hơi từ nhiều ngân hàng khác nhau.",
+    features: [
+      "Lập bảng lịch trả góp chi tiết từng tháng cho toàn bộ kỳ hạn vay",
+      "Hỗ trợ phương thức tính theo dư nợ giảm dần hoặc số tiền trả đều hàng tháng",
+      "Mô phỏng trả thêm tiền gốc định kỳ để rút ngắn thời gian và giảm tổng lãi",
+      "Tính toán chi tiết phí phạt tất toán hợp đồng vay trước hạn",
+      "Xuất bảng lịch thanh toán ra file PDF hoặc Excel để lưu trữ đối chiếu",
+    ],
+    price: 49000,
+    delivery: "File cài đặt APK Android / Web App + Hướng dẫn",
+    demoUrl: null,
+    devicePrefix: "LS",
+    status: "available",
+    mockupIdea: "Biểu đồ cơ cấu trả nợ gốc - lãi giảm dần theo thời gian hiển thị trực quan.",
+  },
+
+  // ─── 22. Image Batch Resizer Pro ───
+  {
+    slug: "nen-anh-hang-loat",
+    name: "Đổi Kích Thước & Nén Ảnh Hàng Loạt (Image Batch Resizer Pro)",
+    model: "download",
+    kind: "Đồ Họa / Tiện Ích",
+    category: "utility",
+    format: "1 File HTML · Chạy 100% Offline",
+    tagline: "Nén dung lượng, đổi kích thước hàng chục ảnh cùng lúc để đăng Shopee, Facebook siêu nhẹ và nét.",
+    description:
+      "Công cụ xử lý ảnh hàng loạt siêu tốc chạy trực tiếp trên trình duyệt máy tính hoặc điện thoại mà không cần tải ảnh lên mạng: chọn hoặc kéo thả hàng chục bức ảnh cùng lúc để nén giảm 70-90% dung lượng, chuyển đổi tỷ lệ chuẩn sàn TMĐT (1:1 cho Shopee, 4:3, 16:9), chuyển đổi định dạng WebP, JPEG, PNG chỉ trong vài giây.",
+    features: [
+      "Kéo thả nén hàng loạt hàng chục bức ảnh cùng một lúc",
+      "Giảm 70-90% dung lượng file ảnh mà mắt thường không thấy giảm chất lượng",
+      "Cài đặt kích thước pixel cố định hoặc theo tỷ lệ khung hình chuẩn",
+      "Chuyển đổi linh hoạt giữa định dạng JPG, PNG và WebP hiện đại",
+      "Tải về toàn bộ ảnh đã xử lý chỉ với 1 cú nhấp chuột",
+      "Bảo mật 100% — toàn bộ ảnh được xử lý trên RAM máy bạn, không gửi đi đâu",
+    ],
+    price: 49000,
+    delivery: "1 file HTML offline mở dùng ngay không cần cài đặt",
+    demoUrl: null,
+    devicePrefix: "NA",
+    status: "available",
+    mockupIdea: "So sánh trước và sau khi nén ảnh: từ 5MB xuống còn 300KB siêu nhẹ mà vẫn nét.",
+  },
+
 ];
 
 // ───────────── COMBO / BUNDLE TIẾT KIỆM 35% ─────────────
