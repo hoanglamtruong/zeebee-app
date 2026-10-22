@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Định Giá & Lợi Nhuận Pro - Cho Chủ Shop & Bán Hàng Online</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              card: '#0e2439',
+              dark: '#081624'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #081624; }
+    ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+    .glass {
+      background: rgba(14, 36, 57, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-[#071420] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+
+  <!-- HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-[#0a1e34] sticky top-0 z-30 px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+        <i class="fa-solid fa-calculator"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-base tracking-wide text-white flex items-center gap-1.5">
+          ĐỊNH GIÁ & COST PRO <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">100% Offline</span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Tính Phí Sàn TMĐT, Margin vs Markup & Phân Tích Lợi Nhuận</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="openProductListModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-emerald-300 border border-slate-700 flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-boxes-stacked"></i> <span class="hidden sm:inline">Kho Sản Phẩm</span> (<span id="saved-product-count">0</span>)
+      </button>
+      <a href="https://app.zeebee.vn" target="_blank" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/20">
+        app.zeebee.vn
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-5 space-y-5">
+    
+    <!-- CHANNEL TEMPLATE QUICK SELECTION -->
+    <div class="glass rounded-2xl p-4 shadow-xl">
+      <div class="flex items-center justify-between mb-3">
+        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+          1. Kênh Phân Phối / Mẫu Phí Sàn:
+        </label>
+        <span class="text-[11px] text-slate-400">Tự động điền tỷ lệ % phí sàn</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="channel-tabs">
+        <button onclick="selectChannel('shopee')" class="channel-btn active p-3 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-300 flex items-center gap-2.5 transition">
+          <i class="fa-solid fa-bag-shopping text-orange-400 text-lg"></i>
+          <div class="text-left">
+            <div class="text-xs font-bold">Shopee VN</div>
+            <div class="text-[10px] text-slate-400">Phí sàn ~19.5%</div>
+          </div>
+        </button>
+        <button onclick="selectChannel('tiktok')" class="channel-btn p-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 flex items-center gap-2.5 hover:border-slate-500 transition">
+          <i class="fa-brands fa-tiktok text-slate-200 text-lg"></i>
+          <div class="text-left">
+            <div class="text-xs font-bold">TikTok Shop</div>
+            <div class="text-[10px] text-slate-400">Phí sàn ~17.5%</div>
+          </div>
+        </button>
+        <button onclick="selectChannel('lazada')" class="channel-btn p-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 flex items-center gap-2.5 hover:border-slate-500 transition">
+          <i class="fa-solid fa-heart text-blue-400 text-lg"></i>
+          <div class="text-left">
+            <div class="text-xs font-bold">Lazada VN</div>
+            <div class="text-[10px] text-slate-400">Phí sàn ~15.0%</div>
+          </div>
+        </button>
+        <button onclick="selectChannel('direct')" class="channel-btn p-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 flex items-center gap-2.5 hover:border-slate-500 transition">
+          <i class="fa-solid fa-store text-emerald-400 text-lg"></i>
+          <div class="text-left">
+            <div class="text-xs font-bold">Bán Trực Tiếp / Web</div>
+            <div class="text-[10px] text-slate-400">0% phí sàn, phí ship cố định</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- CALCULATION GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      
+      <!-- LEFT: COST INPUTS & TARGET PRICE -->
+      <div class="lg:col-span-6 space-y-4">
+        
+        <!-- Product Info & Cost of Goods Sold (COGS) -->
+        <div class="glass rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-boxes-packing text-emerald-400"></i> Chi Phí Giá Vốn Sản Phẩm (COGS)
+            </h2>
+            <input type="text" id="prod-name" value="Sản Phẩm Mẫu #01" placeholder="Tên sản phẩm..." class="bg-slate-900 border border-slate-700 text-xs px-2.5 py-1 rounded text-emerald-300 font-semibold focus:outline-none w-36 sm:w-44">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Giá Nhập / Phôi (đ):</label>
+              <input type="number" id="cost-base" value="120000" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Bao Bì & Hộp Đóng Gói (đ):</label>
+              <input type="number" id="cost-pack" value="5000" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Quà Tặng / Card Cảm Ơn (đ):</label>
+              <input type="number" id="cost-gift" value="2000" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Nhân Công Xử Lý / Đơn (đ):</label>
+              <input type="number" id="cost-labor" value="3000" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
+            <span class="text-slate-400 font-semibold">Tổng Giá Vốn Trực Tiếp (1 Đơn):</span>
+            <span id="display-total-cogs" class="text-sm font-extrabold text-amber-300">130.000 đ</span>
+          </div>
+        </div>
+
+        <!-- Selling & Platform Fees -->
+        <div class="glass rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-receipt text-sky-400"></i> Phí Bán Hàng & Phí Sàn TMĐT
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Tổng Phí Sàn (%):</label>
+              <div class="relative">
+                <input type="number" step="0.1" id="fee-platform-pct" value="19.5" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none pr-8">
+                <span class="absolute right-3 top-2 text-slate-400 font-bold">%</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Chi Phí Quảng Cáo ADS / Đơn:</label>
+              <div class="relative">
+                <input type="number" step="0.1" id="fee-ads-pct" value="10.0" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none pr-8">
+                <span class="absolute right-3 top-2 text-slate-400 font-bold">%</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Hỗ Trợ Ship / Trả Hàng (đ):</label>
+              <input type="number" id="fee-ship-fixed" value="5000" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Voucher Shop Giảm (đ):</label>
+              <input type="number" id="fee-voucher-fixed" value="0" oninput="recalc()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-emerald-500 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Price Strategy Mode -->
+        <div class="glass rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-tag text-amber-400"></i> Thiết Lập Giá Bán Hoặc Biên Lợi Nhuận
+            </h2>
+          </div>
+
+          <div class="flex items-center gap-4 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+              <input type="radio" name="calc-mode" value="price" checked onchange="toggleCalcMode()" class="text-emerald-500 focus:ring-0">
+              <span>Nhập Giá Bán &rarr; Tính Lợi Nhuận</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+              <input type="radio" name="calc-mode" value="margin" onchange="toggleCalcMode()" class="text-emerald-500 focus:ring-0">
+              <span>Nhập % Lợi Nhuận &rarr; Tính Giá Bán</span>
+            </label>
+          </div>
+
+          <div id="box-input-price">
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Giá Bán Niêm Yết Cho Khách (đ):</label>
+            <input type="number" id="input-selling-price" value="259000" oninput="recalc()" class="w-full bg-slate-900 border-2 border-emerald-500 rounded-xl p-2.5 text-xl text-emerald-400 font-black focus:outline-none">
+          </div>
+
+          <div id="box-input-margin" class="hidden">
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Biên Lợi Nhuận Ròng Mong Muốn (Net Margin %):</label>
+            <div class="relative">
+              <input type="number" id="input-target-margin" value="25" oninput="recalc()" class="w-full bg-slate-900 border-2 border-emerald-500 rounded-xl p-2.5 text-xl text-emerald-400 font-black focus:outline-none pr-10">
+              <span class="absolute right-4 top-3 text-emerald-400 font-bold">%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: ANALYSIS METRICS, PROFIT & BREAKDOWN -->
+      <div class="lg:col-span-6 space-y-4">
+        
+        <!-- Net Profit Card -->
+        <div class="bg-gradient-to-br from-emerald-500/20 via-[#0e2439] to-[#0a1b2d] border border-emerald-500/40 rounded-2xl p-5 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Lợi Nhuận Ròng Thực Nhận (Mỗi Đơn)</div>
+              <div class="text-3xl sm:text-4xl font-black text-white mt-1">
+                <span id="res-net-profit">0</span> <span class="text-lg font-bold text-emerald-400">đ</span>
+              </div>
+              <div class="text-xs text-slate-400 mt-1">
+                Giá bán thực tế: <span id="res-selling-price-display" class="text-white font-bold">259.000 đ</span>
+              </div>
+            </div>
+            <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-3xl">
+              <i class="fa-solid fa-coins"></i>
+            </div>
+          </div>
+
+          <!-- Dual Margin vs Markup Indicators -->
+          <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-800">
+            <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+              <div class="text-[11px] font-semibold text-slate-400 uppercase">Margin (Biên Lợi Nhuận):</div>
+              <div class="text-xl font-black text-emerald-300 mt-0.5">
+                <span id="res-margin-pct">0</span>%
+              </div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Lợi nhuận / Giá bán</div>
+            </div>
+            <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+              <div class="text-[11px] font-semibold text-slate-400 uppercase">Markup (Hệ Số Đội Giá):</div>
+              <div class="text-xl font-black text-sky-300 mt-0.5">
+                <span id="res-markup-pct">0</span>%
+              </div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Lợi nhuận / Giá vốn</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Cost Distribution Bar -->
+        <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-800 flex items-center justify-between">
+            <span>2. Cơ Cấu Doanh Thu 1 Đơn Hàng:</span>
+            <span class="text-[11px] text-slate-400">100% Giá Bán</span>
+          </div>
+
+          <!-- Multi-color progress bar -->
+          <div class="w-full h-5 rounded-full overflow-hidden flex bg-slate-900 border border-slate-700">
+            <div id="bar-cogs" class="bg-amber-500 h-full transition-all" style="width: 50%" title="Giá vốn"></div>
+            <div id="bar-platform" class="bg-rose-500 h-full transition-all" style="width: 20%" title="Phí sàn"></div>
+            <div id="bar-ads" class="bg-sky-500 h-full transition-all" style="width: 10%" title="Phí Ads"></div>
+            <div id="bar-profit" class="bg-emerald-500 h-full transition-all" style="width: 20%" title="Lợi nhuận"></div>
+          </div>
+
+          <!-- Legend -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] pt-1">
+            <div class="flex items-center gap-1.5 text-slate-300">
+              <span class="w-3 h-3 rounded bg-amber-500 inline-block"></span>
+              <span>Giá vốn: <strong id="pct-cogs" class="text-amber-400">50%</strong></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-slate-300">
+              <span class="w-3 h-3 rounded bg-rose-500 inline-block"></span>
+              <span>Phí sàn: <strong id="pct-platform" class="text-rose-400">20%</strong></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-slate-300">
+              <span class="w-3 h-3 rounded bg-sky-500 inline-block"></span>
+              <span>Quảng cáo: <strong id="pct-ads" class="text-sky-400">10%</strong></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-slate-300">
+              <span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span>
+              <span>Lợi nhuận: <strong id="pct-profit" class="text-emerald-400">20%</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flash Sale / Discount Sensitivity Matrix -->
+        <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-800">
+            3. Mô Phỏng Khi Giảm Giá Khuyến Mãi (Flash Sale):
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="text-slate-400 border-b border-slate-800 font-semibold">
+                <tr>
+                  <th class="py-2">Mức Giảm</th>
+                  <th class="py-2">Giá Sau Giảm</th>
+                  <th class="py-2">Lợi Nhuận/Đơn</th>
+                  <th class="py-2">Margin</th>
+                </tr>
+              </thead>
+              <tbody id="discount-table" class="divide-y divide-slate-800 text-slate-200">
+                <!-- Dynamically generated -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2 pt-2">
+            <button onclick="saveProduct()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20 transition">
+              <i class="fa-solid fa-floppy-disk"></i> Lưu Sản Phẩm Này
+            </button>
+            <button onclick="copyPriceReport()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-copy"></i> Copy Tóm Tắt
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- SAVED PRODUCTS MODAL -->
+  <div id="modal-products" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-[#0e2439] border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div class="px-5 py-4 bg-[#0a1a29] border-b border-slate-700 flex items-center justify-between">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <i class="fa-solid fa-boxes-stacked text-emerald-400"></i> Danh Sách Sản Phẩm Đã Định Giá
+        </h3>
+        <button onclick="closeProductListModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto space-y-3 flex-1 text-xs" id="saved-product-list">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="px-5 py-3 bg-[#0a1a29] border-t border-slate-700 flex justify-end">
+        <button onclick="closeProductListModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-xs">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-4 right-4 z-50 bg-slate-900 border border-slate-700 text-white px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toast-text">Thông báo</span>
+  </div>
+
+  <script>
+    const CHANNELS = {
+      shopee: { platformPct: 19.5, adsPct: 10.0, shipFixed: 5000 },
+      tiktok: { platformPct: 17.5, adsPct: 12.0, shipFixed: 3000 },
+      lazada: { platformPct: 15.0, adsPct: 8.0, shipFixed: 5000 },
+      direct: { platformPct: 0.0, adsPct: 15.0, shipFixed: 30000 }
+    };
+
+    let currentChannel = 'shopee';
+    let calcMode = 'price'; // 'price' or 'margin'
+    let savedProducts = [];
+
+    function init() {
+      loadSavedProducts();
+      recalc();
+    }
+
+    function selectChannel(ch) {
+      currentChannel = ch;
+      document.querySelectorAll('.channel-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-emerald-500', 'bg-emerald-500/20', 'text-emerald-300');
+        btn.classList.add('border-slate-700', 'bg-slate-800/60', 'text-slate-300');
+      });
+      event.currentTarget.classList.add('active', 'border-emerald-500', 'bg-emerald-500/20', 'text-emerald-300');
+      event.currentTarget.classList.remove('border-slate-700', 'bg-slate-800/60', 'text-slate-300');
+
+      document.getElementById('fee-platform-pct').value = CHANNELS[ch].platformPct;
+      document.getElementById('fee-ads-pct').value = CHANNELS[ch].adsPct;
+      document.getElementById('fee-ship-fixed').value = CHANNELS[ch].shipFixed;
+      recalc();
+    }
+
+    function toggleCalcMode() {
+      const mode = document.querySelector('input[name="calc-mode"]:checked').value;
+      calcMode = mode;
+      if (mode === 'price') {
+        document.getElementById('box-input-price').classList.remove('hidden');
+        document.getElementById('box-input-margin').classList.add('hidden');
+      } else {
+        document.getElementById('box-input-price').classList.add('hidden');
+        document.getElementById('box-input-margin').classList.remove('hidden');
+      }
+      recalc();
+    }
+
+    function recalc() {
+      const cogsBase = parseFloat(document.getElementById('cost-base').value) || 0;
+      const cogsPack = parseFloat(document.getElementById('cost-pack').value) || 0;
+      const cogsGift = parseFloat(document.getElementById('cost-gift').value) || 0;
+      const cogsLabor = parseFloat(document.getElementById('cost-labor').value) || 0;
+      const totalCOGS = cogsBase + cogsPack + cogsGift + cogsLabor;
+
+      document.getElementById('display-total-cogs').textContent = totalCOGS.toLocaleString('vi-VN') + ' đ';
+
+      const feePlatformPct = (parseFloat(document.getElementById('fee-platform-pct').value) || 0) / 100;
+      const feeAdsPct = (parseFloat(document.getElementById('fee-ads-pct').value) || 0) / 100;
+      const feeShipFixed = parseFloat(document.getElementById('fee-ship-fixed').value) || 0;
+      const feeVoucherFixed = parseFloat(document.getElementById('fee-voucher-fixed').value) || 0;
+
+      let sellingPrice = 0;
+      let netProfit = 0;
+
+      if (calcMode === 'price') {
+        sellingPrice = parseFloat(document.getElementById('input-selling-price').value) || 0;
+        const totalPctFees = sellingPrice * (feePlatformPct + feeAdsPct);
+        const totalFixedFees = feeShipFixed + feeVoucherFixed;
+        netProfit = sellingPrice - totalCOGS - totalPctFees - totalFixedFees;
+      } else {
+        // Reverse calculate selling price based on target net margin %
+        const targetMarginPct = (parseFloat(document.getElementById('input-target-margin').value) || 0) / 100;
+        // Formula: sellingPrice * (1 - feePlatformPct - feeAdsPct - targetMarginPct) = totalCOGS + feeShipFixed + feeVoucherFixed
+        const denominator = 1 - feePlatformPct - feeAdsPct - targetMarginPct;
+        if (denominator > 0.05) {
+          sellingPrice = Math.round((totalCOGS + feeShipFixed + feeVoucherFixed) / denominator);
+          const totalPctFees = sellingPrice * (feePlatformPct + feeAdsPct);
+          netProfit = sellingPrice - totalCOGS - totalPctFees - (feeShipFixed + feeVoucherFixed);
+        } else {
+          sellingPrice = 0;
+          netProfit = 0;
+        }
+      }
+
+      const marginPct = sellingPrice > 0 ? ((netProfit / sellingPrice) * 100).toFixed(1) : '0';
+      const markupPct = totalCOGS > 0 ? ((netProfit / totalCOGS) * 100).toFixed(1) : '0';
+
+      // Update UI
+      document.getElementById('res-net-profit').textContent = Math.round(netProfit).toLocaleString('vi-VN');
+      document.getElementById('res-selling-price-display').textContent = Math.round(sellingPrice).toLocaleString('vi-VN') + ' đ';
+      document.getElementById('res-margin-pct').textContent = marginPct;
+      document.getElementById('res-markup-pct').textContent = markupPct;
+
+      // Update visual breakdown bar
+      if (sellingPrice > 0) {
+        const cogsPct = Math.min(100, Math.max(0, (totalCOGS / sellingPrice) * 100));
+        const platPct = Math.min(100, Math.max(0, feePlatformPct * 100));
+        const adsPct = Math.min(100, Math.max(0, feeAdsPct * 100));
+        const profPct = Math.max(0, parseFloat(marginPct));
+
+        document.getElementById('bar-cogs').style.width = cogsPct + '%';
+        document.getElementById('bar-platform').style.width = platPct + '%';
+        document.getElementById('bar-ads').style.width = adsPct + '%';
+        document.getElementById('bar-profit').style.width = profPct + '%';
+
+        document.getElementById('pct-cogs').textContent = cogsPct.toFixed(0) + '%';
+        document.getElementById('pct-platform').textContent = platPct.toFixed(0) + '%';
+        document.getElementById('pct-ads').textContent = adsPct.toFixed(0) + '%';
+        document.getElementById('pct-profit').textContent = profPct.toFixed(0) + '%';
+      }
+
+      // Render Flash sale simulations
+      renderDiscountTable(sellingPrice, totalCOGS, feePlatformPct, feeAdsPct, feeShipFixed + feeVoucherFixed);
+
+      return {
+        name: document.getElementById('prod-name').value || 'Sản Phẩm',
+        cogs: totalCOGS,
+        price: sellingPrice,
+        profit: netProfit,
+        margin: marginPct,
+        markup: markupPct,
+        channel: currentChannel
+      };
+    }
+
+    function renderDiscountTable(basePrice, cogs, platPct, adsPct, fixedFees) {
+      const tbody = document.getElementById('discount-table');
+      const discounts = [0, 5, 10, 15, 20, 25];
+
+      tbody.innerHTML = discounts.map(d => {
+        const discPrice = Math.round(basePrice * (1 - d / 100));
+        const profit = discPrice - cogs - (discPrice * (platPct + adsPct)) - fixedFees;
+        const margin = discPrice > 0 ? ((profit / discPrice) * 100).toFixed(1) : '0';
+        const isLoss = profit < 0;
+
+        return `
+          <tr class="hover:bg-slate-800/40">
+            <td class="py-2 font-bold ${d === 0 ? 'text-amber-400' : 'text-slate-300'}">${d === 0 ? 'Giá Gốc' : '-' + d + '%'}</td>
+            <td class="py-2 font-medium">${discPrice.toLocaleString('vi-VN')} đ</td>
+            <td class="py-2 font-black ${isLoss ? 'text-rose-400' : 'text-emerald-400'}">${Math.round(profit).toLocaleString('vi-VN')} đ</td>
+            <td class="py-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${isLoss ? 'bg-rose-950 text-rose-300' : 'bg-emerald-950 text-emerald-300'}">${margin}%</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function saveProduct() {
+      const data = recalc();
+      const item = {
+        id: Date.now(),
+        ...data
+      };
+      savedProducts.unshift(item);
+      localStorage.setItem('PRICING_PRO_SAVED', JSON.stringify(savedProducts));
+      updateSavedCount();
+      showToast(`Đã lưu "${item.name}" vào danh sách!`);
+    }
+
+    function loadSavedProducts() {
+      try {
+        const stored = localStorage.getItem('PRICING_PRO_SAVED');
+        savedProducts = stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        savedProducts = [];
+      }
+      updateSavedCount();
+    }
+
+    function updateSavedCount() {
+      const el = document.getElementById('saved-product-count');
+      if (el) el.textContent = savedProducts.length;
+    }
+
+    function openProductListModal() {
+      const container = document.getElementById('saved-product-list');
+      if (savedProducts.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-slate-500">
+            <i class="fa-solid fa-box-open text-2xl mb-2"></i>
+            <div>Chưa có sản phẩm nào được lưu.</div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = savedProducts.map(p => `
+          <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div>
+              <div class="font-bold text-white text-xs">${p.name} <span class="text-emerald-400 text-[10px] uppercase font-semibold">[${p.channel}]</span></div>
+              <div class="text-[11px] text-slate-400 mt-0.5">
+                Vốn: ${p.cogs.toLocaleString()} đ &rarr; Bán: <strong class="text-white">${p.price.toLocaleString()} đ</strong>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-black text-emerald-400 text-xs">+${Math.round(p.profit).toLocaleString()} đ</div>
+              <div class="text-[10px] text-slate-400">Margin: ${p.margin}%</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      document.getElementById('modal-products').classList.remove('hidden');
+    }
+
+    function closeProductListModal() {
+      document.getElementById('modal-products').classList.add('hidden');
+    }
+
+    function copyPriceReport() {
+      const data = recalc();
+      const txt = `=== BÁO CÁO ĐỊNH GIÁ: ${data.name} (app.zeebee.vn) ===\n+ Kênh: ${data.channel}\n+ Giá vốn (COGS): ${data.cogs.toLocaleString()} đ\n+ Giá bán niêm yết: ${data.price.toLocaleString()} đ\n+ Lợi nhuận ròng: ${Math.round(data.profit).toLocaleString()} đ / đơn\n+ Biên lợi nhuận (Margin): ${data.margin}%\n+ Hệ số đội giá (Markup): ${data.markup}%`;
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('Đã copy tóm tắt định giá vào bộ nhớ tạm!');
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

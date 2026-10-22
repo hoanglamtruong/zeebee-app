@@ -65,7 +65,7 @@ export const PRODUCTS: Product[] = [
   // ─── 01. zQR Offline Generator ───
   {
     slug: "zqr-offline",
-    name: "zQR Offline Generator",
+    name: "zQR Offline — Tạo Mã QR Cục Bộ (zQR Offline Generator)",
     model: "download",
     kind: "Mini App",
     category: "business",
@@ -169,7 +169,7 @@ export const PRODUCTS: Product[] = [
   // ─── 05. Concrete Volume & Material Estimator ───
   {
     slug: "concrete-volume-estimator",
-    name: "Concrete Volume & Material Estimator",
+    name: "Bê Tông Pro (Concrete Volume & Material Estimator)",
     model: "download",
     kind: "Android APK",
     category: "pro-tools",
@@ -186,16 +186,16 @@ export const PRODUCTS: Product[] = [
       "Hoạt động 100% offline tại chân công trình không phụ thuộc sóng di động",
     ],
     price: 59000,
-    delivery: "File cài đặt APK Android / Web App + hướng dẫn",
-    demoUrl: null,
-    status: "coming_soon",
+    delivery: "File cài đặt APK Android / Web App + Hướng dẫn sử dụng",
+    demoUrl: "/products/App_01_BeTong_Pro_Offline.html",
+    status: "available",
     mockupIdea: "Thợ xây dựng cầm điện thoại ngoài công trường với bảng khối lượng vật liệu và bản vẽ 3D khối bê tông.",
   },
 
   // ─── 06. Product Pricing & Profit Margin Pro ───
   {
     slug: "pricing-profit-margin-pro",
-    name: "Product Pricing & Profit Margin Pro",
+    name: "Định Giá & Lợi Nhuận (Pricing & Profit Margin Pro)",
     model: "download",
     kind: "Android APK",
     category: "business",
@@ -212,16 +212,16 @@ export const PRODUCTS: Product[] = [
       "Lưu lại danh sách công thức giá theo từng nhóm hàng để tra cứu tức thì",
     ],
     price: 39000,
-    delivery: "File cài đặt APK Android / Web App + hướng dẫn",
-    demoUrl: null,
-    status: "coming_soon",
+    delivery: "File cài đặt APK Android / Web App + Hướng dẫn sử dụng",
+    demoUrl: "/products/App_04_DinhGia_LoiNhuan_Pro.html",
+    status: "available",
     mockupIdea: "Giao diện điện thoại so sánh 2 cột: 'Giá bán đề xuất' và 'Lợi nhuận ròng thực nhận'.",
   },
 
   // ─── 07. Quotation & Invoice Maker Offline ───
   {
     slug: "quotation-invoice-maker",
-    name: "Quotation & Invoice Maker Offline",
+    name: "Hóa Đơn Mini Offline (Quotation & Invoice Maker)",
     model: "download",
     kind: "Android APK",
     category: "business",
@@ -238,16 +238,16 @@ export const PRODUCTS: Product[] = [
       "Hoạt động offline hoàn toàn, lưu trữ toàn bộ lịch sử báo giá an toàn trên máy",
     ],
     price: 79000,
-    delivery: "File cài đặt APK Android / Web App + hướng dẫn",
-    demoUrl: null,
-    status: "coming_soon",
+    delivery: "File cài đặt APK Android / Web App + Hướng dẫn sử dụng",
+    demoUrl: "/products/App_07_HoaDon_Mini_Offline.html",
+    status: "available",
     mockupIdea: "Mẫu phiếu báo giá PDF sắc nét in logo doanh nghiệp xuất ra từ điện thoại.",
   },
 
   // ─── 08. Room Paint & Tile Calculator ───
   {
     slug: "room-paint-tile-calculator",
-    name: "Room Paint & Tile Calculator",
+    name: "Tính Sơn & Gạch Ốp Lát (Room Paint & Tile Calculator)",
     model: "download",
     kind: "Android APK",
     category: "pro-tools",
@@ -273,7 +273,7 @@ export const PRODUCTS: Product[] = [
   // ─── 09. Freelance Project & Timesheet Tracker ───
   {
     slug: "freelance-project-tracker",
-    name: "Freelance Project & Timesheet Tracker",
+    name: "Quản Lý Dự Án Freelancer (Freelance Project & Timesheet)",
     model: "download",
     kind: "Android APK",
     category: "business",
@@ -299,7 +299,7 @@ export const PRODUCTS: Product[] = [
   // ─── 10. Mini Inventory Offline Pro ───
   {
     slug: "mini-inventory-offline",
-    name: "Mini Inventory Offline Pro",
+    name: "Sổ Kho Mini Offline — Quét Mã (Mini Inventory Pro)",
     model: "download",
     kind: "Android APK",
     category: "business",
@@ -325,7 +325,7 @@ export const PRODUCTS: Product[] = [
   // ─── 11. 3D Print Cost Calculator ───
   {
     slug: "3d-print-cost-calculator",
-    name: "3D Print Cost Calculator",
+    name: "Tính Giá In 3D (3D Print Cost Calculator)",
     model: "download",
     kind: "Android APK",
     category: "pro-tools",
@@ -351,7 +351,7 @@ export const PRODUCTS: Product[] = [
   // ─── 12. Electrical Engineering Calculator ───
   {
     slug: "electrical-calculator",
-    name: "Electrical Engineering Calculator",
+    name: "Sổ Tay Tính Điện Kỹ Thuật (Electrical Engineering Calculator)",
     model: "download",
     kind: "Android APK",
     category: "pro-tools",
@@ -377,7 +377,7 @@ export const PRODUCTS: Product[] = [
   // ─── 13. Tailor Measurement Book ───
   {
     slug: "tailor-measurement-book",
-    name: "Tailor Measurement Book",
+    name: "Sổ Đo May Mặc — Nhà May (Tailor Measurement Book)",
     model: "download",
     kind: "Android APK",
     category: "pro-tools",
@@ -403,7 +403,7 @@ export const PRODUCTS: Product[] = [
   // ─── 14. Bluetooth Battleship Duel: Classic & Salvo ───
   {
     slug: "game-battleship-duel",
-    name: "Bluetooth Battleship Duel: Classic & Salvo",
+    name: "Bắn Thuyền Hải Chiến (Bluetooth Battleship Duel)",
     model: "download",
     kind: "Android APK Game",
     category: "games",
@@ -429,7 +429,7 @@ export const PRODUCTS: Product[] = [
   // ─── 15. Bluetooth Tic-Tac-Toe Pro ───
   {
     slug: "game-tic-tac-toe-pro",
-    name: "Bluetooth Tic-Tac-Toe Pro",
+    name: "Cờ Caro Bluetooth — Đấu 2 Máy (Bluetooth Tic-Tac-Toe Pro)",
     model: "download",
     kind: "Android APK Game",
     category: "games",
@@ -446,16 +446,16 @@ export const PRODUCTS: Product[] = [
       "Chế độ đấu với trí tuệ nhân tạo (AI) thông minh từ Dễ đến Cao thủ",
     ],
     price: 19000,
-    delivery: "File cài đặt APK game Android",
-    demoUrl: null,
-    status: "coming_soon",
+    delivery: "File cài đặt APK game Android / Web App",
+    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    status: "available",
     mockupIdea: "Bàn cờ X-O neon phát sáng trên 2 màn hình điện thoại kết nối không dây.",
   },
 
   // ─── 16. Bluetooth Quiz & English Vocab Duel ───
   {
     slug: "game-quiz-english-duel",
-    name: "Bluetooth Quiz & English Vocab Duel",
+    name: "Đấu Trí Từ Vựng Tiếng Anh (Bluetooth Quiz & Vocab Duel)",
     model: "download",
     kind: "Android APK Game",
     category: "games",

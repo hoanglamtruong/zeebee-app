@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bê Tông Pro - Tính Thể Tích & Cấp Phối Vật Liệu Xây Dựng</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f8fafc',
+              500: '#f59e0b',
+              600: '#d97706',
+              dark: '#0a192f',
+              card: '#112240',
+              accent: '#38bdf8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0a192f; }
+    ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+    .glass {
+      background: rgba(17, 34, 64, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-[#071322] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-black">
+
+  <!-- TOP HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-[#0a1e34] sticky top-0 z-30 px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+        <i class="fa-solid fa-trowel-bricks"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-base tracking-wide text-white flex items-center gap-1.5">
+          BÊ TÔNG PRO <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">100% Offline</span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Tính Thể Tích & Định Mức Cấp Phối Vật Liệu Công Trường</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="openProjectDrawer()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-amber-300 border border-slate-700 flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-list-check"></i> <span class="hidden sm:inline">Hạng Mục</span> (<span id="saved-count">0</span>)
+      </button>
+      <a href="https://app.zeebee.vn" target="_blank" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold hover:bg-amber-500/20">
+        app.zeebee.vn
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-5 space-y-5">
+    
+    <!-- STRUCTURE TYPE SELECTION -->
+    <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl">
+      <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+        1. Chọn Cấu Kiện Cần Đổ Bê Tông:
+      </label>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3" id="type-selector">
+        <button type="button" onclick="selectType('slab')" class="type-btn active p-3 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-300 text-center flex flex-col items-center gap-1.5 transition">
+          <i class="fa-solid fa-layer-group text-xl"></i>
+          <span class="text-xs font-bold">Bản Sàn / Nền</span>
+        </button>
+        <button type="button" onclick="selectType('beam')" class="type-btn p-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 text-center flex flex-col items-center gap-1.5 hover:border-slate-500 transition">
+          <i class="fa-solid fa-grip-lines text-xl"></i>
+          <span class="text-xs font-bold">Dầm / Giằng</span>
+        </button>
+        <button type="button" onclick="selectType('col_rect')" class="type-btn p-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 text-center flex flex-col items-center gap-1.5 hover:border-slate-500 transition">
+          <i class="fa-solid fa-square text-xl"></i>
+          <span class="text-xs font-bold">Cột Vuông</span>
+        </button>
+        <button type="button" onclick="selectType('col_round')" class="type-btn p-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 text-center flex flex-col items-center gap-1.5 hover:border-slate-500 transition">
+          <i class="fa-solid fa-circle text-xl"></i>
+          <span class="text-xs font-bold">Cột Tròn / Cọc</span>
+        </button>
+        <button type="button" onclick="selectType('stairs')" class="type-btn p-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 text-center flex flex-col items-center gap-1.5 hover:border-slate-500 transition">
+          <i class="fa-solid fa-stairs text-xl"></i>
+          <span class="text-xs font-bold">Cầu Thang</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CALCULATION FORM & RESULTS GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      
+      <!-- LEFT: DIMENSIONS & MIX INPUTS -->
+      <div class="lg:col-span-6 space-y-4">
+        
+        <!-- Dimensions Box -->
+        <div class="glass rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-ruler-combined text-amber-400"></i> Kích Thước Hình Học (Đơn vị: Mét)
+            </h2>
+            <span id="current-type-name" class="text-xs text-amber-300 bg-amber-500/10 px-2.5 py-0.5 rounded-full font-semibold">Bản Sàn / Nền</span>
+          </div>
+
+          <div id="dynamic-inputs" class="grid grid-cols-2 gap-3 text-xs">
+            <!-- Dynamically populated by JS -->
+          </div>
+
+          <!-- Quantity / Multiplier -->
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
+            <label class="text-slate-300 font-semibold">Số lượng cấu kiện tương tự:</label>
+            <div class="flex items-center space-x-2">
+              <button onclick="changeQty(-1)" class="w-7 h-7 rounded bg-slate-800 text-white font-bold hover:bg-slate-700">-</button>
+              <input type="number" id="input-qty" value="1" min="1" oninput="calculateAll()" class="w-14 bg-slate-900 border border-slate-700 rounded text-center py-1 text-amber-300 font-bold focus:outline-none">
+              <button onclick="changeQty(1)" class="w-7 h-7 rounded bg-slate-800 text-white font-bold hover:bg-slate-700">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grade & Waste Box -->
+        <div class="glass rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-flask text-sky-400"></i> Mác Bê Tông & Hao Hụt
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Mác Bê Tông (Xi măng PCB40):</label>
+              <select id="select-grade" onchange="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-medium focus:border-amber-500 focus:outline-none">
+                <option value="M100">M100 (Bê tông lót móng)</option>
+                <option value="M150">M150 (Sân, nền, vỉa hè)</option>
+                <option value="M200" selected>M200 (Nhà 1–2 tầng, dân dụng)</option>
+                <option value="M250">M250 (Dầm, sàn, cột nhà kiên cố)</option>
+                <option value="M300">M300 (Nhà cao tầng, móng lớn)</option>
+                <option value="M350">M350 (Công trình đặc biệt)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-400 mb-1 font-semibold">Hệ Số Hao Hụt Công Trường:</label>
+              <select id="select-waste" onchange="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-medium focus:border-amber-500 focus:outline-none">
+                <option value="0">0% (Vừa khít lý thuyết)</option>
+                <option value="3">3% (Công trường chuẩn, ván khuôn kín)</option>
+                <option value="5" selected>5% (Tiêu chuẩn phổ thông)</option>
+                <option value="8">8% (Ván khuôn gỗ ghép, lún)</option>
+                <option value="10">10% (Đổ đất, hố móng lồi lõm)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Unit Prices Toggle -->
+          <div class="pt-2 border-t border-slate-800/80">
+            <details class="group cursor-pointer">
+              <summary class="text-xs text-amber-400 font-bold flex items-center justify-between select-none">
+                <span><i class="fa-solid fa-coins mr-1"></i> Tùy chỉnh Đơn giá Vật liệu địa phương (Ước tính tiền)</span>
+                <i class="fa-solid fa-chevron-down text-[10px] group-open:rotate-180 transition"></i>
+              </summary>
+              <div class="grid grid-cols-3 gap-2 mt-3 text-xs">
+                <div>
+                  <label class="text-[11px] text-slate-400">Xi măng (đ/bao):</label>
+                  <input type="number" id="price-cement" value="95000" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-slate-200 mt-1">
+                </div>
+                <div>
+                  <label class="text-[11px] text-slate-400">Cát vàng (đ/m³):</label>
+                  <input type="number" id="price-sand" value="320000" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-slate-200 mt-1">
+                </div>
+                <div>
+                  <label class="text-[11px] text-slate-400">Đá 1x2 (đ/m³):</label>
+                  <input type="number" id="price-stone" value="380000" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-slate-200 mt-1">
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: RESULTS & MATERIAL ESTIMATION -->
+      <div class="lg:col-span-6 space-y-4">
+        
+        <!-- Total Volume Card -->
+        <div class="bg-gradient-to-br from-amber-500/20 via-[#112240] to-[#0d1d33] border border-amber-500/40 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-amber-400 uppercase tracking-wider">Tổng Thể Tích Bê Tông (Đã tính hao hụt)</div>
+              <div class="text-3xl sm:text-4xl font-black text-white mt-1">
+                <span id="res-volume">0.00</span> <span class="text-lg font-bold text-amber-400">m³</span>
+              </div>
+              <div class="text-xs text-slate-400 mt-1">
+                Thể tích hình học thực: <span id="res-raw-volume" class="text-slate-300 font-semibold">0.00</span> m³
+              </div>
+            </div>
+            <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-3xl">
+              <i class="fa-solid fa-cube"></i>
+            </div>
+          </div>
+
+          <!-- Total Cost Estimation -->
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+            <span class="text-slate-300 font-semibold">Dự toán vật tư (ước tính):</span>
+            <span id="res-cost" class="text-base font-extrabold text-emerald-400">0 đ</span>
+          </div>
+        </div>
+
+        <!-- Material Breakdown Grid -->
+        <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-800 flex items-center justify-between">
+            <span>2. Bảng Kê Vật Liệu Cần Mua:</span>
+            <span class="text-[11px] text-sky-400 font-normal">Tự động quy đổi Xe rùa / Bao</span>
+          </h3>
+
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Cement -->
+            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="font-semibold text-slate-300"><i class="fa-solid fa-sack-xmark text-amber-400 mr-1"></i> Xi Măng:</span>
+                <span id="res-cement-kg" class="font-mono text-slate-400">0 kg</span>
+              </div>
+              <div class="text-xl font-black text-amber-400 mt-1">
+                <span id="res-cement-bags">0</span> <span class="text-xs font-bold text-slate-300">bao (50kg)</span>
+              </div>
+            </div>
+
+            <!-- Sand -->
+            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="font-semibold text-slate-300"><i class="fa-solid fa-mountain text-yellow-300 mr-1"></i> Cát Vàng:</span>
+                <span id="res-sand-barrow" class="font-mono text-slate-400">0 xe rùa</span>
+              </div>
+              <div class="text-xl font-black text-yellow-300 mt-1">
+                <span id="res-sand-m3">0.00</span> <span class="text-xs font-bold text-slate-300">m³</span>
+              </div>
+            </div>
+
+            <!-- Stone -->
+            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="font-semibold text-slate-300"><i class="fa-solid fa-gem text-sky-400 mr-1"></i> Đá 1x2:</span>
+                <span id="res-stone-barrow" class="font-mono text-slate-400">0 xe rùa</span>
+              </div>
+              <div class="text-xl font-black text-sky-400 mt-1">
+                <span id="res-stone-m3">0.00</span> <span class="text-xs font-bold text-slate-300">m³</span>
+              </div>
+            </div>
+
+            <!-- Water -->
+            <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+              <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="font-semibold text-slate-300"><i class="fa-solid fa-droplet text-blue-400 mr-1"></i> Nước Sạch:</span>
+                <span id="res-water-bucket" class="font-mono text-slate-400">0 thùng (18L)</span>
+              </div>
+              <div class="text-xl font-black text-blue-400 mt-1">
+                <span id="res-water-l">0</span> <span class="text-xs font-bold text-slate-300">lít</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ratio note -->
+          <div class="p-2.5 rounded-lg bg-blue-950/40 border border-blue-900/50 text-[11px] text-blue-300 flex items-center justify-between">
+            <span><i class="fa-solid fa-circle-info mr-1"></i> Tỷ lệ cấp phối 1 bao xi măng (~50kg):</span>
+            <strong id="ratio-note" class="font-mono text-amber-300">1 bao : ... cát : ... đá</strong>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex items-center gap-2 pt-2">
+            <button onclick="saveCurrentItem()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-orange-500/20 transition">
+              <i class="fa-solid fa-bookmark"></i> Lưu Vào Hạng Mục Công Trình
+            </button>
+            <button onclick="printReport()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-print"></i> In / Xuất
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- SAVED ITEMS DRAWER / MODAL -->
+  <div id="drawer-items" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-[#0e2238] border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div class="px-5 py-4 bg-[#0a1b2d] border-b border-slate-700 flex items-center justify-between">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-amber-400"></i> Danh Sách Hạng Mục Đã Lưu (<span id="modal-item-count">0</span>)
+        </h3>
+        <button onclick="closeProjectDrawer()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto space-y-3 flex-1 text-xs" id="saved-list">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Total Summary in Drawer -->
+      <div class="p-4 bg-[#0a1b2d] border-t border-slate-700 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-400 font-semibold">TỔNG BÊ TÔNG TOÀN BỘ CÔNG TRÌNH:</span>
+          <span id="drawer-total-vol" class="text-lg font-black text-amber-400">0.00 m³</span>
+        </div>
+        <div class="flex items-center justify-between text-xs text-slate-300">
+          <span>Tổng vật tư:</span>
+          <span id="drawer-total-mats" class="font-medium text-emerald-300">0 bao xi | 0 m³ cát | 0 m³ đá</span>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+          <button onclick="clearAllSaved()" class="text-red-400 hover:text-red-300 text-[11px]">
+            <i class="fa-solid fa-trash mr-1"></i> Xóa tất cả
+          </button>
+          <button onclick="exportSummaryText()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold">
+            <i class="fa-solid fa-file-export mr-1"></i> Sao Chép Báo Cáo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-4 right-4 z-50 bg-slate-900 border border-slate-700 text-white px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toast-text">Thông báo</span>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // Mix Ratios per 1m3 concrete (Tiêu chuẩn xây dựng VN, xi măng PCB40, đá 1x2)
+    const MIX_DATABASE = {
+      M100: { cement: 215, sand: 0.505, stone: 0.900, water: 185, ratio: '1 bao : 4.7 xe cát : 8.4 xe đá' },
+      M150: { cement: 280, sand: 0.485, stone: 0.890, water: 185, ratio: '1 bao : 3.5 xe cát : 6.4 xe đá' },
+      M200: { cement: 340, sand: 0.465, stone: 0.880, water: 185, ratio: '1 bao : 2.7 xe cát : 5.2 xe đá' },
+      M250: { cement: 395, sand: 0.445, stone: 0.870, water: 185, ratio: '1 bao : 2.3 xe cát : 4.4 xe đá' },
+      M300: { cement: 440, sand: 0.430, stone: 0.865, water: 185, ratio: '1 bao : 2.0 xe cát : 3.9 xe đá' },
+      M350: { cement: 485, sand: 0.415, stone: 0.860, water: 185, ratio: '1 bao : 1.7 xe cát : 3.6 xe đá' }
+    };
+
+    let currentType = 'slab';
+    let savedItems = [];
+
+    const TYPE_CONFIG = {
+      slab: {
+        name: 'Bản Sàn / Nền / Móng Bè',
+        fields: [
+          { id: 'len', label: 'Chiều Dài (m)', val: 10 },
+          { id: 'wid', label: 'Chiều Rộng (m)', val: 5 },
+          { id: 'thick', label: 'Chiều Dày (m)', val: 0.12 }
+        ],
+        calc: (f) => f.len * f.wid * f.thick
+      },
+      beam: {
+        name: 'Dầm / Giằng Bê Tông',
+        fields: [
+          { id: 'len', label: 'Chiều Dài Dầm (m)', val: 6 },
+          { id: 'wid', label: 'Bề Rộng Tiết Diện (m)', val: 0.2 },
+          { id: 'height', label: 'Chiều Cao Tiết Diện (m)', val: 0.35 }
+        ],
+        calc: (f) => f.len * f.wid * f.height
+      },
+      col_rect: {
+        name: 'Cột Vuông / Chữ Nhật',
+        fields: [
+          { id: 'wid', label: 'Cạnh A (m)', val: 0.22 },
+          { id: 'len', label: 'Cạnh B (m)', val: 0.22 },
+          { id: 'height', label: 'Chiều Cao Cột (m)', val: 3.6 }
+        ],
+        calc: (f) => f.wid * f.len * f.height
+      },
+      col_round: {
+        name: 'Cột Tròn / Cọc Khoan Nhồi',
+        fields: [
+          { id: 'diam', label: 'Đường Kính (m)', val: 0.3 },
+          { id: 'height', label: 'Chiều Cao / Độ Sâu (m)', val: 3.6 }
+        ],
+        calc: (f) => {
+          const r = f.diam / 2;
+          return Math.PI * r * r * f.height;
+        }
+      },
+      stairs: {
+        name: 'Bản Thang & Bậc Cầu Thang',
+        fields: [
+          { id: 'steps', label: 'Số Bậc Thang', val: 21 },
+          { id: 'step_w', label: 'Rộng Bậc (m)', val: 0.9 },
+          { id: 'step_tread', label: 'Mặt Bậc (m)', val: 0.25 },
+          { id: 'step_riser', label: 'Cổ Bậc (m)', val: 0.17 },
+          { id: 'waist', label: 'Dày Bản Thang (m)', val: 0.10 }
+        ],
+        calc: (f) => {
+          // Volume of triangular steps + inclined slab waist
+          const volSteps = f.steps * (0.5 * f.step_tread * f.step_riser * f.step_w);
+          const slopeLen = Math.sqrt(Math.pow(f.steps * f.step_tread, 2) + Math.pow(f.steps * f.step_riser, 2));
+          const volWaist = slopeLen * f.step_w * f.waist;
+          return volSteps + volWaist;
+        }
+      }
+    };
+
+    function init() {
+      loadSavedItems();
+      renderInputs();
+      calculateAll();
+    }
+
+    function selectType(type) {
+      currentType = type;
+      document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-amber-500', 'bg-amber-500/20', 'text-amber-300');
+        btn.classList.add('border-slate-700', 'bg-slate-800/60', 'text-slate-300');
+      });
+      event.currentTarget.classList.add('active', 'border-amber-500', 'bg-amber-500/20', 'text-amber-300');
+      event.currentTarget.classList.remove('border-slate-700', 'bg-slate-800/60', 'text-slate-300');
+
+      document.getElementById('current-type-name').textContent = TYPE_CONFIG[type].name;
+      renderInputs();
+      calculateAll();
+    }
+
+    function renderInputs() {
+      const container = document.getElementById('dynamic-inputs');
+      const cfg = TYPE_CONFIG[currentType];
+      container.innerHTML = cfg.fields.map(fld => `
+        <div>
+          <label class="block text-slate-400 mb-1 font-semibold">${fld.label}:</label>
+          <input type="number" step="0.01" id="fld-${fld.id}" value="${fld.val}" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-bold focus:border-amber-500 focus:outline-none">
+        </div>
+      `).join('');
+    }
+
+    function changeQty(delta) {
+      const input = document.getElementById('input-qty');
+      let val = Math.max(1, (parseInt(input.value) || 1) + delta);
+      input.value = val;
+      calculateAll();
+    }
+
+    function calculateAll() {
+      const cfg = TYPE_CONFIG[currentType];
+      const fieldValues = {};
+      cfg.fields.forEach(fld => {
+        const el = document.getElementById(`fld-${fld.id}`);
+        fieldValues[fld.id] = el ? (parseFloat(el.value) || 0) : 0;
+      });
+
+      const qty = parseInt(document.getElementById('input-qty').value) || 1;
+      const rawVol = cfg.calc(fieldValues) * qty;
+
+      const wastePct = parseFloat(document.getElementById('select-waste').value) || 0;
+      const finalVol = rawVol * (1 + wastePct / 100);
+
+      const gradeKey = document.getElementById('select-grade').value;
+      const mix = MIX_DATABASE[gradeKey] || MIX_DATABASE.M200;
+
+      // Calculate materials
+      const totalCementKg = Math.round(finalVol * mix.cement);
+      const totalCementBags = Math.ceil(totalCementKg / 50);
+
+      const totalSandM3 = (finalVol * mix.sand).toFixed(2);
+      const sandBarrows = Math.round((finalVol * mix.sand) / 0.04); // 1 xe rua ~ 0.04m3
+
+      const totalStoneM3 = (finalVol * mix.stone).toFixed(2);
+      const stoneBarrows = Math.round((finalVol * mix.stone) / 0.04);
+
+      const totalWaterL = Math.round(finalVol * mix.water);
+      const waterBuckets = Math.round(totalWaterL / 18);
+
+      // Costs
+      const pCement = parseFloat(document.getElementById('price-cement').value) || 0;
+      const pSand = parseFloat(document.getElementById('price-sand').value) || 0;
+      const pStone = parseFloat(document.getElementById('price-stone').value) || 0;
+
+      const totalCost = (totalCementBags * pCement) + (parseFloat(totalSandM3) * pSand) + (parseFloat(totalStoneM3) * pStone);
+
+      // Render to UI
+      document.getElementById('res-volume').textContent = finalVol.toFixed(2);
+      document.getElementById('res-raw-volume').textContent = rawVol.toFixed(2);
+      document.getElementById('res-cost').textContent = Math.round(totalCost).toLocaleString('vi-VN') + ' đ';
+
+      document.getElementById('res-cement-kg').textContent = totalCementKg.toLocaleString() + ' kg';
+      document.getElementById('res-cement-bags').textContent = totalCementBags;
+
+      document.getElementById('res-sand-m3').textContent = totalSandM3;
+      document.getElementById('res-sand-barrow').textContent = sandBarrows + ' xe rùa';
+
+      document.getElementById('res-stone-m3').textContent = totalStoneM3;
+      document.getElementById('res-stone-barrow').textContent = stoneBarrows + ' xe rùa';
+
+      document.getElementById('res-water-l').textContent = totalWaterL.toLocaleString();
+      document.getElementById('res-water-bucket').textContent = waterBuckets + ' thùng (18L)';
+
+      document.getElementById('ratio-note').textContent = mix.ratio;
+
+      return {
+        type: cfg.name,
+        qty: qty,
+        finalVol: finalVol.toFixed(2),
+        grade: gradeKey,
+        cementBags: totalCementBags,
+        sandM3: totalSandM3,
+        stoneM3: totalStoneM3,
+        waterL: totalWaterL,
+        totalCost: totalCost
+      };
+    }
+
+    function saveCurrentItem() {
+      const res = calculateAll();
+      const item = {
+        id: Date.now(),
+        name: `${res.type} (${res.qty} cái)`,
+        vol: res.finalVol,
+        grade: res.grade,
+        cement: res.cementBags,
+        sand: res.sandM3,
+        stone: res.stoneM3,
+        cost: res.totalCost
+      };
+
+      savedItems.push(item);
+      localStorage.setItem('BETONG_PRO_SAVED_ITEMS', JSON.stringify(savedItems));
+      updateSavedCount();
+      showToast(`Đã lưu "${item.name}" (${item.vol} m³) thành công!`);
+    }
+
+    function loadSavedItems() {
+      try {
+        const stored = localStorage.getItem('BETONG_PRO_SAVED_ITEMS');
+        savedItems = stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        savedItems = [];
+      }
+      updateSavedCount();
+    }
+
+    function updateSavedCount() {
+      const el = document.getElementById('saved-count');
+      if (el) el.textContent = savedItems.length;
+    }
+
+    function openProjectDrawer() {
+      const list = document.getElementById('saved-list');
+      document.getElementById('modal-item-count').textContent = savedItems.length;
+
+      if (savedItems.length === 0) {
+        list.innerHTML = `
+          <div class="text-center py-8 text-slate-500">
+            <i class="fa-solid fa-box-open text-2xl mb-2"></i>
+            <div>Chưa có hạng mục nào được lưu.</div>
+          </div>
+        `;
+      } else {
+        list.innerHTML = savedItems.map((item, idx) => `
+          <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-slate-200 text-xs">${idx + 1}. ${item.name} <span class="text-amber-400 font-semibold">[${item.grade}]</span></div>
+              <div class="text-[11px] text-slate-400 mt-0.5">
+                ${item.vol} m³ • ${item.cement} bao xi • ${item.sand} m³ cát • ${item.stone} m³ đá
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-emerald-400">${Math.round(item.cost).toLocaleString('vi-VN')} đ</span>
+              <button onclick="deleteSavedItem(${item.id})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Calculate totals
+      const totalVol = savedItems.reduce((s, x) => s + parseFloat(x.vol), 0);
+      const totalCement = savedItems.reduce((s, x) => s + parseInt(x.cement), 0);
+      const totalSand = savedItems.reduce((s, x) => s + parseFloat(x.sand), 0).toFixed(2);
+      const totalStone = savedItems.reduce((s, x) => s + parseFloat(x.stone), 0).toFixed(2);
+
+      document.getElementById('drawer-total-vol').textContent = totalVol.toFixed(2) + ' m³';
+      document.getElementById('drawer-total-mats').textContent = `${totalCement} bao xi | ${totalSand} m³ cát | ${totalStone} m³ đá`;
+
+      document.getElementById('drawer-items').classList.remove('hidden');
+    }
+
+    function closeProjectDrawer() {
+      document.getElementById('drawer-items').classList.add('hidden');
+    }
+
+    function deleteSavedItem(id) {
+      savedItems = savedItems.filter(x => x.id !== id);
+      localStorage.setItem('BETONG_PRO_SAVED_ITEMS', JSON.stringify(savedItems));
+      updateSavedCount();
+      openProjectDrawer();
+    }
+
+    function clearAllSaved() {
+      if (confirm('Xóa toàn bộ các hạng mục đã lưu?')) {
+        savedItems = [];
+        localStorage.removeItem('BETONG_PRO_SAVED_ITEMS');
+        updateSavedCount();
+        openProjectDrawer();
+      }
+    }
+
+    function exportSummaryText() {
+      if (savedItems.length === 0) {
+        showToast('Chưa có hạng mục nào để sao chép!');
+        return;
+      }
+      let txt = "=== BẢNG TỔNG HỢP VẬT TƯ BÊ TÔNG (app.zeebee.vn) ===\n\n";
+      savedItems.forEach((x, i) => {
+        txt += `${i+1}. ${x.name} - Mác: ${x.grade}\n   + Thể tích: ${x.vol} m3\n   + Xi măng: ${x.cement} bao | Cát: ${x.sand} m3 | Đá: ${x.stone} m3\n\n`;
+      });
+      const totalVol = savedItems.reduce((s, x) => s + parseFloat(x.vol), 0).toFixed(2);
+      const totalCement = savedItems.reduce((s, x) => s + parseInt(x.cement), 0);
+      const totalSand = savedItems.reduce((s, x) => s + parseFloat(x.sand), 0).toFixed(2);
+      const totalStone = savedItems.reduce((s, x) => s + parseFloat(x.stone), 0).toFixed(2);
+      txt += `>>> TỔNG CỘNG: ${totalVol} m3 bê tông\n>>> CẦN MUA: ${totalCement} bao xi măng, ${totalSand} m3 cát, ${totalStone} m3 đá 1x2.`;
+
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('Đã sao chép bảng kê chi tiết vào bộ nhớ tạm!');
+      });
+    }
+
+    function printReport() {
+      window.print();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

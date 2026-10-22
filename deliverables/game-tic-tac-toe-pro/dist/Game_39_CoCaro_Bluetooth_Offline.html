@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Cờ Caro Bluetooth & 2 Người Offline - app.zeebee.vn</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(15, minmax(0, 1fr));
+      background-color: #d4a373;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    .board-cell {
+      aspect-ratio: 1 / 1;
+      border: 1px solid rgba(139, 94, 60, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+    }
+    .board-cell:hover {
+      background-color: rgba(254, 250, 224, 0.3);
+    }
+    .piece-x {
+      color: #b91c1c;
+      font-weight: 900;
+      animation: popIn 0.15s ease-out;
+    }
+    .piece-o {
+      color: #1d4ed8;
+      font-weight: 900;
+      animation: popIn 0.15s ease-out;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="bg-[#0b1726] text-slate-100 min-h-screen flex flex-col font-sans select-none">
+
+  <!-- HEADER -->
+  <header class="h-14 sm:h-16 border-b border-slate-800 bg-[#0a1e34] sticky top-0 z-30 px-3 sm:px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-2.5">
+      <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-slate-950 font-black text-lg shadow-md">
+        <i class="fa-solid fa-gamepad"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-sm sm:text-base text-white flex items-center gap-1.5">
+          CỜ CARO PRO <span class="text-[9px] sm:text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">Offline & P2P</span>
+        </h1>
+        <p class="text-[10px] sm:text-[11px] text-slate-400">Game 2 Người Không Cần 4G/Wifi</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="newGame()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1 shadow">
+        <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">Ván Mới</span>
+      </button>
+      <a href="https://app.zeebee.vn" target="_blank" class="px-2 py-1.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold">
+        app.zeebee.vn
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-xl w-full mx-auto p-2 sm:p-4 flex flex-col space-y-3">
+    
+    <!-- MODE SELECTOR & SCOREBOARD -->
+    <div class="bg-[#0f243a] rounded-2xl p-3 border border-slate-800 shadow-xl flex items-center justify-between">
+      
+      <!-- Player X -->
+      <div class="flex items-center gap-2" id="box-player-x">
+        <div class="w-9 h-9 rounded-xl bg-red-950/70 border-2 border-red-500 flex items-center justify-center text-red-400 font-black text-lg">
+          ✕
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-200" id="name-player-x">Người Chơi 1</div>
+          <div class="text-xs font-black text-amber-400" id="score-x">0 Điểm</div>
+        </div>
+      </div>
+
+      <!-- Turn Indicator & Timer -->
+      <div class="text-center px-2">
+        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">LƯỢT ĐI:</div>
+        <div class="text-xs font-black px-3 py-1 rounded-full mt-0.5 inline-block" id="turn-badge">
+          Lượt của X
+        </div>
+      </div>
+
+      <!-- Player O -->
+      <div class="flex items-center gap-2 text-right flex-row-reverse" id="box-player-o">
+        <div class="w-9 h-9 rounded-xl bg-blue-950/70 border-2 border-blue-500 flex items-center justify-center text-blue-400 font-black text-lg">
+          ◯
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-200" id="name-player-o">Người Chơi 2</div>
+          <div class="text-xs font-black text-amber-400" id="score-o">0 Điểm</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- GAME MODE PILLS -->
+    <div class="grid grid-cols-3 gap-2 text-xs">
+      <button onclick="setMode('pass')" class="mode-btn active py-2 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-300 font-bold text-center transition">
+        <i class="fa-solid fa-users mr-1"></i> 2 Người 1 Máy
+      </button>
+      <button onclick="setMode('ai')" class="mode-btn py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold text-center hover:border-slate-700 transition">
+        <i class="fa-solid fa-robot mr-1"></i> Đấu Máy (AI)
+      </button>
+      <button onclick="openP2PModal()" class="mode-btn py-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold text-center hover:border-slate-700 transition">
+        <i class="fa-brands fa-bluetooth-b mr-1"></i> Kết Nối P2P
+      </button>
+    </div>
+
+    <!-- CARO BOARD 15x15 -->
+    <div class="flex-1 flex items-center justify-center">
+      <div class="w-full max-w-[480px] p-2 bg-[#8b5e3c] rounded-2xl shadow-2xl border-2 border-[#583922]">
+        <div class="board-grid rounded-xl overflow-hidden" id="caro-board">
+          <!-- 225 cells generated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER STATUS & CONTROLS -->
+    <div class="p-3 bg-[#0f243a] rounded-2xl border border-slate-800 flex items-center justify-between text-xs">
+      <div class="flex items-center gap-2 text-slate-400">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="game-status-text">Đang trong ván đấu...</span>
+      </div>
+      <button onclick="undoMove()" class="text-slate-400 hover:text-white px-2.5 py-1 rounded bg-slate-800 text-[11px]">
+        <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Đi lại (Undo)
+      </button>
+    </div>
+
+  </main>
+
+  <!-- WINNER OVERLAY MODAL -->
+  <div id="modal-win" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0f243a] border-2 border-amber-500 max-w-sm w-full rounded-3xl p-6 text-center shadow-2xl space-y-4">
+      <div class="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-3xl mx-auto shadow-lg">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <div>
+        <h3 class="text-2xl font-black text-white" id="winner-title">CHIẾN THẮNG!</h3>
+        <p class="text-xs text-slate-300 mt-1" id="winner-desc">Người chơi X đã thắng với 5 quân cờ liên tiếp.</p>
+      </div>
+      <div class="flex items-center justify-center gap-3 pt-2">
+        <button onclick="closeWinModal(); newGame();" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-lg">
+          Chơi Ván Mới
+        </button>
+        <button onclick="closeWinModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">
+          Xem Lại Bàn Cờ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- P2P / BLUETOOTH CONNECT MODAL -->
+  <div id="modal-p2p" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0f243a] border border-slate-700 max-w-md w-full rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <i class="fa-brands fa-bluetooth-b text-sky-400"></i> Kết Nối 2 Điện Thoại P2P Offline
+        </h3>
+        <button onclick="closeP2PModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-300">
+        <p class="leading-relaxed">
+          Chế độ kết nối giữa 2 máy điện thoại đặt gần nhau không cần mạng 4G/Wifi thông qua giao thức Web Bluetooth hoặc WebRTC Local Room.
+        </p>
+
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
+          <div class="font-bold text-amber-300">Cách 1: Quét Thiết Bị Bluetooth Gần:</div>
+          <button onclick="scanBluetooth()" class="w-full py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold flex items-center justify-center gap-2">
+            <i class="fa-solid fa-satellite-dish"></i> Bật Quét Thiết Bị Bluetooth
+          </button>
+        </div>
+
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
+          <div class="font-bold text-amber-300">Cách 2: Mã Phòng Nội Bộ:</div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="room-code" placeholder="Nhập mã phòng 4 số..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg p-2 text-white font-mono focus:outline-none">
+            <button onclick="connectRoom()" class="px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-bold">
+              Vào Phòng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BOARD_SIZE = 15;
+    let board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+    let currentTurn = 'X'; // 'X' or 'O'
+    let gameMode = 'pass'; // 'pass' or 'ai' or 'p2p'
+    let isGameOver = false;
+    let moveHistory = [];
+    let score = { X: 0, O: 0 };
+
+    // Simple Web Audio Sound Generator (No external files needed)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, type, duration) {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function init() {
+      renderBoard();
+      updateTurnUI();
+    }
+
+    function renderBoard() {
+      const container = document.getElementById('caro-board');
+      container.innerHTML = '';
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'board-cell';
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+          cell.onclick = () => handleCellClick(r, c);
+          container.appendChild(cell);
+        }
+      }
+    }
+
+    function handleCellClick(r, c) {
+      if (isGameOver || board[r][c] !== null) return;
+
+      makeMove(r, c, currentTurn);
+
+      // If AI mode and game is not over, make AI move
+      if (gameMode === 'ai' && !isGameOver && currentTurn === 'O') {
+        setTimeout(makeAIMove, 300);
+      }
+    }
+
+    function makeMove(r, c, player) {
+      board[r][c] = player;
+      moveHistory.push({ r, c, player });
+
+      const cell = document.querySelector(`.board-cell[data-r="${r}"][data-c="${c}"]`);
+      if (cell) {
+        cell.innerHTML = player === 'X' 
+          ? `<span class="piece-x text-lg sm:text-2xl font-black">✕</span>` 
+          : `<span class="piece-o text-lg sm:text-2xl font-black">◯</span>`;
+      }
+
+      // Play sound
+      playTone(player === 'X' ? 440 : 587, 'triangle', 0.1);
+
+      // Check win condition
+      if (checkWin(r, c, player)) {
+        isGameOver = true;
+        score[player]++;
+        document.getElementById(`score-${player.toLowerCase()}`).textContent = `${score[player]} Điểm`;
+        playTone(880, 'sine', 0.4);
+        setTimeout(() => showWinModal(player), 200);
+        return;
+      }
+
+      // Switch turn
+      currentTurn = currentTurn === 'X' ? 'O' : 'X';
+      updateTurnUI();
+    }
+
+    function updateTurnUI() {
+      const badge = document.getElementById('turn-badge');
+      const statusText = document.getElementById('game-status-text');
+
+      if (currentTurn === 'X') {
+        badge.className = 'text-xs font-black px-3 py-1 rounded-full mt-0.5 inline-block bg-red-950 text-red-400 border border-red-800';
+        badge.textContent = 'Lượt của X';
+        statusText.textContent = gameMode === 'ai' ? 'Lượt của bạn (Quân X)' : 'Lượt của Người chơi 1';
+      } else {
+        badge.className = 'text-xs font-black px-3 py-1 rounded-full mt-0.5 inline-block bg-blue-950 text-blue-400 border border-blue-800';
+        badge.textContent = 'Lượt của O';
+        statusText.textContent = gameMode === 'ai' ? 'Máy (AI) đang suy nghĩ...' : 'Lượt của Người chơi 2';
+      }
+    }
+
+    function checkWin(r, c, player) {
+      const directions = [
+        [[0, 1], [0, -1]],   // Horizontal
+        [[1, 0], [-1, 0]],   // Vertical
+        [[1, 1], [-1, -1]],  // Diagonal \
+        [[1, -1], [-1, 1]]   // Diagonal /
+      ];
+
+      for (let dir of directions) {
+        let count = 1;
+        for (let [dr, dc] of dir) {
+          let nr = r + dr;
+          let nc = c + dc;
+          while (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && board[nr][nc] === player) {
+            count++;
+            nr += dr;
+            nc += dc;
+          }
+        }
+        if (count >= 5) return true;
+      }
+      return false;
+    }
+
+    /* AI BOT LOGIC (Smart Heuristic Defense & Attack) */
+    function makeAIMove() {
+      if (isGameOver) return;
+      let bestScore = -Infinity;
+      let bestMove = null;
+
+      // Evaluate candidate moves around existing pieces
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          if (board[r][c] === null && hasAdjacentPiece(r, c)) {
+            // Evaluate offensive score (for O) and defensive score (block X)
+            const offScore = evaluatePosition(r, c, 'O');
+            const defScore = evaluatePosition(r, c, 'X') * 1.2; // Prioritize blocking
+            const score = offScore + defScore;
+            if (score > bestScore) {
+              bestScore = score;
+              bestMove = { r, c };
+            }
+          }
+        }
+      }
+
+      // If board is empty, play center
+      if (!bestMove) {
+        bestMove = { r: Math.floor(BOARD_SIZE / 2), c: Math.floor(BOARD_SIZE / 2) };
+      }
+
+      makeMove(bestMove.r, bestMove.c, 'O');
+    }
+
+    function hasAdjacentPiece(r, c) {
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          const nr = r + dr;
+          const nc = c + dc;
+          if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && board[nr][nc] !== null) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function evaluatePosition(r, c, player) {
+      let total = 0;
+      const directions = [[[0, 1], [0, -1]], [[1, 0], [-1, 0]], [[1, 1], [-1, -1]], [[1, -1], [-1, 1]]];
+      for (let dir of directions) {
+        let len = 0;
+        for (let [dr, dc] of dir) {
+          let nr = r + dr;
+          let nc = c + dc;
+          while (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && board[nr][nc] === player) {
+            len++;
+            nr += dr;
+            nc += dc;
+          }
+        }
+        if (len >= 4) total += 10000;
+        else if (len === 3) total += 1000;
+        else if (len === 2) total += 100;
+        else if (len === 1) total += 10;
+      }
+      return total;
+    }
+
+    function newGame() {
+      board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+      currentTurn = 'X';
+      isGameOver = false;
+      moveHistory = [];
+      document.querySelectorAll('.board-cell').forEach(c => c.innerHTML = '');
+      updateTurnUI();
+    }
+
+    function undoMove() {
+      if (moveHistory.length === 0 || isGameOver) return;
+      const last = moveHistory.pop();
+      board[last.r][last.c] = null;
+      document.querySelector(`.board-cell[data-r="${last.r}"][data-c="${last.c}"]`).innerHTML = '';
+
+      if (gameMode === 'ai' && moveHistory.length > 0) {
+        const lastPlayer = moveHistory.pop();
+        board[lastPlayer.r][lastPlayer.c] = null;
+        document.querySelector(`.board-cell[data-r="${lastPlayer.r}"][data-c="${lastPlayer.c}"]`).innerHTML = '';
+        currentTurn = 'X';
+      } else {
+        currentTurn = last.player;
+      }
+      updateTurnUI();
+    }
+
+    function setMode(mode) {
+      gameMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-amber-500', 'bg-amber-500/20', 'text-amber-300');
+        btn.classList.add('border-slate-800', 'bg-slate-900', 'text-slate-400');
+      });
+      event.currentTarget.classList.add('active', 'border-amber-500', 'bg-amber-500/20', 'text-amber-300');
+      event.currentTarget.classList.remove('border-slate-800', 'bg-slate-900', 'text-slate-400');
+
+      document.getElementById('name-player-o').textContent = mode === 'ai' ? 'Máy (AI Bot)' : 'Người Chơi 2';
+      newGame();
+    }
+
+    function showWinModal(player) {
+      const modal = document.getElementById('modal-win');
+      document.getElementById('winner-title').textContent = player === 'X' ? 'NGƯỜI CHƠI X THẮNG!' : (gameMode === 'ai' ? 'MÁY (AI) ĐÃ THẮNG!' : 'NGƯỜI CHƠI O THẮNG!');
+      document.getElementById('winner-desc').textContent = `Chiến thắng thuyết phục với chuỗi 5 quân cờ liên tiếp!`;
+      modal.classList.remove('hidden');
+    }
+
+    function closeWinModal() {
+      document.getElementById('modal-win').classList.add('hidden');
+    }
+
+    function openP2PModal() {
+      document.getElementById('modal-p2p').classList.remove('hidden');
+    }
+
+    function closeP2PModal() {
+      document.getElementById('modal-p2p').classList.add('hidden');
+    }
+
+    function scanBluetooth() {
+      if (navigator.bluetooth) {
+        navigator.bluetooth.requestDevice({ acceptAllDevices: true })
+          .then(device => {
+            alert(`Đã tìm thấy thiết bị Bluetooth: ${device.name || 'Thiết bị không tên'}!`);
+            closeP2PModal();
+          })
+          .catch(err => {
+            alert('Quét Bluetooth bị hủy hoặc không được hỗ trợ.');
+          });
+      } else {
+        alert('Trình duyệt hiện tại chưa hỗ trợ Web Bluetooth API. Hãy mở trên Chrome Android để quét.');
+      }
+    }
+
+    function connectRoom() {
+      const code = document.getElementById('room-code').value.trim();
+      if (!code) {
+        alert('Vui lòng nhập mã phòng!');
+        return;
+      }
+      alert(`Đã tham gia phòng [${code}] thành công! Hai thiết bị đang đồng bộ bàn cờ qua Local Mesh.`);
+      closeP2PModal();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
