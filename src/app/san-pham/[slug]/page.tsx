@@ -30,7 +30,7 @@ export async function generateMetadata({
   const product = getProduct((await params).slug);
   return product
     ? {
-        title: `${product.name} ? D?ng th? 7 ng?y & Mua Key Tr?n ??i | app.zeebee.vn`,
+        title: `${product.name} — Dùng thử 7 ngày & Mua Key Trọn Đời | app.zeebee.vn`,
         description: product.tagline,
       }
     : {};
@@ -63,7 +63,7 @@ export default async function ProductPage({
           className="inline-flex items-center gap-1.5 text-sm mb-6 hover:text-[var(--zb-gold)] transition-colors"
           style={{ color: "var(--zb-muted)" }}
         >
-          <ArrowLeft size={16} /> Quay l?i danh m?c s?n ph?m
+          <ArrowLeft size={16} /> Quay lại danh mục sản phẩm
         </Link>
 
         <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
@@ -87,11 +87,11 @@ export default async function ProductPage({
 
                 {soon ? (
                   <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
-                    <Sparkles size={13} /> S?p ra m?t ? ?u ??i 50%
+                    <Sparkles size={13} /> Sắp ra mắt · Ưu đãi 50%
                   </span>
-                ) : (
+) : (
                   <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    <Check size={13} /> D?ng Th? 7 Ng?y Mi?n Ph?
+                    <Check size={13} /> Dùng Thử 7 Ngày Miễn Phí
                   </span>
                 )}
               </div>
@@ -106,7 +106,7 @@ export default async function ProductPage({
               {product.mockupIdea && (
                 <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.08)] flex items-start gap-2 text-xs text-[var(--zb-muted)] italic">
                   <span className="font-semibold not-italic text-[var(--zb-gold)] shrink-0">
-                    Mockup thi?t k?:
+                    Mockup thiết kế:
                   </span>
                   <span>{product.mockupIdea}</span>
                 </div>
@@ -116,7 +116,7 @@ export default async function ProductPage({
             {/* Detailed Description */}
             <div className="zb-card p-6 space-y-4">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Zap size={18} className="text-[var(--zb-gold)]" /> M? t? chi ti?t t?nh n?ng
+                <Zap size={18} className="text-[var(--zb-gold)]" /> Mô tả chi tiết tính năng
               </h2>
               <p className="text-sm leading-relaxed text-[var(--zb-off-white)]">
                 {product.description}
@@ -124,7 +124,7 @@ export default async function ProductPage({
 
               <div className="pt-2">
                 <h3 className="text-sm font-semibold mb-3 text-[var(--zb-gold)]">
-                  T?nh n?ng c?t l?i n?i b?t:
+                  Tính năng cốt lõi nổi bật:
                 </h3>
                 <ul className="space-y-2.5">
                   {product.features.map((f) => (
@@ -142,17 +142,17 @@ export default async function ProductPage({
               <div className="zb-card p-4 text-center space-y-1">
                 <Zap size={22} className="mx-auto text-[var(--zb-gold)]" />
                 <h4 className="text-xs font-bold">100% Offline-First</h4>
-                <p className="text-[11px] text-[var(--zb-muted)]">Ch?y ??c l?p, kh?ng c?n m?ng</p>
+                <p className="text-[11px] text-[var(--zb-muted)]">Chạy độc lập, không cần mạng</p>
               </div>
               <div className="zb-card p-4 text-center space-y-1">
                 <ShieldCheck size={22} className="mx-auto text-emerald-400" />
-                <h4 className="text-xs font-bold">B?o M?t C?c B?</h4>
-                <p className="text-[11px] text-[var(--zb-muted)]">D? li?u l?u 100% tr?n m?y b?n</p>
+                <h4 className="text-xs font-bold">Bảo Mật Cục Bộ</h4>
+                <p className="text-[11px] text-[var(--zb-muted)]">Dữ liệu lưu 100% trên máy bạn</p>
               </div>
               <div className="zb-card p-4 text-center space-y-1">
                 <Key size={22} className="mx-auto text-[var(--zb-orange)]" />
-                <h4 className="text-xs font-bold">Mua Key Tr?n ??i</h4>
-                <p className="text-[11px] text-[var(--zb-muted)]">Kh?ng bao gi? thu ph? duy tr?</p>
+                <h4 className="text-xs font-bold">Mua Key Trọn Đời</h4>
+                <p className="text-[11px] text-[var(--zb-muted)]">Không bao giờ thu phí duy trì</p>
               </div>
             </div>
           </div>

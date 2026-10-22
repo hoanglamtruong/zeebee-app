@@ -8,7 +8,7 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import OrderStatusClient from "./OrderStatusClient";
 
 export const metadata: Metadata = {
-  title: "Th?ng Tin ??n H?ng & K?ch Ho?t Key | app.zeebee.vn",
+  title: "Thông Tin Đơn Hàng & Kích Hoạt Key | app.zeebee.vn",
   robots: { index: false },
 };
 
@@ -24,7 +24,7 @@ export default async function OrderDetailPage({
   if (!order) notFound();
 
   const product = order.productSlug ? getProduct(order.productSlug) : null;
-  const productName = product?.name || order.details.productName || "?ng d?ng Zeebee";
+  const productName = product?.name || order.details.productName || "Ứng dụng Zeebee";
   const amount = order.amount || product?.price || 0;
   const syntax = getTransferSyntax(order.code);
   const qrUrl = getVietQrUrl(amount, order.code);

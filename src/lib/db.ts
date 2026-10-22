@@ -77,7 +77,7 @@ export function getDb(): DatabaseSync {
   return _db;
 }
 
-// Proxy ?? c?c l?i g?i db.prepare / db.exec ho?t ??ng b?nh th??ng nh?ng kh?ng m? file SQLite khi Next.js build
+// Proxy để các lời gọi db.prepare / db.exec hoạt động bình thường nhưng không mở file SQLite khi Next.js build
 const db = new Proxy({} as DatabaseSync, {
   get(_target, prop) {
     const realDb = getDb();

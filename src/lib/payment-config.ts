@@ -12,7 +12,7 @@ export const PRIMARY_BANK: BankAccount = {
   id: "techcombank",
   name: "Techcombank",
   shortName: "TCB",
-  bankName: "Ng?n h?ng TMCP K? Th??ng Vi?t Nam (Techcombank)",
+  bankName: "Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)",
   accountNumber: "8525060689",
   accountName: "TRUONG HOANG LAM",
   bankCode: "TCB",

@@ -1,32 +1,32 @@
 ========================================================================
-H??NG D?N D?NG TH? 7 NG?Y & M? KH?A B?N QUY?N TR?N ??I ? APP.ZEEBEE.VN
+HƯỚNG DẪN DÙNG THỬ 7 NGÀY & MỞ KHÓA BẢN QUYỀN TRỌN ĐỜI — APP.ZEEBEE.VN
 ========================================================================
 
-C?m ?n b?n ?? t?i v? s?n ph?m ph?n m?m ??c l?p t? n?n t?ng app.zeebee.vn!
+Cảm ơn bạn đã tải về sản phẩm phần mềm độc lập từ nền tảng app.zeebee.vn!
 
-1. TRI?T L? S?N PH?M:
-- 100% Ho?t ??ng C?c b? (Offline-First): Ch?y tr?c ti?p tr?n thi?t b?, kh?ng c?n Internet.
-- D?ng th? 7 ng?y mi?n ph?: Tr?n v?n t?nh n?ng tr??c khi quy?t ??nh mua b?n quy?n.
-- Mua 1 L?n ? D?ng V?nh Vi?n: Kh?ng bao gi? thu ph? duy tr? h?ng th?ng.
-- D? li?u thu?c v? b?n: To?n b? d? li?u, b?o c?o, h?a ??n ???c l?u ngay tr?n m?y.
+1. TRIẾT LÝ SẢN PHẨM:
+- 100% Hoạt động Cục bộ (Offline-First): Chạy trực tiếp trên thiết bị, không cần Internet.
+- Dùng thử 7 ngày miễn phí: Trọn vẹn tính năng trước khi quyết định mua bản quyền.
+- Mua 1 Lần — Dùng Vĩnh Viễn: Không bao giờ thu phí duy trì hàng tháng.
+- Dữ liệu thuộc về bạn: Toàn bộ dữ liệu, báo cáo, hóa đơn được lưu ngay trên máy.
 
-2. C?CH M? V? S? D?NG TR?N M?Y T?NH & ?I?N THO?I:
-- M?y t?nh: Gi?i n?n file .zip, click ??p file .html ?? m? ngay tr?n tr?nh duy?t (Chrome, Edge, C?c C?c...).
-- ?i?n tho?i Android / iPhone: M? file .html b?ng Chrome ho?c Safari. B?m menu ch?n "Th?m v?o m?n h?nh ch?nh" (Add to Home screen) ?? d?ng nh? m?t ?ng d?ng ??c l?p ngay c? khi b?t ch? ?? m?y bay.
+2. CÁCH MỞ VÀ SỬ DỤNG TRÊN MÁY TÍNH & ĐIỆN THOẠI:
+- Máy tính: Giải nén file .zip, click đúp file .html để mở ngay trên trình duyệt (Chrome, Edge, Cốc Cốc...).
+- Điện thoại Android / iPhone: Mở file .html bằng Chrome hoặc Safari. Bấm menu chọn "Thêm vào màn hình chính" (Add to Home screen) để dùng như một ứng dụng độc lập ngay cả khi bật chế độ máy bay.
 
-3. QUY TR?NH D?NG TH? 7 NG?Y & M? KH?A B?N QUY?N:
-- ?ng d?ng t? ??ng k?ch ho?t 7 ng?y d?ng th? mi?n ph?.
-- G?c d??i m?n h?nh hi?n th? huy hi?u: "D?ng th?: C?n X ng?y" k?m M? Thi?t B? c?a b?n (VD: ZB-BT-84920).
-- Khi h?t h?n 7 ng?y, m? ?ng d?ng v? sao ch?p M? Thi?t B?.
-- Truy c?p https://app.zeebee.vn/mua-key, nh?p M? Thi?t B? v? thanh to?n chuy?n kho?n ??ng c? ph?p VietQR hi?n th? tr?n web.
-- Ngay sau khi chuy?n kho?n, License Key m? kh?a v?nh vi?n s? hi?n th? tr?c ti?p tr?n trang ??n h?ng.
-- D?n License Key v?o ? k?ch ho?t c?a ?ng d?ng ?? m? kh?a tr?n ??i kh?ng c?n m?ng!
+3. QUY TRÌNH DÙNG THỬ 7 NGÀY & MỞ KHÓA BẢN QUYỀN:
+- Ứng dụng tự động kích hoạt 7 ngày dùng thử miễn phí.
+- Góc dưới màn hình hiển thị huy hiệu: "Dùng thử: Còn X ngày" kèm Mã Thiết Bị của bạn (VD: ZB-BT-84920).
+- Khi hết hạn 7 ngày, mở ứng dụng và sao chép Mã Thiết Bị.
+- Truy cập https://app.zeebee.vn/mua-key, nhập Mã Thiết Bị và thanh toán chuyển khoản đúng cú pháp VietQR hiển thị trên web.
+- Ngay sau khi chuyển khoản, License Key mở khóa vĩnh viễn sẽ hiển thị trực tiếp trên trang đơn hàng.
+- Dán License Key vào ô kích hoạt của ứng dụng để mở khóa trọn đời không cần mạng!
 
-4. H? TR? K? THU?T:
+4. HỖ TRỢ KỸ THUẬT:
 - Website: https://app.zeebee.vn
-- Mua key b?n quy?n: https://app.zeebee.vn/mua-key
-- Zalo h? tr? k? thu?t: 0976.094.453
-- B?o gi? l?m ph?n m?m may ?o ri?ng: https://app.zeebee.vn/build
+- Mua key bản quyền: https://app.zeebee.vn/mua-key
+- Zalo hỗ trợ kỹ thuật: 0976.094.453
+- Báo giá làm phần mềm may đo riêng: https://app.zeebee.vn/build
 
-B?n quy?n ? 2026 thu?c v? ZEEBEE TECHNOLOGY COMPANY LIMITED.
+Bản quyền © 2026 thuộc về ZEEBEE TECHNOLOGY COMPANY LIMITED.
 ========================================================================

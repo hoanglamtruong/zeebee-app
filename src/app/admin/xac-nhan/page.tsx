@@ -7,7 +7,7 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import AdminApprovalClient from "./AdminApprovalClient";
 
 export const metadata: Metadata = {
-  title: "X?c Nh?n & Xu?t Key B?n Quy?n | Admin app.zeebee.vn",
+  title: "Xác Nhận & Xuất Key Bản Quyền | Admin app.zeebee.vn",
   robots: { index: false },
 };
 
@@ -32,24 +32,24 @@ export default async function AdminApprovalPage({
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
         {!isSecretValid ? (
           <div className="zb-card p-8 text-center space-y-4 border-red-500/40">
-            <h1 className="text-xl font-bold text-red-400">T? Ch?i Truy C?p</h1>
+            <h1 className="text-xl font-bold text-red-400">Từ Chối Truy Cập</h1>
             <p className="text-sm text-[var(--zb-muted)]">
-              M? b?o m?t Admin kh?ng ch?nh x?c ho?c ?? h?t h?n. Vui l?ng b?m v?o li?n k?t trong tin nh?n Telegram c?a Bot.
+              Mã bảo mật Admin không chính xác hoặc đã hết hạn. Vui lòng bấm vào liên kết trong tin nhắn Telegram của Bot.
             </p>
           </div>
         ) : !order ? (
           <div className="zb-card p-8 text-center space-y-4">
-            <h1 className="text-xl font-bold text-amber-400">Kh?ng T?m Th?y ??n H?ng</h1>
+            <h1 className="text-xl font-bold text-amber-400">Không Tìm Thấy Đơn Hàng</h1>
             <p className="text-sm text-[var(--zb-muted)]">
-              M? ??n h?ng <code>{ma}</code> kh?ng t?n t?i trong h? th?ng.
+              Mã đơn hàng <code>{ma}</code> không tồn tại trong hệ thống.
             </p>
           </div>
         ) : (
           <AdminApprovalClient
             order={order}
-            productName={product?.name || order.details.productName || "?ng d?ng Zeebee"}
+            productName={product?.name || order.details.productName || "Ứng dụng Zeebee"}
             proposedKey={proposedKey}
-            secret={secret}
+            secret={secret || ""}
           />
         )}
       </div>

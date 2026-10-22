@@ -38,11 +38,11 @@ export default function AdminApprovalClient({
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "L?i ph? duy?t.");
+      if (!res.ok) throw new Error(data.error || "Lỗi phê duyệt.");
       setStatus("paid");
       if (data.licenseKey) setKey(data.licenseKey);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "L?i ph? duy?t ??n.");
+      setError(err instanceof Error ? err.message : "Lỗi phê duyệt đơn.");
     } finally {
       setSubmitting(false);
     }
@@ -59,44 +59,44 @@ export default function AdminApprovalClient({
       <div className="flex items-center justify-between border-b border-white/10 pb-4">
         <div>
           <span className="text-[11px] font-bold text-[var(--zb-gold)] uppercase tracking-wider">
-            Admin Zeebee ? Qu?n L? Xu?t Key
+            Admin Zeebee · Quản Lý Xuất Key
           </span>
           <h1 className="text-xl sm:text-2xl font-black text-white mt-1">
-            Duy?t ??n &amp; Xu?t Key B?n Quy?n
+            Duyệt Đơn &amp; Xuất Key Bản Quyền
           </h1>
         </div>
         {isPaid ? (
           <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5">
-            <CheckCircle2 size={14} /> ?? XU?T KEY
+            <CheckCircle2 size={14} /> ĐÃ XUẤT KEY
           </span>
         ) : (
           <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 flex items-center gap-1.5">
-            <ShieldCheck size={14} /> CH? X?C NH?N TI?N
+            <ShieldCheck size={14} /> CHỜ XÁC NHẬN TIỀN
           </span>
         )}
       </div>
 
-      {/* Th?ng tin ??n */}
+      {/* Thông tin đơn */}
       <div className="grid sm:grid-cols-2 gap-4 text-xs">
         <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
-          <span className="text-[var(--zb-muted)]">M? ??n h?ng:</span>
+          <span className="text-[var(--zb-muted)]">Mã đơn hàng:</span>
           <p className="font-mono font-bold text-sm text-white">{order.code}</p>
         </div>
         <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
-          <span className="text-[var(--zb-muted)]">S? ti?n thanh to?n:</span>
+          <span className="text-[var(--zb-muted)]">Số tiền thanh toán:</span>
           <p className="font-bold text-sm text-[var(--zb-gold)]">
             {formatVnd(order.amount || 0)}
           </p>
         </div>
         <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
-          <span className="text-[var(--zb-muted)]">Kh?ch h?ng:</span>
+          <span className="text-[var(--zb-muted)]">Khách hàng:</span>
           <p className="font-bold text-white text-sm">{order.name}</p>
           <p className="text-[var(--zb-muted)] font-mono">{order.phone}</p>
         </div>
         <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
-          <span className="text-[var(--zb-muted)]">?ng d?ng:</span>
+          <span className="text-[var(--zb-muted)]">Ứng dụng:</span>
           <p className="font-bold text-white text-sm">{productName}</p>
-          <p className="text-[var(--zb-muted)]">M? thi?t b?: <strong className="text-amber-300 font-mono">{order.deviceCode || "Ch?a c?"}</strong></p>
+          <p className="text-[var(--zb-muted)]">Mã thiết bị: <strong className="text-amber-300 font-mono">{order.deviceCode || "Chưa có"}</strong></p>
         </div>
       </div>
 
@@ -104,14 +104,14 @@ export default function AdminApprovalClient({
       <div className="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-[var(--zb-gold-light)] flex items-center gap-1.5">
-            <Key size={14} /> License Key C?p Cho Kh?ch:
+            <Key size={14} /> License Key Cấp Cho Khách:
           </span>
           <button
             onClick={() => handleCopy(key)}
             className="text-[11px] px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white flex items-center gap-1 font-mono transition"
           >
             {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
-            <span>{copied ? "?? ch?p" : "Sao ch?p"}</span>
+            <span>{copied ? "Đã chép" : "Sao chép"}</span>
           </button>
         </div>
         <input
@@ -121,7 +121,7 @@ export default function AdminApprovalClient({
           placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX"
         />
         <p className="text-[11px] text-[var(--zb-muted)] text-center">
-          * Key n?y ???c m? h?a t? ??ng kh?p v?i M? thi?t b? <strong>{order.deviceCode}</strong> ?? kh?ch k?ch ho?t 100% offline.
+          * Key này được mã hóa tự động khớp với Mã thiết bị <strong>{order.deviceCode}</strong> để khách kích hoạt 100% offline.
         </p>
       </div>
 
@@ -140,20 +140,20 @@ export default function AdminApprovalClient({
             className="w-full py-3.5 px-5 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
           >
             {submitting ? (
-              "?ang k?ch ho?t..."
+              "Đang kích hoạt..."
             ) : (
               <>
-                <CheckCircle2 size={18} /> X?c Nh?n ?? Nh?n Ti?n &amp; Xu?t Key Ngay
+                <CheckCircle2 size={18} /> Xác Nhận Đã Nhận Tiền &amp; Xuất Key Ngay
               </>
             )}
           </button>
         ) : (
           <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-1">
             <p className="text-sm font-bold text-emerald-400 flex items-center justify-center gap-1.5">
-              <CheckCircle2 size={16} /> ??n h?ng ?? xu?t key th?nh c?ng!
+              <CheckCircle2 size={16} /> Đơn hàng đã xuất key thành công!
             </p>
             <p className="text-xs text-[var(--zb-muted)]">
-              Kh?ch h?ng hi?n ?? th?y m? Key tr?n m?n h?nh ??n h?ng v? c? th? k?ch ho?t app ngay l?p t?c.
+              Khách hàng hiện đã thấy mã Key trên màn hình đơn hàng và có thể kích hoạt app ngay lập tức.
             </p>
           </div>
         )}
@@ -165,7 +165,7 @@ export default function AdminApprovalClient({
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-white flex items-center gap-1.5 transition"
           >
-            <MessageCircle size={14} className="text-cyan-400" /> Nh?n Zalo Kh?ch H?ng
+            <MessageCircle size={14} className="text-cyan-400" /> Nhắn Zalo Khách Hàng
           </a>
           <a
             href={`/don-hang/${order.code}`}
@@ -173,7 +173,7 @@ export default function AdminApprovalClient({
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-[var(--zb-gold)] flex items-center gap-1.5 transition"
           >
-            Xem M?n H?nh Kh?ch H?ng
+            Xem Màn Hình Khách Hàng
           </a>
         </div>
       </div>

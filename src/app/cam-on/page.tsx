@@ -5,7 +5,7 @@ import { CheckCircle2, MessageCircle, Sparkles, ArrowRight } from "lucide-react"
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 
 export const metadata: Metadata = {
-  title: "?? nh?n y?u c?u th?nh c?ng | app.zeebee.vn",
+  title: "Đã nhận yêu cầu thành công | app.zeebee.vn",
   robots: { index: false },
 };
 
@@ -18,7 +18,7 @@ export default async function ThankYouPage({
 }) {
   const { ma, loai } = await searchParams;
 
-  // N?u l? ??n mua key, chuy?n th?ng sang m?n h?nh ??n h?ng & thanh to?n VietQR
+  // Nếu là đơn mua key, chuyển thẳng sang màn hình đơn hàng & thanh toán VietQR
   if (ma && (ma.startsWith("ZB-KEY") || loai === "key")) {
     redirect(`/don-hang/${encodeURIComponent(ma)}`);
   }
@@ -36,19 +36,19 @@ export default async function ThankYouPage({
   const isBuild = loai === "build";
 
   const what = isBuild
-    ? "y?u c?u may ?o ph?n m?m"
+    ? "yêu cầu may đo phần mềm"
     : isPreorder
-      ? "??ng k? nh?n m? ?u ??i 50%"
-      : "??n ??t mua s?n ph?m t?i v?";
+      ? "đăng ký nhận mã ưu đãi 50%"
+      : "đơn đặt mua sản phẩm tải về";
 
   const next = isPreorder
-    ? "B?n l? m?t trong nh?ng kh?ch h?ng ??u ti?n ??ng k?! ??i ng? Zeebee s? t? ??ng nh?n Zalo g?i file c?i ??t/c?ng c? k?m M? K?ch Ho?t gi?m gi? 50% ngay khi s?n ph?m xu?t x??ng."
+    ? "Bạn là một trong những khách hàng đầu tiên đăng ký! Đội ngũ Zeebee sẽ tự động nhắn Zalo gửi file cài đặt/công cụ kèm Mã Kích Hoạt giảm giá 50% ngay khi sản phẩm xuất xưởng."
     : inWorkingHours
-      ? `Chuy?n vi?n h? tr? s? li?n h? qua Zalo/g?i ?i?n cho b?n trong kho?ng 15 ph?t ?? ${
-          isBuild ? "trao ??i chi ti?t b?i to?n v? g?i b?o gi?" : "x?c nh?n v? g?i file b?n giao b?n quy?n"
+      ? `Chuyên viên hỗ trợ sẽ liên hệ qua Zalo/gọi điện cho bạn trong khoảng 15 phút để ${
+          isBuild ? "trao đổi chi tiết bài toán và gửi báo giá" : "xác nhận và gửi file bàn giao bản quyền"
         }.`
-      : `Hi?n ?? ngo?i khung gi? l?m vi?c (8h?21h). Chuy?n vi?n s? li?n h? qua Zalo cho b?n v?o ??u gi? s?ng mai ?? ${
-          isBuild ? "trao ??i chi ti?t v? g?i b?o gi?" : "x?c nh?n v? g?i file b?n giao b?n quy?n"
+      : `Hiện đã ngoài khung giờ làm việc (8h–21h). Chuyên viên sẽ liên hệ qua Zalo cho bạn vào đầu giờ sáng mai để ${
+          isBuild ? "trao đổi chi tiết và gửi báo giá" : "xác nhận và gửi file bàn giao bản quyền"
         }.`;
 
   return (
@@ -62,11 +62,11 @@ export default async function ThankYouPage({
 
           <div className="space-y-1.5">
             <h1 className="text-2xl sm:text-3xl font-black text-white">
-              C?m ?n B?n! Zeebee ?? Nh?n {what}.
+              Cảm Ơn Bạn! Zeebee Đã Nhận {what}.
             </h1>
             {ma && (
               <p className="text-xs text-[var(--zb-muted)]">
-                M? theo d?i y?u c?u c?a b?n:{" "}
+                Mã theo dõi yêu cầu của bạn:{" "}
                 <strong className="font-mono text-white bg-white/10 px-2 py-0.5 rounded">
                   {ma}
                 </strong>
@@ -80,8 +80,8 @@ export default async function ThankYouPage({
 
           <p className="text-xs text-[var(--zb-muted)]">
             {isPreorder
-              ? "B?n ho?n to?n ch?a ph?i tr? b?t k? kho?n ph? n?o."
-              : "B?n ch?a c?n thanh to?n ngay ? xem v? duy?t th? r?i m?i quy?t ??nh chuy?n kho?n."}
+              ? "Bạn hoàn toàn chưa phải trả bất kỳ khoản phí nào."
+              : "Bạn chưa cần thanh toán ngay — xem và duyệt thử rồi mới quyết định chuyển khoản."}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
@@ -91,14 +91,14 @@ export default async function ThankYouPage({
               rel="noopener noreferrer"
               className="zb-btn-primary px-5 py-3 text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-md"
             >
-              <MessageCircle size={16} /> C?n H? Tr? G?p? Nh?n Zalo
+              <MessageCircle size={16} /> Cần Hỗ Trợ Gấp? Nhắn Zalo
             </a>
             <Link
               href="/#san-pham"
               className="px-5 py-3 rounded-lg border text-xs sm:text-sm text-[var(--zb-off-white)] hover:bg-white/5 transition-all inline-flex items-center justify-center gap-1.5"
               style={{ borderColor: "rgba(255,255,255,0.2)" }}
             >
-              <span>Xem Th?m S?n Ph?m Kh?c</span>
+              <span>Xem Thêm Sản Phẩm Khác</span>
               <ArrowRight size={14} />
             </Link>
           </div>

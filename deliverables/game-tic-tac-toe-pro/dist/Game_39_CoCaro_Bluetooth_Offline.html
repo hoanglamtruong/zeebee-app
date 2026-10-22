@@ -484,7 +484,7 @@
 <script>
 (function() {
   const APP_CONFIG = {
-    appName: "C? Caro Bluetooth Pro",
+    appName: "Cờ Caro Bluetooth Pro",
     appPrefix: "CC",
     appSlug: "game-tic-tac-toe-pro",
     trialDays: 7,
@@ -603,20 +603,20 @@
     const trial = getTrialInfo();
     const activated = isActivated();
 
-    // 1. Badge g?c ph?i d??i
+    // 1. Badge góc phải dưới
     const badge = document.createElement("div");
     badge.id = "zb-license-badge";
-    badge.className = "fixed bottom-4 right-4 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold shadow-2xl backdrop-blur-md cursor-pointer transition transform hover:scale-105";
+    badge.className = "fixed bottom-4 right-4 z-40 flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold shadow-2xl backdrop-blur-md cursor-pointer transition transform hover:scale-105";
 
     if (activated) {
       badge.className += " bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
-      badge.innerHTML = '<i class="fa-solid fa-shield-check text-emerald-400"></i> B?n Quy?n Tr?n ??i';
+      badge.innerHTML = '<i class="fa-solid fa-shield-check text-emerald-400"></i> Bản Quyền Trọn Đời';
     } else if (!trial.isExpired) {
       badge.className += " bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse";
-      badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> D?ng th?: C?n ${trial.daysLeft} ng?y`;
+      badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> Dùng thử: Còn ${trial.daysLeft} ngày`;
     } else {
       badge.className += " bg-red-500/20 text-red-300 border border-red-500/40";
-      badge.innerHTML = '<i class="fa-solid fa-lock text-red-400"></i> H?t h?n 7 ng?y';
+      badge.innerHTML = '<i class="fa-solid fa-lock text-red-400"></i> Hết hạn 7 ngày';
     }
 
     badge.onclick = () => openLicenseModal();
@@ -637,42 +637,42 @@
             <i class="fa-solid fa-key"></i>
           </div>
           <div>
-            <h3 class="font-bold text-base text-white" id="zb-modal-title">B?n Quy?n ?ng D?ng</h3>
-            <p class="text-xs text-slate-400" id="zb-modal-subtitle">${APP_CONFIG.appName} ? 100% Offline</p>
+            <h3 class="font-bold text-base text-white" id="zb-modal-title">Bản Quyền Ứng Dụng</h3>
+            <p class="text-xs text-slate-400" id="zb-modal-subtitle">${APP_CONFIG.appName} · 100% Offline</p>
           </div>
         </div>
 
         <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-700/60 space-y-1.5">
-          <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">M? Thi?t B? C?a B?n (Device Code):</span>
+          <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Mã Thiết Bị Của Bạn (Device Code):</span>
           <div class="flex items-center justify-between gap-2">
             <span class="font-mono text-base font-black text-amber-300 tracking-wider">${deviceCode}</span>
             <button id="zb-copy-code-btn" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs font-bold text-amber-400 border border-slate-700 flex items-center gap-1 transition">
-              <i class="fa-solid fa-copy"></i> Sao ch?p
+              <i class="fa-solid fa-copy"></i> Sao chép
             </button>
           </div>
         </div>
 
         <div id="zb-modal-status-text" class="text-xs text-slate-300 leading-relaxed">
           ${activated
-            ? '<div class="p-3 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold"><i class="fa-solid fa-circle-check"></i> ?ng d?ng ?? k?ch ho?t b?n quy?n tr?n ??i cho thi?t b? n?y.</div>'
+            ? '<div class="p-3 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold"><i class="fa-solid fa-circle-check"></i> Ứng dụng đã kích hoạt bản quyền trọn đời cho thiết bị này.</div>'
             : trial.isExpired
-              ? '<div class="p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> ?? h?t 7 ng?y d?ng th? mi?n ph?. Vui l?ng nh?p Key m? kh?a ?? ti?p t?c s? d?ng.</div>'
-              : `B?n ?ang trong th?i gian d?ng th? 7 ng?y mi?n ph? (C?n <strong>${trial.daysLeft} ng?y</strong>). M?i t?nh n?ng ho?t ??ng 100% b?nh th??ng.`
+              ? '<div class="p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Đã hết 7 ngày dùng thử miễn phí. Vui lòng nhập Key mở khóa để tiếp tục sử dụng.</div>'
+              : `Bạn đang trong thời gian dùng thử 7 ngày miễn phí (Còn <strong>${trial.daysLeft} ngày</strong>). Mọi tính năng hoạt động 100% bình thường.`
           }
         </div>
 
         ${!activated ? `
           <a href="https://app.zeebee.vn/mua-key?app=${APP_CONFIG.appSlug}&code=${deviceCode}" target="_blank" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center gap-2 shadow-lg transition">
-            <i class="fa-solid fa-cart-shopping"></i> Mua Key M? Kh?a T?i app.zeebee.vn
+            <i class="fa-solid fa-cart-shopping"></i> Mua Key Mở Khóa Tại app.zeebee.vn
           </a>
         ` : ''}
 
         ${!activated ? `
           <div class="space-y-2 pt-2 border-t border-slate-800">
-            <label class="block text-xs font-semibold text-slate-300">Nh?p License Key k?ch ho?t:</label>
+            <label class="block text-xs font-semibold text-slate-300">Nhập License Key kích hoạt:</label>
             <input id="zb-key-input" placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX" class="w-full font-mono text-center uppercase tracking-wider py-2 px-3 rounded-lg bg-slate-900 border border-slate-700 text-amber-300 text-sm focus:border-amber-400 focus:outline-none" />
             <button id="zb-activate-btn" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 hover:brightness-110 text-slate-950 flex items-center justify-center gap-1.5 shadow transition">
-              <i class="fa-solid fa-unlock"></i> K?ch Ho?t B?n Quy?n V?nh Vi?n
+              <i class="fa-solid fa-unlock"></i> Kích Hoạt Bản Quyền Vĩnh Viễn
             </button>
             <p id="zb-key-msg" class="text-[11px] text-center hidden"></p>
           </div>
@@ -693,7 +693,7 @@
         if (!trial.isExpired || activated) {
           modal.classList.add("hidden");
         } else {
-          alert("?ng d?ng ?? h?t 7 ng?y d?ng th?. Vui l?ng nh?p Key m? kh?a ?? ti?p t?c!");
+          alert("Ứng dụng đã hết 7 ngày dùng thử. Vui lòng nhập Key mở khóa để tiếp tục!");
         }
       };
     }
@@ -701,9 +701,9 @@
     if (copyBtn) {
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(deviceCode);
-        copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> ?? ch?p';
+        copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> Đã chép';
         setTimeout(() => {
-          copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Sao ch?p';
+          copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Sao chép';
         }, 2000);
       };
     }
@@ -715,13 +715,13 @@
         if (inputVal === expected) {
           localStorage.setItem("zb_license_key_" + APP_CONFIG.appPrefix, inputVal);
           keyMsg.className = "text-[11px] text-center text-emerald-400 font-bold block";
-          keyMsg.textContent = "?? K?ch ho?t b?n quy?n v?nh vi?n th?nh c?ng!";
+          keyMsg.textContent = "🎉 Kích hoạt bản quyền vĩnh viễn thành công!";
           setTimeout(() => {
             window.location.reload();
           }, 1500);
         } else {
           keyMsg.className = "text-[11px] text-center text-red-400 font-bold block";
-          keyMsg.textContent = "M? Key kh?ng h?p l? cho thi?t b? n?y. Vui l?ng ki?m tra l?i!";
+          keyMsg.textContent = "Mã Key không hợp lệ cho thiết bị này. Vui lòng kiểm tra lại!";
         }
       };
     }

@@ -6,8 +6,8 @@ import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import MuaKeyForm from "./MuaKeyForm";
 
 export const metadata: Metadata = {
-  title: "Mua Key M? Kh?a B?n Quy?n V?nh Vi?n | app.zeebee.vn",
-  description: "Nh?p m? thi?t b? hi?n th? tr?n ?ng d?ng ?? t?i v? ?? mua key m? kh?a tr?n ??i 100% offline.",
+  title: "Mua Key Mở Khóa Bản Quyền Vĩnh Viễn | app.zeebee.vn",
+  description: "Nhập mã thiết bị hiển thị trên ứng dụng đã tải về để mua key mở khóa trọn đời 100% offline.",
 };
 
 export const dynamic = "force-dynamic";
@@ -28,7 +28,7 @@ export default async function MuaKeyPage({
           href="/#san-pham"
           className="inline-flex items-center gap-1.5 text-xs text-[var(--zb-muted)] hover:text-[var(--zb-gold)] transition-colors mb-6"
         >
-          <ArrowLeft size={14} /> Quay l?i danh m?c ?ng d?ng
+          <ArrowLeft size={14} /> Quay lại danh mục ứng dụng
         </Link>
 
         {/* Hero Banner */}
@@ -37,10 +37,10 @@ export default async function MuaKeyPage({
             <Key size={26} />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white">
-            Mua Key M? Kh?a B?n Quy?n V?nh Vi?n
+            Mua Key Mở Khóa Bản Quyền Vĩnh Viễn
           </h1>
           <p className="text-sm leading-relaxed text-[var(--zb-off-white)] opacity-90 max-w-2xl">
-            B?n ?? t?i v? tr?i nghi?m th? ?ng d?ng trong 7 ng?y? Nh?p <strong>M? Thi?t B? (Device Code)</strong> hi?n th? tr?n m?n h?nh ?ng d?ng c?a b?n ?? nh?n <strong>Key k?ch ho?t tr?n ??i 100% offline</strong>.
+            Bạn đã tải và trải nghiệm thử ứng dụng trong 7 ngày? Nhập <strong>Mã Thiết Bị (Device Code)</strong> hiển thị trên màn hình ứng dụng của bạn để nhận <strong>Key kích hoạt trọn đời 100% offline</strong>.
           </p>
         </div>
 
@@ -58,21 +58,21 @@ export default async function MuaKeyPage({
           <div className="space-y-4">
             <div className="zb-card p-5 space-y-3 text-xs bg-white/5 border border-white/10">
               <h3 className="font-bold text-white flex items-center gap-1.5 text-sm text-[var(--zb-gold)]">
-                <HelpCircle size={16} /> L?y M? Thi?t B? ? ??u?
+                <HelpCircle size={16} /> Lấy Mã Thiết Bị ở đâu?
               </h3>
               <ol className="list-decimal list-inside space-y-2 text-[var(--zb-off-white)]">
-                <li>M? file ?ng d?ng (HTML/App) b?n ?? t?i v? tr?n m?y ho?c ?i?n tho?i.</li>
-                <li>Xem huy hi?u g?c tr?n m?n h?nh: b?m v?o <strong>"D?ng th?: C?n X ng?y"</strong> ho?c b?ng th?ng b?o khi h?t h?n 7 ng?y.</li>
-                <li>Sao ch?p d?y m? c? d?ng: <strong className="text-amber-300 font-mono">ZB-BT-XXXXX</strong> v? d?n v?o ? b?n tr?i.</li>
+                <li>Mở file ứng dụng (HTML/App) bạn đã tải về trên máy hoặc điện thoại.</li>
+                <li>Xem huy hiệu góc trên màn hình: bấm vào <strong>&ldquo;Dùng thử: Còn X ngày&rdquo;</strong> hoặc bảng thông báo khi hết hạn 7 ngày.</li>
+                <li>Sao chép dãy mã có dạng: <strong className="text-amber-300 font-mono">ZB-BT-XXXXX</strong> và dán vào ô bên trái.</li>
               </ol>
             </div>
 
             <div className="zb-card p-4 space-y-2 text-xs bg-emerald-950/20 border border-emerald-500/30">
               <div className="font-bold text-emerald-400 flex items-center gap-1.5">
-                <ShieldCheck size={16} /> Cam K?t B?n Quy?n
+                <ShieldCheck size={16} /> Cam Kết Bản Quyền
               </div>
               <p className="text-[var(--zb-muted)] text-[11px] leading-relaxed">
-                Key g?n li?n v?nh vi?n v?i thi?t b? c?a b?n. Ch?y ??c l?p 100% kh?ng c?n k?t n?i m?ng hay internet.
+                Key gắn liền vĩnh viễn với thiết bị của bạn. Chạy độc lập 100% không cần kết nối mạng hay internet.
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
-// V?NG 2: B?o ??n/y?u c?u m?i v? Telegram cho Admin / Seller
-// (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID trong .env, KH?NG commit).
-// L?u ?: inline button ch? nh?n url http/https/tg ? kh?ng d?ng tel: (Telegram t? ch?i c? tin).
+// Báo đơn/yêu cầu mới về Telegram cho Admin / Seller
+// (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID trong .env, KHÔNG commit).
+// Lưu ý: inline button chỉ nhận url http/https/tg — không dùng tel: (Telegram từ chối cả tin).
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -20,7 +20,7 @@ export async function sendTelegram(
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) {
-    console.warn("Ch?a c?u h?nh TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID ? b? qua g?i Telegram.");
+    console.warn("Chưa cấu hình TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID — bỏ qua gửi Telegram.");
     return false;
   }
 
@@ -29,10 +29,10 @@ export async function sendTelegram(
     .map(([k, v]) => `<b>${escapeHtml(k)}:</b> ${escapeHtml(v)}`)
     .join("\n");
 
-  const text = `${title}\n????????????????????\n${body}\n????????????????????\n?? <i>Seller / Admin h?y ki?m tra ??i so?t v? x? l? nhanh cho kh?ch!</i>`;
+  const text = `${title}\n━━━━━━━━━━━━━━━━━━━━\n${body}\n━━━━━━━━━━━━━━━━━━━━\n⚡️ <i>Seller / Admin hãy kiểm tra đối soát và xử lý nhanh cho khách!</i>`;
 
   const keyboard: Array<Array<{ text: string; url: string }>> = [
-    [{ text: "?? Chat Zalo V?i Kh?ch", url: `https://zalo.me/${phone.replace(/[\s.-]/g, "")}` }]
+    [{ text: "💬 Chat Zalo Với Khách", url: `https://zalo.me/${phone.replace(/[\s.-]/g, "")}` }]
   ];
 
   if (customButtons && customButtons.length > 0) {
@@ -53,10 +53,10 @@ export async function sendTelegram(
       }),
     });
     const data = await res.json();
-    if (!data.ok) console.error("Telegram t? ch?i tin nh?n:", data.description);
+    if (!data.ok) console.error("Telegram từ chối tin nhắn:", data.description);
     return data.ok === true;
   } catch (err) {
-    console.error("L?i g?i Telegram:", err);
+    console.error("Lỗi gửi Telegram:", err);
     return false;
   }
 }

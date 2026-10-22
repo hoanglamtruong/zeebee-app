@@ -14,12 +14,12 @@ export async function POST(req: NextRequest) {
 
     const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "zeebee_admin_2026_approve";
     if (secret !== ADMIN_SECRET) {
-      return NextResponse.json({ error: "M? b? m?t Admin kh?ng ??ng." }, { status: 403 });
+      return NextResponse.json({ error: "Mã bí mật Admin không đúng." }, { status: 403 });
     }
 
     const order = getOrderByCode(code);
     if (!order) {
-      return NextResponse.json({ error: "Kh?ng t?m th?y ??n h?ng." }, { status: 404 });
+      return NextResponse.json({ error: "Không tìm thấy đơn hàng." }, { status: 404 });
     }
 
     const deviceCode = order.deviceCode || "";
@@ -27,24 +27,24 @@ export async function POST(req: NextRequest) {
 
     markOrderPaid(order.code, licenseKey);
 
-    // G?i th?ng b?o x?c nh?n v? Telegram
+    // Gửi thông báo xác nhận về Telegram
     await sendTelegram(
-      "? <b>?? DUY?T ??N & XU?T KEY TH?NH C?NG ? APP.ZEEBEE.VN</b>",
+      "✅ <b>ĐÃ DUYỆT ĐƠN & XUẤT KEY THÀNH CÔNG — APP.ZEEBEE.VN</b>",
       [
-        ["M? ??n h?ng", order.code],
-        ["Kh?ch h?ng", order.name],
-        ["S?T / Zalo", order.phone],
-        ["S?n ph?m", order.details.productName || "?ng d?ng Zeebee"],
-        ["M? thi?t b?", deviceCode || "(Kh?ng c?)"],
-        ["Key ?? k?ch ho?t", licenseKey],
-        ["Tr?ng th?i", "?? thanh to?n (Kh?ch ?? nh?n ???c key tr?n web)"],
+        ["Mã đơn hàng", order.code],
+        ["Khách hàng", order.name],
+        ["SĐT / Zalo", order.phone],
+        ["Sản phẩm", order.details.productName || "Ứng dụng Zeebee"],
+        ["Mã thiết bị", deviceCode || "(Không có)"],
+        ["Key đã kích hoạt", licenseKey],
+        ["Trạng thái", "Đã thanh toán (Khách đã nhận được key trên web)"],
       ],
       order.phone
     );
 
     return NextResponse.json({ ok: true, licenseKey, code: order.code });
   } catch (err) {
-    console.error("L?i xu?t key:", err);
-    return NextResponse.json({ error: "L?i x? l? m?y ch?." }, { status: 500 });
+    console.error("Lỗi xuất key:", err);
+    return NextResponse.json({ error: "Lỗi xử lý máy chủ." }, { status: 500 });
   }
 }

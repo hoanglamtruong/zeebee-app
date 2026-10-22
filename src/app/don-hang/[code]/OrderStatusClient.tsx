@@ -53,7 +53,7 @@ export default function OrderStatusClient({
 
   const isPaid = status === "paid" || status === "completed";
 
-  // Polling check tr?ng th?i ??n h?ng khi ?ang ch? thanh to?n
+  // Polling check trạng thái đơn hàng khi đang chờ thanh toán
   useEffect(() => {
     if (isPaid) return;
 
@@ -107,18 +107,18 @@ export default function OrderStatusClient({
             </div>
             <div>
               <span className="text-[11px] font-bold tracking-wider uppercase text-[var(--zb-gold)]">
-                {isPaid ? "?? X?c Nh?n Thanh To?n" : "?ang Ch? Chuy?n Kho?n"}
+                {isPaid ? "Đã Xác Nhận Thanh Toán" : "Đang Chờ Chuyển Khoản"}
               </span>
               <h1 className="text-xl sm:text-2xl font-black text-white mt-0.5">
                 {isPaid
-                  ? "Thanh To?n Th?nh C?ng ? Nh?n Key B?n Quy?n"
-                  : "Chuy?n Kho?n Theo C? Ph?p ?? Nh?n Key"}
+                  ? "Thanh Toán Thành Công — Nhận Key Bản Quyền"
+                  : "Chuyển Khoản Theo Cú Pháp Để Nhận Key"}
               </h1>
             </div>
           </div>
 
           <div className="text-right">
-            <span className="text-[11px] text-[var(--zb-muted)] block">M? ??n h?ng</span>
+            <span className="text-[11px] text-[var(--zb-muted)] block">Mã đơn hàng</span>
             <span className="font-mono text-sm sm:text-base font-bold text-white bg-white/10 px-2.5 py-1 rounded">
               {orderCode}
             </span>
@@ -131,13 +131,13 @@ export default function OrderStatusClient({
         <div className="zb-card p-6 sm:p-8 bg-gradient-to-br from-[#133d2a] to-[#0a2318] border-2 border-emerald-400/60 shadow-2xl space-y-5 animate-in fade-in duration-500">
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
-              <ShieldCheck size={16} /> B?N QUY?N V?NH VI?N 100% OFFLINE
+              <ShieldCheck size={16} /> BẢN QUYỀN VĨNH VIỄN 100% OFFLINE
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Key M? Kh?a C?a B?n ?? S?n S?ng!
+              Key Mở Khóa Của Bạn Đã Sẵn Sàng!
             </h2>
             <p className="text-xs sm:text-sm text-[var(--zb-off-white)] opacity-90 max-w-lg mx-auto">
-              S? d?ng m? d??i ??y ?? k?ch ho?t ?ng d?ng tr?n thi?t b?{" "}
+              Sử dụng mã dưới đây để kích hoạt ứng dụng trên thiết bị{" "}
               <strong className="text-amber-300 font-mono">{deviceCode}</strong>.
             </p>
           </div>
@@ -145,10 +145,10 @@ export default function OrderStatusClient({
           {/* Key Display Big Box */}
           <div className="max-w-xl mx-auto p-4 sm:p-5 rounded-2xl bg-black/60 border border-amber-400/50 shadow-inner text-center space-y-3">
             <span className="text-xs font-semibold text-[var(--zb-gold-light)] block tracking-wider uppercase">
-              M? k?ch ho?t b?n quy?n (License Key)
+              Mã kích hoạt bản quyền (License Key)
             </span>
             <div className="font-mono text-xl sm:text-3xl font-black text-[var(--zb-gold)] tracking-widest select-all py-1 break-all">
-              {licenseKey || "?ang l?y key..."}
+              {licenseKey || "Đang lấy key..."}
             </div>
             <div>
               <button
@@ -158,11 +158,11 @@ export default function OrderStatusClient({
               >
                 {copiedField === "license" ? (
                   <>
-                    <Check size={16} className="text-black" /> ?? sao ch?p Key!
+                    <Check size={16} className="text-black" /> Đã sao chép Key!
                   </>
                 ) : (
                   <>
-                    <Copy size={16} /> Sao ch?p License Key
+                    <Copy size={16} /> Sao chép License Key
                   </>
                 )}
               </button>
@@ -172,12 +172,12 @@ export default function OrderStatusClient({
           {/* 3 Steps Guide */}
           <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm space-y-2.5 max-w-xl mx-auto">
             <h3 className="font-bold text-[var(--zb-gold)] text-xs uppercase tracking-wide">
-              3 B??c M? Kh?a ??n Gi?n:
+              3 Bước Mở Khóa Đơn Giản:
             </h3>
             <ol className="list-decimal list-inside space-y-2 text-[var(--zb-off-white)] text-xs">
-              <li>M? ?ng d?ng <strong>{productName}</strong> tr?n m?y ho?c ?i?n tho?i c?a b?n.</li>
-              <li>T?i khung th?ng b?o b?n quy?n / d?ng th?, d?n m? <strong>License Key</strong> v?a nh?n v?o ? k?ch ho?t.</li>
-              <li>B?m n?t <strong>"K?ch ho?t b?n quy?n tr?n ??i"</strong> ? M?i t?nh n?ng s? ???c m? v?nh vi?n kh?ng c?n m?ng!</li>
+              <li>Mở ứng dụng <strong>{productName}</strong> trên máy hoặc điện thoại của bạn.</li>
+              <li>Tại khung thông báo bản quyền / dùng thử, dán mã <strong>License Key</strong> vừa nhận vào ô kích hoạt.</li>
+              <li>Bấm nút <strong>&ldquo;Kích hoạt bản quyền trọn đời&rdquo;</strong> — Mọi tính năng sẽ được mở vĩnh viễn không cần mạng!</li>
             </ol>
           </div>
         </div>
@@ -186,26 +186,26 @@ export default function OrderStatusClient({
       {/* PENDING PAYMENT: INSTRUCTIONS & VIETQR */}
       {!isPaid && (
         <div className="grid md:grid-cols-[1fr_340px] gap-6 items-start">
-          {/* C? ph?p chuy?n kho?n & Ng?n h?ng */}
+          {/* Cú pháp chuyển khoản & Ngân hàng */}
           <div className="zb-card p-6 space-y-5 border border-white/10">
             <div className="space-y-1">
               <span className="text-xs font-bold text-[var(--zb-gold)] uppercase tracking-wider">
-                B??c 1 ? Thanh To?n
+                Bước 1 · Thanh Toán
               </span>
               <h2 className="text-lg sm:text-xl font-black text-white">
-                Th?ng Tin Chuy?n Kho?n Ch?nh X?c
+                Thông Tin Chuyển Khoản Chính Xác
               </h2>
               <p className="text-xs text-[var(--zb-muted)]">
-                Vui l?ng nh?p ??ng n?i dung chuy?n kho?n ?? admin ??i so?t v? xu?t key cho b?n nhanh nh?t.
+                Vui lòng nhập đúng nội dung chuyển khoản để admin đối soát và xuất key cho bạn nhanh nhất.
               </p>
             </div>
 
             {/* Syntax Box - HIGHLIGHT */}
             <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/15 to-orange-500/15 border-2 border-amber-400/50 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-amber-300">
-                <span>N?I DUNG CHUY?N KHO?N B?T BU?C (C? PH?P):</span>
+                <span>NỘI DUNG CHUYỂN KHOẢN BẮT BUỘC (CÚ PHÁP):</span>
                 <span className="text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded border border-red-500/30">
-                  R?T QUAN TR?NG
+                  RẤT QUAN TRỌNG
                 </span>
               </div>
               <div className="flex items-center justify-between gap-3 bg-black/40 p-3 rounded-xl border border-white/10">
@@ -218,23 +218,23 @@ export default function OrderStatusClient({
                   className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition shrink-0"
                 >
                   {copiedField === "syntax" ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-                  <span>{copiedField === "syntax" ? "?? ch?p" : "Sao ch?p"}</span>
+                  <span>{copiedField === "syntax" ? "Đã chép" : "Sao chép"}</span>
                 </button>
               </div>
               <p className="text-[11px] text-[var(--zb-muted)]">
-                * C? ph?p: <strong>{transferSyntax}</strong> (Ch? chuy?n ??ng n?i dung n?y, kh?ng th?m ch? kh?c).
+                * Cú pháp: <strong>{transferSyntax}</strong> (Chỉ chuyển đúng nội dung này, không thêm chữ khác).
               </p>
             </div>
 
             {/* Bank Info Table */}
             <div className="space-y-2.5 text-xs bg-white/5 p-4 rounded-xl border border-white/10">
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-[var(--zb-muted)]">Ng?n h?ng:</span>
+                <span className="text-[var(--zb-muted)]">Ngân hàng:</span>
                 <strong className="text-white font-bold">{bank.bankName}</strong>
               </div>
 
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-[var(--zb-muted)]">S? t?i kho?n:</span>
+                <span className="text-[var(--zb-muted)]">Số tài khoản:</span>
                 <div className="flex items-center gap-2">
                   <strong className="font-mono text-sm font-black text-white bg-white/10 px-2 py-0.5 rounded">
                     {bank.accountNumber}
@@ -243,7 +243,7 @@ export default function OrderStatusClient({
                     type="button"
                     onClick={() => copyToClipboard(bank.accountNumber, "stk")}
                     className="p-1 rounded hover:bg-white/10 text-[var(--zb-gold)]"
-                    title="Sao ch?p s? t?i kho?n"
+                    title="Sao chép số tài khoản"
                   >
                     {copiedField === "stk" ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                   </button>
@@ -251,12 +251,12 @@ export default function OrderStatusClient({
               </div>
 
               <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-[var(--zb-muted)]">Ch? t?i kho?n:</span>
+                <span className="text-[var(--zb-muted)]">Chủ tài khoản:</span>
                 <strong className="text-white font-bold">{bank.accountName}</strong>
               </div>
 
               <div className="flex items-center justify-between pt-0.5">
-                <span className="text-[var(--zb-muted)]">S? ti?n thanh to?n:</span>
+                <span className="text-[var(--zb-muted)]">Số tiền thanh toán:</span>
                 <div className="flex items-center gap-2">
                   <strong className="text-base font-black text-[var(--zb-gold)]">
                     {formatVnd(amount)}
@@ -265,7 +265,7 @@ export default function OrderStatusClient({
                     type="button"
                     onClick={() => copyToClipboard(amount.toString(), "amount")}
                     className="p-1 rounded hover:bg-white/10 text-[var(--zb-gold)]"
-                    title="Sao ch?p s? ti?n"
+                    title="Sao chép số tiền"
                   >
                     {copiedField === "amount" ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                   </button>
@@ -277,7 +277,7 @@ export default function OrderStatusClient({
             <div className="p-3 rounded-xl bg-blue-950/30 border border-blue-500/30 text-xs text-blue-200 flex items-start gap-2.5">
               <Clock size={16} className="shrink-0 text-cyan-400 mt-0.5" />
               <span>
-                Sau khi chuy?n kho?n, <strong>vui l?ng gi? nguy?n trang n?y</strong>. H? th?ng t? ??ng ki?m tra m?i 4 gi?y v? hi?n th? License Key ngay khi nh?n ???c thanh to?n.
+                Sau khi chuyển khoản, <strong>vui lòng giữ nguyên trang này</strong>. Hệ thống tự động kiểm tra mỗi 4 giây và hiển thị License Key ngay khi nhận được thanh toán.
               </span>
             </div>
           </div>
@@ -285,20 +285,20 @@ export default function OrderStatusClient({
           {/* VietQR Box */}
           <div className="zb-card p-5 space-y-3.5 border border-white/10 text-center bg-[#0a273f]">
             <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[var(--zb-gold)]">
-              <QrCode size={16} /> Qu?t M? VietQR Nhanh
+              <QrCode size={16} /> Quét Mã VietQR Nhanh
             </div>
 
             <div className="p-3 bg-white rounded-2xl shadow-lg inline-block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={qrUrl}
-                alt="M? VietQR thanh to?n"
+                alt="Mã VietQR thanh toán"
                 className="w-56 h-56 mx-auto object-contain rounded-lg"
               />
             </div>
 
             <p className="text-[11px] text-[var(--zb-off-white)]">
-              M? App Ng?n h?ng b?t k? &gt; Qu?t m? ?? t? ??ng ?i?n <strong>s? ti?n</strong> v? <strong>n?i dung chuy?n kho?n</strong> ch?nh x?c.
+              Mở App Ngân hàng bất kỳ &gt; Quét mã để tự động điền <strong>số tiền</strong> và <strong>nội dung chuyển khoản</strong> chính xác.
             </p>
           </div>
         </div>
@@ -308,10 +308,10 @@ export default function OrderStatusClient({
       <div className="zb-card p-5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
         <div className="space-y-1 text-center sm:text-left">
           <p className="text-[var(--zb-muted)]">
-            ?ng d?ng: <strong className="text-white">{productName}</strong> ? M? thi?t b?: <strong className="text-amber-300 font-mono">{deviceCode}</strong>
+            Ứng dụng: <strong className="text-white">{productName}</strong> · Mã thiết bị: <strong className="text-amber-300 font-mono">{deviceCode}</strong>
           </p>
           <p className="text-[var(--zb-muted)]">
-            Ng??i nh?n: <strong className="text-white">{customerName}</strong> ({customerPhone})
+            Người nhận: <strong className="text-white">{customerName}</strong> ({customerPhone})
           </p>
         </div>
 
@@ -322,13 +322,13 @@ export default function OrderStatusClient({
             rel="noopener noreferrer"
             className="zb-btn-primary px-4 py-2 text-xs inline-flex items-center gap-1.5 shadow"
           >
-            <MessageCircle size={14} /> H? Tr? Zalo G?p (24/7)
+            <MessageCircle size={14} /> Hỗ Trợ Zalo Gấp (24/7)
           </a>
           <Link
             href="/#san-pham"
             className="px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 text-white text-xs transition inline-flex items-center gap-1"
           >
-            <span>Kho S?n Ph?m</span>
+            <span>Kho Sản Phẩm</span>
             <ArrowRight size={13} />
           </Link>
         </div>

@@ -254,34 +254,34 @@ export const PRODUCTS: Product[] = [
     mockupIdea: "Mẫu phiếu báo giá PDF sắc nét in logo doanh nghiệp xuất ra từ điện thoại.",
   },
 
-  // ??? 08. Carpentry Angle Tool ???
+  // ─── 08. Carpentry Angle Tool ───
   {
     slug: "thuoc-do-goc-tho-moc",
-    name: "Th??c ?o G?c Th? M?c Pro (Carpentry Angle Tool)",
+    name: "Thước Đo Góc Thợ Mộc Pro (Carpentry Angle Tool)",
     model: "download",
-    kind: "K? Thu?t / Th? M?c",
+    kind: "Kỹ Thuật / Thợ Mộc",
     category: "pro-tools",
-    format: "1 File HTML ? Ch?y 100% Offline",
-    tagline: "?o g?c nghi?ng d?c m?i, g?c c?t m?i, g?c gh?p m?ng g? chu?n x?c b?ng c?m bi?n con quay h?i chuy?n tr?n ?i?n tho?i.",
+    format: "1 File HTML · Chạy 100% Offline",
+    tagline: "Đo góc nghiêng dốc mái, góc cắt mòi, góc ghép mộng gỗ chuẩn xác bằng cảm biến con quay hồi chuyển trên điện thoại.",
     description:
-      "C?ng c? b? t?i thi?t y?u cho anh em th? m?c, thi c?ng n?i th?t, nh?m k?nh v? c? kh?: s? d?ng c?m bi?n con quay h?i chuy?n (gyroscope) c?a ?i?n tho?i ?? ?o g?c d?c m?i, g?c c?t gh?p ph?o ch?, g?c m?ng g? ?m d??ng v?i ?? ch?nh x?c cao. T?nh n?ng kh?a g?c ?o (Hold) gi?p ??c k?t qu? d? d?ng ? c?c g?c khu?t c?ng tr?nh.",
+      "Công cụ bỏ túi thiết yếu cho anh em thợ mộc, thi công nội thất, nhôm kính và cơ khí: sử dụng cảm biến con quay hồi chuyển (gyroscope) của điện thoại để đo góc dốc mái, góc cắt ghép phào chỉ, góc mộng gỗ âm dương với độ chính xác cao. Tính năng khóa góc đo (Hold) giúp đọc kết quả dễ dàng ở các góc khuất công trình.",
     features: [
-      "?o g?c th?i gian th?c b?ng c?m bi?n ?i?n tho?i",
-      "Ch? ?? kh?a g?c ?o (Hold) ?? xem k?t qu? khi ??a m?y v?o khe h?p",
-      "B?ng tra c?u g?c c?t ph?o ch? v? g?c m?ng gh?p g? ti?u chu?n",
-      "Th??c th?y nivo b?t n??c c?n b?ng b? m?t ngang v? ??ng",
-      "Ho?t ??ng 100% offline, kh?ng c?n internet, ti?t ki?m pin t?i ?a",
+      "Đo góc thời gian thực bằng cảm biến điện thoại",
+      "Chế độ khóa góc đo (Hold) để xem kết quả khi đưa máy vào khe hẹp",
+      "Bảng tra cứu góc cắt phào chỉ và góc mộng ghép gỗ tiêu chuẩn",
+      "Thước thủy nivo bọt nước cân bằng bề mặt ngang và đứng",
+      "Hoạt động 100% offline, không cần internet, tiết kiệm pin tối đa",
     ],
     price: 49000,
-    delivery: "G?i ZIP g?m file HTML m? d?ng ngay + T?i li?u h??ng d?n",
+    delivery: "Gói ZIP gồm file HTML mở dùng ngay + Tài liệu hướng dẫn",
     demoUrl: "/products/App_33_ThuocDoGoc_ThoMoc_Pro.html",
     downloadUrl: "/downloads/ThuocDoGoc_ThoMoc_v1.0.zip",
     devicePrefix: "TD",
     status: "available",
-    mockupIdea: "Th??c ?o g?c k? thu?t s? hi?n th? ?? nghi?ng v? b?t n??c c?n b?ng tr?n thanh g? x?.",
+    mockupIdea: "Thước đo góc kỹ thuật số hiển thị độ nghiêng và bọt nước cân bằng trên thanh gỗ xẻ.",
   },
 
-  // ??? 09. Room Paint & Tile Calculator ???
+  // ─── 09. Room Paint & Tile Calculator ───
   {
     slug: "room-paint-tile-calculator",
     name: "Tính Sơn & Gạch Ốp Lát (Room Paint & Tile Calculator)",
