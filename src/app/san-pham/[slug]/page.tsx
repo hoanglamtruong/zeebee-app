@@ -12,11 +12,11 @@ import {
   Smartphone,
   FileSpreadsheet,
   Layers,
-  HelpCircle,
+  Key,
 } from "lucide-react";
-import { PRODUCTS, getProduct, formatVnd, type Product } from "@/lib/catalog";
+import { PRODUCTS, getProduct, formatVnd } from "@/lib/catalog";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
-import OrderForm from "@/components/OrderForm";
+import ProductPurchaseBox from "@/components/ProductPurchaseBox";
 
 export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ slug: p.slug }));
@@ -30,7 +30,7 @@ export async function generateMetadata({
   const product = getProduct((await params).slug);
   return product
     ? {
-        title: `${product.name} — Tải về dùng trọn đời | app.zeebee.vn`,
+        title: `${product.name} ? D?ng th? 7 ng?y & Mua Key Tr?n ??i | app.zeebee.vn`,
         description: product.tagline,
       }
     : {};
@@ -63,7 +63,7 @@ export default async function ProductPage({
           className="inline-flex items-center gap-1.5 text-sm mb-6 hover:text-[var(--zb-gold)] transition-colors"
           style={{ color: "var(--zb-muted)" }}
         >
-          <ArrowLeft size={16} /> Quay lại danh mục sản phẩm
+          <ArrowLeft size={16} /> Quay l?i danh m?c s?n ph?m
         </Link>
 
         <div className="grid md:grid-cols-[1fr_380px] gap-8 items-start">
@@ -87,11 +87,11 @@ export default async function ProductPage({
 
                 {soon ? (
                   <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
-                    <Sparkles size={13} /> Sắp ra mắt · Ưu đãi 50%
+                    <Sparkles size={13} /> S?p ra m?t ? ?u ??i 50%
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    <Check size={13} /> Sẵn sàng tải ngay
+                    <Check size={13} /> D?ng Th? 7 Ng?y Mi?n Ph?
                   </span>
                 )}
               </div>
@@ -106,7 +106,7 @@ export default async function ProductPage({
               {product.mockupIdea && (
                 <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.08)] flex items-start gap-2 text-xs text-[var(--zb-muted)] italic">
                   <span className="font-semibold not-italic text-[var(--zb-gold)] shrink-0">
-                    Mockup thiết kế:
+                    Mockup thi?t k?:
                   </span>
                   <span>{product.mockupIdea}</span>
                 </div>
@@ -116,7 +116,7 @@ export default async function ProductPage({
             {/* Detailed Description */}
             <div className="zb-card p-6 space-y-4">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Zap size={18} className="text-[var(--zb-gold)]" /> Mô tả chi tiết tính năng
+                <Zap size={18} className="text-[var(--zb-gold)]" /> M? t? chi ti?t t?nh n?ng
               </h2>
               <p className="text-sm leading-relaxed text-[var(--zb-off-white)]">
                 {product.description}
@@ -124,7 +124,7 @@ export default async function ProductPage({
 
               <div className="pt-2">
                 <h3 className="text-sm font-semibold mb-3 text-[var(--zb-gold)]">
-                  Tính năng cốt lõi nổi bật:
+                  T?nh n?ng c?t l?i n?i b?t:
                 </h3>
                 <ul className="space-y-2.5">
                   {product.features.map((f) => (
@@ -142,70 +142,24 @@ export default async function ProductPage({
               <div className="zb-card p-4 text-center space-y-1">
                 <Zap size={22} className="mx-auto text-[var(--zb-gold)]" />
                 <h4 className="text-xs font-bold">100% Offline-First</h4>
-                <p className="text-[11px] text-[var(--zb-muted)]">Chạy độc lập, không sợ mất mạng</p>
+                <p className="text-[11px] text-[var(--zb-muted)]">Ch?y ??c l?p, kh?ng c?n m?ng</p>
               </div>
               <div className="zb-card p-4 text-center space-y-1">
                 <ShieldCheck size={22} className="mx-auto text-emerald-400" />
-                <h4 className="text-xs font-bold">Bảo Mật Cục Bộ</h4>
-                <p className="text-[11px] text-[var(--zb-muted)]">Dữ liệu lưu 100% trên máy của bạn</p>
+                <h4 className="text-xs font-bold">B?o M?t C?c B?</h4>
+                <p className="text-[11px] text-[var(--zb-muted)]">D? li?u l?u 100% tr?n m?y b?n</p>
               </div>
               <div className="zb-card p-4 text-center space-y-1">
-                <Download size={22} className="mx-auto text-[var(--zb-orange)]" />
-                <h4 className="text-xs font-bold">Mua 1 Lần Dùng Mãi</h4>
-                <p className="text-[11px] text-[var(--zb-muted)]">Không bao giờ thu phí duy trì</p>
+                <Key size={22} className="mx-auto text-[var(--zb-orange)]" />
+                <h4 className="text-xs font-bold">Mua Key Tr?n ??i</h4>
+                <p className="text-[11px] text-[var(--zb-muted)]">Kh?ng bao gi? thu ph? duy tr?</p>
               </div>
             </div>
           </div>
 
-          {/* Sidebar / Checkout Form */}
+          {/* Sidebar / Trial Download & Key Checkout */}
           <aside className="space-y-4 md:sticky md:top-20">
-            <div className="zb-card p-5 space-y-3 bg-[#0d3452]">
-              <div className="flex items-baseline justify-between">
-                <span className="text-xs font-medium text-[var(--zb-muted)]">
-                  {soon ? "Giá niêm yết khi ra mắt:" : "Giá bán sở hữu trọn đời:"}
-                </span>
-                <span className="text-2xl font-black text-[var(--zb-gold)]">
-                  {formatVnd(product.price)}
-                </span>
-              </div>
-
-              {soon && (
-                <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded bg-amber-400/10 border border-amber-400/30 text-amber-200">
-                  <span>Giá ưu đãi người đăng ký sớm (-50%):</span>
-                  <strong className="text-sm font-bold text-[var(--zb-gold-light)]">
-                    {formatVnd(Math.round(product.price * 0.5))}
-                  </strong>
-                </div>
-              )}
-
-              <div className="text-xs pt-1 space-y-1 text-[var(--zb-muted)]">
-                <p className="flex items-center gap-1.5">
-                  <Download size={14} className="text-[var(--zb-gold)]" />
-                  <span><strong>Hình thức bàn giao:</strong> {product.delivery}</span>
-                </p>
-                <p className="flex items-center gap-1.5">
-                  <ShieldCheck size={14} className="text-emerald-400" />
-                  <span>Bảo hành cập nhật lỗi kỹ thuật trọn đời</span>
-                </p>
-              </div>
-            </div>
-
-            <OrderForm
-              productSlug={product.slug}
-              comingSoon={soon}
-              priceLabel={formatVnd(product.price)}
-            />
-
-            <div className="text-center">
-              <a
-                href="https://zalo.me/0976094453"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-[var(--zb-gold)] hover:underline"
-              >
-                <HelpCircle size={14} /> Cần tư vấn thêm trước khi đặt? Chat Zalo ngay
-              </a>
-            </div>
+            <ProductPurchaseBox product={product} />
           </aside>
         </div>
       </div>

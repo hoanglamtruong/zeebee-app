@@ -641,5 +641,278 @@
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
+
+<!-- ============================================================
+     ZEEBEE 7-DAY TRIAL & OFFLINE LICENSE GUARD (100% OFFLINE)
+     app.zeebee.vn
+     ============================================================ -->
+<script>
+(function() {
+  const APP_CONFIG = {
+    appName: "B? T?ng Pro Offline",
+    appPrefix: "BT",
+    appSlug: "concrete-volume-estimator",
+    trialDays: 7,
+    secretSalt: "ZB_SECRET_2026_OFFLINE_PRO"
+  };
+
+  function sha256(ascii) {
+    function rightRotate(value, amount) {
+      return (value >>> amount) | (value << (32 - amount));
+    }
+    const mathPow = Math.pow;
+    const maxWord = mathPow(2, 32);
+    const lengthProperty = 'length';
+    let i, j;
+    let result = '';
+    const words = [];
+    const asciiBitLength = ascii[lengthProperty] * 8;
+    let hash = sha256.h = sha256.h || [];
+    const k = sha256.k = sha256.k || [];
+    let primeCounter = k[lengthProperty];
+    const isComposite = {};
+    for (let candidate = 2; primeCounter < 64; candidate++) {
+      if (!isComposite[candidate]) {
+        for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+        hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+        k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+      }
+    }
+    ascii += '\x80';
+    while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+    for (i = 0; i < ascii[lengthProperty]; i++) {
+      j = ascii.charCodeAt(i);
+      if (j >> 8) return;
+      words[i >> 2] |= j << ((3 - i) % 4) * 8;
+    }
+    words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+    words[words[lengthProperty]] = (asciiBitLength);
+    for (j = 0; j < words[lengthProperty];) {
+      const w = words.slice(j, j += 16);
+      const oldHash = hash;
+      hash = hash.slice(0, 8);
+      for (i = 0; i < 64; i++) {
+        const i2 = i + j;
+        const w15 = w[i - 15], w2 = w[i - 2];
+        const a = hash[0], e = hash[4];
+        const temp1 = hash[7]
+          + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+          + ((e & hash[5]) ^ ((~e) & hash[6]))
+          + k[i]
+          + (w[i] = (i < 16) ? w[i] : (
+              w[i - 16]
+              + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3))
+              + w[i - 7]
+              + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))
+            ) | 0
+          );
+        const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+          + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+        hash = [(temp1 + temp2) | 0].concat(hash);
+        hash[4] = (hash[4] + temp1) | 0;
+      }
+      for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+    }
+    for (i = 0; i < 8; i++) {
+      for (j = 3; j >= 0; j--) {
+        const b = (hash[i] >> (8 * j)) & 255;
+        result += ((b < 16) ? 0 : '') + b.toString(16);
+      }
+    }
+    return result;
+  }
+
+  function calculateLicenseKey(deviceCode) {
+    const raw = deviceCode.trim().toUpperCase() + ":" + APP_CONFIG.secretSalt;
+    const h = sha256(raw).toUpperCase();
+    return "ZBKEY-" + h.slice(0, 4) + "-" + h.slice(4, 8) + "-" + h.slice(8, 12) + "-" + h.slice(12, 16);
+  }
+
+  function getDeviceCode() {
+    let code = localStorage.getItem("zb_device_code_" + APP_CONFIG.appPrefix);
+    if (!code) {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let rand = "";
+      for (let i = 0; i < 5; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+      code = "ZB-" + APP_CONFIG.appPrefix + "-" + rand;
+      localStorage.setItem("zb_device_code_" + APP_CONFIG.appPrefix, code);
+    }
+    return code;
+  }
+
+  function getTrialInfo() {
+    let start = localStorage.getItem("zb_trial_start_" + APP_CONFIG.appPrefix);
+    if (!start) {
+      start = Date.now().toString();
+      localStorage.setItem("zb_trial_start_" + APP_CONFIG.appPrefix, start);
+    }
+    const daysPassed = (Date.now() - parseInt(start, 10)) / (86400 * 1000);
+    const daysLeft = Math.max(0, Math.ceil(APP_CONFIG.trialDays - daysPassed));
+    return {
+      startTime: parseInt(start, 10),
+      daysPassed,
+      daysLeft,
+      isExpired: daysPassed >= APP_CONFIG.trialDays
+    };
+  }
+
+  function isActivated() {
+    const savedKey = localStorage.getItem("zb_license_key_" + APP_CONFIG.appPrefix);
+    if (!savedKey) return false;
+    const expected = calculateLicenseKey(getDeviceCode());
+    return savedKey.trim().toUpperCase() === expected;
+  }
+
+  function initUI() {
+    const deviceCode = getDeviceCode();
+    const trial = getTrialInfo();
+    const activated = isActivated();
+
+    // 1. Badge g?c ph?i d??i
+    const badge = document.createElement("div");
+    badge.id = "zb-license-badge";
+    badge.className = "fixed bottom-4 right-4 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold shadow-2xl backdrop-blur-md cursor-pointer transition transform hover:scale-105";
+
+    if (activated) {
+      badge.className += " bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+      badge.innerHTML = '<i class="fa-solid fa-shield-check text-emerald-400"></i> B?n Quy?n Tr?n ??i';
+    } else if (!trial.isExpired) {
+      badge.className += " bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse";
+      badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> D?ng th?: C?n ${trial.daysLeft} ng?y`;
+    } else {
+      badge.className += " bg-red-500/20 text-red-300 border border-red-500/40";
+      badge.innerHTML = '<i class="fa-solid fa-lock text-red-400"></i> H?t h?n 7 ng?y';
+    }
+
+    badge.onclick = () => openLicenseModal();
+    document.body.appendChild(badge);
+
+    // 2. Modal Overlay
+    const modal = document.createElement("div");
+    modal.id = "zb-license-modal";
+    modal.className = "fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden";
+    modal.innerHTML = `
+      <div class="bg-[#0b243b] text-slate-100 w-full max-w-md rounded-2xl border border-amber-500/40 p-6 shadow-2xl relative space-y-4 font-sans text-left">
+        <button id="zb-modal-close" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg font-bold border border-amber-500/30">
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-white" id="zb-modal-title">B?n Quy?n ?ng D?ng</h3>
+            <p class="text-xs text-slate-400" id="zb-modal-subtitle">${APP_CONFIG.appName} ? 100% Offline</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-700/60 space-y-1.5">
+          <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">M? Thi?t B? C?a B?n (Device Code):</span>
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-mono text-base font-black text-amber-300 tracking-wider">${deviceCode}</span>
+            <button id="zb-copy-code-btn" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs font-bold text-amber-400 border border-slate-700 flex items-center gap-1 transition">
+              <i class="fa-solid fa-copy"></i> Sao ch?p
+            </button>
+          </div>
+        </div>
+
+        <div id="zb-modal-status-text" class="text-xs text-slate-300 leading-relaxed">
+          ${activated
+            ? '<div class="p-3 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold"><i class="fa-solid fa-circle-check"></i> ?ng d?ng ?? k?ch ho?t b?n quy?n tr?n ??i cho thi?t b? n?y.</div>'
+            : trial.isExpired
+              ? '<div class="p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> ?? h?t 7 ng?y d?ng th? mi?n ph?. Vui l?ng nh?p Key m? kh?a ?? ti?p t?c s? d?ng.</div>'
+              : `B?n ?ang trong th?i gian d?ng th? 7 ng?y mi?n ph? (C?n <strong>${trial.daysLeft} ng?y</strong>). M?i t?nh n?ng ho?t ??ng 100% b?nh th??ng.`
+          }
+        </div>
+
+        ${!activated ? `
+          <a href="https://app.zeebee.vn/mua-key?app=${APP_CONFIG.appSlug}&code=${deviceCode}" target="_blank" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center gap-2 shadow-lg transition">
+            <i class="fa-solid fa-cart-shopping"></i> Mua Key M? Kh?a T?i app.zeebee.vn
+          </a>
+        ` : ''}
+
+        ${!activated ? `
+          <div class="space-y-2 pt-2 border-t border-slate-800">
+            <label class="block text-xs font-semibold text-slate-300">Nh?p License Key k?ch ho?t:</label>
+            <input id="zb-key-input" placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX" class="w-full font-mono text-center uppercase tracking-wider py-2 px-3 rounded-lg bg-slate-900 border border-slate-700 text-amber-300 text-sm focus:border-amber-400 focus:outline-none" />
+            <button id="zb-activate-btn" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 hover:brightness-110 text-slate-950 flex items-center justify-center gap-1.5 shadow transition">
+              <i class="fa-solid fa-unlock"></i> K?ch Ho?t B?n Quy?n V?nh Vi?n
+            </button>
+            <p id="zb-key-msg" class="text-[11px] text-center hidden"></p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const closeBtn = document.getElementById("zb-modal-close");
+    const copyBtn = document.getElementById("zb-copy-code-btn");
+    const keyInput = document.getElementById("zb-key-input");
+    const activateBtn = document.getElementById("zb-activate-btn");
+    const keyMsg = document.getElementById("zb-key-msg");
+
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        if (!trial.isExpired || activated) {
+          modal.classList.add("hidden");
+        } else {
+          alert("?ng d?ng ?? h?t 7 ng?y d?ng th?. Vui l?ng nh?p Key m? kh?a ?? ti?p t?c!");
+        }
+      };
+    }
+
+    if (copyBtn) {
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(deviceCode);
+        copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> ?? ch?p';
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Sao ch?p';
+        }, 2000);
+      };
+    }
+
+    if (activateBtn && keyInput) {
+      activateBtn.onclick = () => {
+        const inputVal = keyInput.value.trim().toUpperCase();
+        const expected = calculateLicenseKey(deviceCode);
+        if (inputVal === expected) {
+          localStorage.setItem("zb_license_key_" + APP_CONFIG.appPrefix, inputVal);
+          keyMsg.className = "text-[11px] text-center text-emerald-400 font-bold block";
+          keyMsg.textContent = "?? K?ch ho?t b?n quy?n v?nh vi?n th?nh c?ng!";
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          keyMsg.className = "text-[11px] text-center text-red-400 font-bold block";
+          keyMsg.textContent = "M? Key kh?ng h?p l? cho thi?t b? n?y. Vui l?ng ki?m tra l?i!";
+        }
+      };
+    }
+
+    if (trial.isExpired && !activated) {
+      openLicenseModal(true);
+    }
+  }
+
+  function openLicenseModal(isLocked) {
+    const modal = document.getElementById("zb-license-modal");
+    if (!modal) return;
+    const closeBtn = document.getElementById("zb-modal-close");
+    if (isLocked && closeBtn) {
+      closeBtn.classList.add("hidden");
+    }
+    modal.classList.remove("hidden");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initUI);
+  } else {
+    initUI();
+  }
+})();
+</script>
+
 </body>
 </html>

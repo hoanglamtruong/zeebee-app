@@ -27,6 +27,8 @@ export interface Product {
   /** Sản phẩm tải về: khách nhận gì */
   delivery: string;
   demoUrl: string | null;
+  downloadUrl?: string;
+  devicePrefix?: string;
   status: ProductStatus;
   mockupIdea?: string;
 }
@@ -39,6 +41,8 @@ export interface CaseStudy {
   description: string;
   features: string[];
   demoUrl: string | null;
+  downloadUrl?: string;
+  devicePrefix?: string;
 }
 
 export interface Bundle {
@@ -188,6 +192,8 @@ export const PRODUCTS: Product[] = [
     price: 59000,
     delivery: "File cài đặt APK Android / Web App + Hướng dẫn sử dụng",
     demoUrl: "/products/App_01_BeTong_Pro_Offline.html",
+    downloadUrl: "/downloads/BeTong_Pro_v1.0.zip",
+    devicePrefix: "BT",
     status: "available",
     mockupIdea: "Thợ xây dựng cầm điện thoại ngoài công trường với bảng khối lượng vật liệu và bản vẽ 3D khối bê tông.",
   },
@@ -214,6 +220,8 @@ export const PRODUCTS: Product[] = [
     price: 39000,
     delivery: "File cài đặt APK Android / Web App + Hướng dẫn sử dụng",
     demoUrl: "/products/App_04_DinhGia_LoiNhuan_Pro.html",
+    downloadUrl: "/downloads/DinhGia_Cost_Pro_v1.0.zip",
+    devicePrefix: "DG",
     status: "available",
     mockupIdea: "Giao diện điện thoại so sánh 2 cột: 'Giá bán đề xuất' và 'Lợi nhuận ròng thực nhận'.",
   },
@@ -240,11 +248,40 @@ export const PRODUCTS: Product[] = [
     price: 79000,
     delivery: "File cài đặt APK Android / Web App + Hướng dẫn sử dụng",
     demoUrl: "/products/App_07_HoaDon_Mini_Offline.html",
+    downloadUrl: "/downloads/HoaDon_Mini_v1.0.zip",
+    devicePrefix: "HD",
     status: "available",
     mockupIdea: "Mẫu phiếu báo giá PDF sắc nét in logo doanh nghiệp xuất ra từ điện thoại.",
   },
 
-  // ─── 08. Room Paint & Tile Calculator ───
+  // ??? 08. Carpentry Angle Tool ???
+  {
+    slug: "thuoc-do-goc-tho-moc",
+    name: "Th??c ?o G?c Th? M?c Pro (Carpentry Angle Tool)",
+    model: "download",
+    kind: "K? Thu?t / Th? M?c",
+    category: "pro-tools",
+    format: "1 File HTML ? Ch?y 100% Offline",
+    tagline: "?o g?c nghi?ng d?c m?i, g?c c?t m?i, g?c gh?p m?ng g? chu?n x?c b?ng c?m bi?n con quay h?i chuy?n tr?n ?i?n tho?i.",
+    description:
+      "C?ng c? b? t?i thi?t y?u cho anh em th? m?c, thi c?ng n?i th?t, nh?m k?nh v? c? kh?: s? d?ng c?m bi?n con quay h?i chuy?n (gyroscope) c?a ?i?n tho?i ?? ?o g?c d?c m?i, g?c c?t gh?p ph?o ch?, g?c m?ng g? ?m d??ng v?i ?? ch?nh x?c cao. T?nh n?ng kh?a g?c ?o (Hold) gi?p ??c k?t qu? d? d?ng ? c?c g?c khu?t c?ng tr?nh.",
+    features: [
+      "?o g?c th?i gian th?c b?ng c?m bi?n ?i?n tho?i",
+      "Ch? ?? kh?a g?c ?o (Hold) ?? xem k?t qu? khi ??a m?y v?o khe h?p",
+      "B?ng tra c?u g?c c?t ph?o ch? v? g?c m?ng gh?p g? ti?u chu?n",
+      "Th??c th?y nivo b?t n??c c?n b?ng b? m?t ngang v? ??ng",
+      "Ho?t ??ng 100% offline, kh?ng c?n internet, ti?t ki?m pin t?i ?a",
+    ],
+    price: 49000,
+    delivery: "G?i ZIP g?m file HTML m? d?ng ngay + T?i li?u h??ng d?n",
+    demoUrl: "/products/App_33_ThuocDoGoc_ThoMoc_Pro.html",
+    downloadUrl: "/downloads/ThuocDoGoc_ThoMoc_v1.0.zip",
+    devicePrefix: "TD",
+    status: "available",
+    mockupIdea: "Th??c ?o g?c k? thu?t s? hi?n th? ?? nghi?ng v? b?t n??c c?n b?ng tr?n thanh g? x?.",
+  },
+
+  // ??? 09. Room Paint & Tile Calculator ???
   {
     slug: "room-paint-tile-calculator",
     name: "Tính Sơn & Gạch Ốp Lát (Room Paint & Tile Calculator)",
@@ -448,6 +485,8 @@ export const PRODUCTS: Product[] = [
     price: 19000,
     delivery: "File cài đặt APK game Android / Web App",
     demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
+    devicePrefix: "CC",
     status: "available",
     mockupIdea: "Bàn cờ X-O neon phát sáng trên 2 màn hình điện thoại kết nối không dây.",
   },

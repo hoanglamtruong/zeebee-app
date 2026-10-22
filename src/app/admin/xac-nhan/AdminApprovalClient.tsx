@@ -1,0 +1,182 @@
+"use client";
+
+import { useState } from "react";
+import { CheckCircle2, ShieldCheck, Key, Copy, Check, MessageCircle, AlertCircle } from "lucide-react";
+import type { OrderRecord } from "@/lib/db";
+import { formatVnd } from "@/lib/catalog";
+
+export default function AdminApprovalClient({
+  order,
+  productName,
+  proposedKey,
+  secret,
+}: {
+  order: OrderRecord;
+  productName: string;
+  proposedKey: string;
+  secret: string;
+}) {
+  const [status, setStatus] = useState<string>(order.status);
+  const [key, setKey] = useState<string>(order.licenseKey || proposedKey);
+  const [submitting, setSubmitting] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
+
+  const isPaid = status === "paid" || status === "completed";
+
+  async function handleApprove() {
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/issue-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: order.code,
+          secret,
+          customKey: key,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "L?i ph? duy?t.");
+      setStatus("paid");
+      if (data.licenseKey) setKey(data.licenseKey);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "L?i ph? duy?t ??n.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function handleCopy(text: string) {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  }
+
+  return (
+    <div className="zb-card p-6 sm:p-8 space-y-6 border border-[rgba(234,189,23,0.3)] shadow-2xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div>
+          <span className="text-[11px] font-bold text-[var(--zb-gold)] uppercase tracking-wider">
+            Admin Zeebee ? Qu?n L? Xu?t Key
+          </span>
+          <h1 className="text-xl sm:text-2xl font-black text-white mt-1">
+            Duy?t ??n &amp; Xu?t Key B?n Quy?n
+          </h1>
+        </div>
+        {isPaid ? (
+          <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5">
+            <CheckCircle2 size={14} /> ?? XU?T KEY
+          </span>
+        ) : (
+          <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 flex items-center gap-1.5">
+            <ShieldCheck size={14} /> CH? X?C NH?N TI?N
+          </span>
+        )}
+      </div>
+
+      {/* Th?ng tin ??n */}
+      <div className="grid sm:grid-cols-2 gap-4 text-xs">
+        <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
+          <span className="text-[var(--zb-muted)]">M? ??n h?ng:</span>
+          <p className="font-mono font-bold text-sm text-white">{order.code}</p>
+        </div>
+        <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
+          <span className="text-[var(--zb-muted)]">S? ti?n thanh to?n:</span>
+          <p className="font-bold text-sm text-[var(--zb-gold)]">
+            {formatVnd(order.amount || 0)}
+          </p>
+        </div>
+        <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
+          <span className="text-[var(--zb-muted)]">Kh?ch h?ng:</span>
+          <p className="font-bold text-white text-sm">{order.name}</p>
+          <p className="text-[var(--zb-muted)] font-mono">{order.phone}</p>
+        </div>
+        <div className="p-3.5 rounded-xl bg-white/5 space-y-1">
+          <span className="text-[var(--zb-muted)]">?ng d?ng:</span>
+          <p className="font-bold text-white text-sm">{productName}</p>
+          <p className="text-[var(--zb-muted)]">M? thi?t b?: <strong className="text-amber-300 font-mono">{order.deviceCode || "Ch?a c?"}</strong></p>
+        </div>
+      </div>
+
+      {/* Key Display & Input */}
+      <div className="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-[var(--zb-gold-light)] flex items-center gap-1.5">
+            <Key size={14} /> License Key C?p Cho Kh?ch:
+          </span>
+          <button
+            onClick={() => handleCopy(key)}
+            className="text-[11px] px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white flex items-center gap-1 font-mono transition"
+          >
+            {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+            <span>{copied ? "?? ch?p" : "Sao ch?p"}</span>
+          </button>
+        </div>
+        <input
+          value={key}
+          onChange={(e) => setKey(e.target.value.toUpperCase())}
+          className="w-full font-mono text-center text-lg sm:text-xl font-black py-2.5 px-3 rounded-lg bg-black/40 border border-amber-500/40 text-[var(--zb-gold)] tracking-wider"
+          placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX"
+        />
+        <p className="text-[11px] text-[var(--zb-muted)] text-center">
+          * Key n?y ???c m? h?a t? ??ng kh?p v?i M? thi?t b? <strong>{order.deviceCode}</strong> ?? kh?ch k?ch ho?t 100% offline.
+        </p>
+      </div>
+
+      {error && (
+        <div className="p-3 rounded-lg bg-red-900/30 border border-red-500/40 text-xs text-red-300 flex items-center gap-2">
+          <AlertCircle size={15} /> {error}
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="space-y-3 pt-2">
+        {!isPaid ? (
+          <button
+            onClick={handleApprove}
+            disabled={submitting}
+            className="w-full py-3.5 px-5 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+          >
+            {submitting ? (
+              "?ang k?ch ho?t..."
+            ) : (
+              <>
+                <CheckCircle2 size={18} /> X?c Nh?n ?? Nh?n Ti?n &amp; Xu?t Key Ngay
+              </>
+            )}
+          </button>
+        ) : (
+          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-1">
+            <p className="text-sm font-bold text-emerald-400 flex items-center justify-center gap-1.5">
+              <CheckCircle2 size={16} /> ??n h?ng ?? xu?t key th?nh c?ng!
+            </p>
+            <p className="text-xs text-[var(--zb-muted)]">
+              Kh?ch h?ng hi?n ?? th?y m? Key tr?n m?n h?nh ??n h?ng v? c? th? k?ch ho?t app ngay l?p t?c.
+            </p>
+          </div>
+        )}
+
+        <div className="flex gap-2 justify-center pt-2">
+          <a
+            href={`https://zalo.me/${order.phone.replace(/[\s.-]/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-white flex items-center gap-1.5 transition"
+          >
+            <MessageCircle size={14} className="text-cyan-400" /> Nh?n Zalo Kh?ch H?ng
+          </a>
+          <a
+            href={`/don-hang/${order.code}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-[var(--zb-gold)] flex items-center gap-1.5 transition"
+          >
+            Xem M?n H?nh Kh?ch H?ng
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,30 +1,32 @@
 ========================================================================
-HƯỚNG DẪN CÀI ĐẶT & SỬ DỤNG SẢN PHẨM SỐ TRỌN ĐỜI — APP.ZEEBEE.VN
+H??NG D?N D?NG TH? 7 NG?Y & M? KH?A B?N QUY?N TR?N ??I ? APP.ZEEBEE.VN
 ========================================================================
 
-Cảm ơn bạn đã sở hữu sản phẩm phần mềm độc lập từ nền tảng app.zeebee.vn!
+C?m ?n b?n ?? t?i v? s?n ph?m ph?n m?m ??c l?p t? n?n t?ng app.zeebee.vn!
 
-1. TRIẾT LÝ SẢN PHẨM:
-- 100% Hoạt động Cục bộ (Offline-First): Không cần kết nối Internet, không gửi dữ liệu của bạn lên đám mây.
-- Mua 1 Lần — Dùng Vĩnh Viễn: Không bao giờ thu phí thuê bao duy trì hàng tháng.
-- Dữ liệu thuộc về bạn: Toàn bộ lịch sử tính toán, báo cáo, hóa đơn được lưu ngay trên bộ nhớ trình duyệt (LocalStorage / IndexedDB) của thiết bị.
+1. TRI?T L? S?N PH?M:
+- 100% Ho?t ??ng C?c b? (Offline-First): Ch?y tr?c ti?p tr?n thi?t b?, kh?ng c?n Internet.
+- D?ng th? 7 ng?y mi?n ph?: Tr?n v?n t?nh n?ng tr??c khi quy?t ??nh mua b?n quy?n.
+- Mua 1 L?n ? D?ng V?nh Vi?n: Kh?ng bao gi? thu ph? duy tr? h?ng th?ng.
+- D? li?u thu?c v? b?n: To?n b? d? li?u, b?o c?o, h?a ??n ???c l?u ngay tr?n m?y.
 
-2. CÁCH MỞ VÀ SỬ DỤNG TRÊN MÁY TÍNH (PC / LAPTOP):
-- Giải nén file .zip này ra bất kỳ thư mục nào trên máy tính.
-- Click đúp vào file .html để mở ngay trên trình duyệt (Google Chrome, Microsoft Edge, Cốc Cốc, Brave, Safari...).
-- Bạn có thể tạo biểu tượng lối tắt (Shortcut) ra màn hình Desktop để mở nhanh mỗi ngày.
+2. C?CH M? V? S? D?NG TR?N M?Y T?NH & ?I?N THO?I:
+- M?y t?nh: Gi?i n?n file .zip, click ??p file .html ?? m? ngay tr?n tr?nh duy?t (Chrome, Edge, C?c C?c...).
+- ?i?n tho?i Android / iPhone: M? file .html b?ng Chrome ho?c Safari. B?m menu ch?n "Th?m v?o m?n h?nh ch?nh" (Add to Home screen) ?? d?ng nh? m?t ?ng d?ng ??c l?p ngay c? khi b?t ch? ?? m?y bay.
 
-3. CÁCH CÀI ĐẶT THÀNH APP LÊN MÀN HÌNH ĐIỆN THOẠI ANDROID / IPHONE:
-- Cách 1: Gửi file .html qua Zalo / Telegram vào điện thoại của bạn, mở bằng trình duyệt Chrome hoặc Safari.
-- Cách 2: Bấm vào nút menu 3 chấm (trên Chrome Android) hoặc nút Chia sẻ (trên Safari iOS).
-- Chọn mục: "Thêm vào màn hình chính" (Add to Home screen) hoặc "Cài đặt ứng dụng".
-- Biểu tượng ứng dụng sẽ xuất hiện trên màn hình điện thoại giống hệt như một app Android / iOS cài từ Store, có thể bật dùng mọi lúc ngay cả khi bật chế độ máy bay (Không có mạng 4G/Wifi).
+3. QUY TR?NH D?NG TH? 7 NG?Y & M? KH?A B?N QUY?N:
+- ?ng d?ng t? ??ng k?ch ho?t 7 ng?y d?ng th? mi?n ph?.
+- G?c d??i m?n h?nh hi?n th? huy hi?u: "D?ng th?: C?n X ng?y" k?m M? Thi?t B? c?a b?n (VD: ZB-BT-84920).
+- Khi h?t h?n 7 ng?y, m? ?ng d?ng v? sao ch?p M? Thi?t B?.
+- Truy c?p https://app.zeebee.vn/mua-key, nh?p M? Thi?t B? v? thanh to?n chuy?n kho?n ??ng c? ph?p VietQR hi?n th? tr?n web.
+- Ngay sau khi chuy?n kho?n, License Key m? kh?a v?nh vi?n s? hi?n th? tr?c ti?p tr?n trang ??n h?ng.
+- D?n License Key v?o ? k?ch ho?t c?a ?ng d?ng ?? m? kh?a tr?n ??i kh?ng c?n m?ng!
 
-4. HỖ TRỢ KỸ THUẬT & YÊU CẦU MAY ĐO THEO YÊU CẦU:
+4. H? TR? K? THU?T:
 - Website: https://app.zeebee.vn
-- Dịch vụ phát triển phần mềm theo yêu cầu: https://app.zeebee.vn#build
-- Email: support@zeebee.vn | admin@zeebee.vn
-- Hotline/Zalo kỹ thuật: 0901 234 567
+- Mua key b?n quy?n: https://app.zeebee.vn/mua-key
+- Zalo h? tr? k? thu?t: 0976.094.453
+- B?o gi? l?m ph?n m?m may ?o ri?ng: https://app.zeebee.vn/build
 
-Bản quyền © 2026 thuộc về ZEEBEE TECHNOLOGY COMPANY LIMITED.
+B?n quy?n ? 2026 thu?c v? ZEEBEE TECHNOLOGY COMPANY LIMITED.
 ========================================================================
