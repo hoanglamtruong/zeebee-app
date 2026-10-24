@@ -3,7 +3,7 @@
 // PHIÊN BẢN MỚI 2026: TÁI ĐỊNH VỊ 100% CỬA HÀNG SẢN PHẨM SỐ OFFLINE-FIRST:
 //  - 100% Sản phẩm ĐÃ ĐƯỢC ĐÓNG GÓI CHUẨN ANDROID APK (Zstore):
 //    Trả 1 lần, sở hữu vĩnh viễn, không phí thuê bao hàng tháng, bảo mật cục bộ.
-//  - Tất cả các sản phẩm chưa đóng gói APK đã được loại bỏ hoàn toàn khỏi cửa hàng.
+//  - Dữ liệu sản phẩm đồng bộ chính xác từ Google Sheet kế hoạch 100 Mini App Zeebee.
 //  - Khách hàng tải trực tiếp file .APK cài đặt trên điện thoại Android, dùng thử 7 ngày miễn phí
 //    và kích hoạt key bản quyền vĩnh viễn theo mã thiết bị.
 
@@ -58,16 +58,16 @@ export interface Bundle {
 
 export const CATEGORY_TABS = [
   { id: "all", label: "Tất cả Mini App APK" },
-  { id: "pro-tools", label: "Công cụ Xây dựng & Kỹ thuật" },
-  { id: "business", label: "Kinh doanh & Bán lẻ" },
+  { id: "pro-tools", label: "Công cụ Kỹ thuật & Xây dựng" },
+  { id: "business", label: "Quản lý Bán hàng & Dịch vụ" },
   { id: "games", label: "Game Đối Kháng Bluetooth" },
 ] as const;
 
 export const PRODUCTS: Product[] = [
-  // ─── 01. Concrete Volume & Material Estimator ───
+  // ─── 01. Concrete Volume & Material Estimator (Sheet ID 1) ───
   {
     slug: "concrete-volume-estimator",
-    name: "Bê Tông Pro (Concrete Volume & Material Estimator)",
+    name: "Bê Tông Pro (Concrete Volume Estimator)",
     model: "download",
     kind: "Android APK",
     category: "pro-tools",
@@ -93,7 +93,65 @@ export const PRODUCTS: Product[] = [
     mockupIdea: "Thợ xây dựng cầm điện thoại ngoài công trường với bảng khối lượng vật liệu và bản vẽ 3D khối bê tông.",
   },
 
-  // ─── 02. Product Pricing & Profit Margin Pro ───
+  // ─── 02. 3D Print Cost Calculator (Sheet ID 2) ───
+  {
+    slug: "3d-print-cost-calculator",
+    name: "In 3D Pro (3D Print Cost Calculator)",
+    model: "download",
+    kind: "Android APK",
+    category: "pro-tools",
+    format: "Android APK",
+    tagline: "Tính giá thành in 3D từ số gram nhựa, thời gian chạy máy, tiền điện và khấu hao để xuất báo giá cho khách hàng.",
+    description:
+      "Ứng dụng tính giá thành và báo giá in 3D chuyên dụng cho các xưởng in dịch vụ, Maker và người dùng máy in FDM/SLA: nhập đơn giá cuộn nhựa filament (PLA, PETG, ABS, TPU, Resin), khối lượng in (gram), thời gian in máy, công suất tiêu thụ điện (Watt) và chi phí nhân công để tự động tính chính xác giá vốn (COGS) và gợi ý giá bán theo tỷ lệ Markup, xuất báo giá gửi khách qua Zalo tức thì.",
+    features: [
+      "Tính chi phí nhựa filament/resin kèm tỷ lệ hao hụt in hỏng (3% - 10%)",
+      "Tính tiền điện thực tế theo công suất máy in (Watt) và số giờ in liên tục",
+      "Tính chi phí khấu hao hao mòn máy in và chi phí công kỹ thuật hậu kỳ",
+      "Tự động tính giá vốn sản xuất (COGS) và giá bán đề xuất theo tỷ lệ Markup mong muốn",
+      "Lưu lịch sử báo giá các đơn in khách hàng cục bộ không sợ mất dữ liệu",
+      "Sao chép mẫu báo giá chuyên nghiệp 1 chạm gửi cho khách hàng",
+    ],
+    price: 39000,
+    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
+    demoUrl: "/products/App_02_In3D_Cost_Pro.html",
+    downloadUrl: "/downloads/In3D_Pro_v1.0.apk",
+    zipUrl: "/downloads/In3D_Pro_v1.0.zip",
+    devicePrefix: "3D",
+    status: "available",
+    mockupIdea: "Cuộn nhựa in 3D filament đặt cạnh mô hình in kèm bảng chi phí chi tiết trên điện thoại.",
+  },
+
+  // ─── 03. Electrical Engineering Calculator (Sheet ID 5) ───
+  {
+    slug: "electrical-calculator",
+    name: "Kỹ Thuật Điện Pro (Electrical Calculator)",
+    model: "download",
+    kind: "Android APK",
+    category: "pro-tools",
+    format: "Android APK",
+    tagline: "Tính toán định luật Ohm, công suất điện 1 pha/3 pha, chọn tiết diện dây dẫn đồng nhôm và quy đổi đơn vị điện.",
+    description:
+      "Sổ tay kỹ thuật số bỏ túi cho thợ điện, sinh viên ngành điện và kỹ thuật viên bảo trì cơ điện (M&E): hỗ trợ giải nhanh định luật Ohm (U, I, R, P) chỉ với 2 thông số đầu vào bất kỳ; tính toán dòng điện định mức cho hệ thống điện 1 pha 220V và 3 pha 380V; tính chọn tiết diện ruột dây cáp điện đồng/nhôm theo mật độ dòng điện kinh tế (J) và khuyến nghị Aptomat (CB) bảo vệ phù hợp.",
+    features: [
+      "Giải nhanh định luật Ohm: nhập 2 đại lượng bất kỳ để tự động suy ra 2 đại lượng còn lại",
+      "Tính toán công suất & dòng điện định mức hệ thống 1 pha dân dụng và 3 pha công nghiệp",
+      "Tính chọn tiết diện ruột dây dẫn đồng (J=6A/mm²) và nhôm (J=4A/mm²) chuẩn Việt Nam",
+      "Khuyến nghị định mức dòng cắt Aptomat (CB/MCB) bảo vệ dự phòng theo tải",
+      "Bảng quy đổi đơn vị điện năng: kW sang Mã lực (HP), BTU/h điều hòa, kVA, kWh",
+      "Hoạt động 100% offline tại hiện trường, nhà xưởng hoặc công trình hầm sâu",
+    ],
+    price: 39000,
+    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
+    demoUrl: "/products/App_05_Dien_Pro.html",
+    downloadUrl: "/downloads/Dien_Pro_v1.0.apk",
+    zipUrl: "/downloads/Dien_Pro_v1.0.zip",
+    devicePrefix: "EE",
+    status: "available",
+    mockupIdea: "Sơ đồ mạch điện tử với các đồng hồ đo Vôn, Ampe, Watt hiển thị trực quan.",
+  },
+
+  // ─── 04. Product Pricing & Profit Margin Pro (Sheet ID 4) ───
   {
     slug: "pricing-profit-margin-pro",
     name: "Định Giá & Lợi Nhuận (Pricing & Profit Margin Pro)",
@@ -122,7 +180,7 @@ export const PRODUCTS: Product[] = [
     mockupIdea: "Giao diện điện thoại so sánh 2 cột: 'Giá bán đề xuất' và 'Lợi nhuận ròng thực nhận'.",
   },
 
-  // ─── 03. Quotation & Invoice Maker Offline ───
+  // ─── 05. Quotation & Invoice Maker Offline (Sheet ID 7 & 8) ───
   {
     slug: "quotation-invoice-maker",
     name: "Hóa Đơn Mini Offline (Quotation & Invoice Maker)",
@@ -151,7 +209,65 @@ export const PRODUCTS: Product[] = [
     mockupIdea: "Mẫu phiếu báo giá PDF sắc nét in logo doanh nghiệp xuất ra từ điện thoại.",
   },
 
-  // ─── 04. Local Tic-Tac-Toe Pro & Bluetooth ───
+  // ─── 06. Mini Inventory Offline Pro (Sheet ID 11) ───
+  {
+    slug: "mini-inventory-offline",
+    name: "Sổ Kho Mini Offline (Mini Inventory Pro)",
+    model: "download",
+    kind: "Android APK",
+    category: "business",
+    format: "Android APK",
+    tagline: "Quản lý nhập - xuất - tồn kho mini theo mã SKU ngay trên điện thoại, cảnh báo hàng sắp hết, sao lưu file Excel.",
+    description:
+      "Ứng dụng quản trị kho hàng mini gọn nhẹ, hoạt động hoàn toàn offline: theo dõi biến động nhập kho và xuất kho theo từng mã sản phẩm SKU, thiết lập ngưỡng tồn kho an toàn để nhận cảnh báo màu vàng/đỏ khi sắp cạn hàng, tự động tính tổng giá trị kho hàng theo giá vốn, đồng thời hỗ trợ trích xuất toàn bộ dữ liệu ra tệp bảng tính Excel (CSV) để đối soát.",
+    features: [
+      "Quản lý danh mục hàng hóa theo SKU, tên sản phẩm, giá vốn và giá bán niêm yết",
+      "Tạo phiếu Nhập kho (+) và phiếu Xuất bán (-) siêu tốc chỉ với 2 chạm",
+      "Cảnh báo trực quan màu sắc khi số lượng sản phẩm chạm ngưỡng tồn tối thiểu",
+      "Dashboard thống kê tổng giá trị tiền hàng tồn kho và số lượng mặt hàng đang quản lý",
+      "Xuất toàn bộ cơ sở dữ liệu kho hàng ra file Excel (.csv) lưu trữ trên thiết bị",
+      "100% không cần Internet, dữ liệu bảo mật tuyệt đối trên thiết bị của bạn",
+    ],
+    price: 99000,
+    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
+    demoUrl: "/products/App_11_SoKho_Mini.html",
+    downloadUrl: "/downloads/SoKho_Mini_v1.0.apk",
+    zipUrl: "/downloads/SoKho_Mini_v1.0.zip",
+    devicePrefix: "MK",
+    status: "available",
+    mockupIdea: "Giao diện quản lý danh mục tồn kho hiển thị trực quan các cảnh báo màu vàng/đỏ.",
+  },
+
+  // ─── 07. Tailor Measurement Book (Sheet ID 6) ───
+  {
+    slug: "tailor-measurement-book",
+    name: "Sổ Đo Tiệm May (Tailor Measurement Book)",
+    model: "download",
+    kind: "Android APK",
+    category: "business",
+    format: "Android APK",
+    tagline: "Sổ lưu số đo khách hàng điện tử cho tiệm may, lưu ghi chú kiểu dáng, mẫu vải và tìm kiếm khách theo tên/SĐT tức thì.",
+    description:
+      "Trợ lý số đo thông minh dành riêng cho tiệm may đo thời trang, nhà may áo dài, veston, đầm dạ hội và thợ may gia đình: lưu trữ đầy đủ bộ thông số đo chi tiết (cổ, ngực, hạ ngực, cách ngực, eo, hạ eo, mông, vai, dài tay, bắp tay, dài áo, dài quần/váy), ghi chú yêu cầu kiểu dáng vải và ngày hẹn lấy đồ, tìm kiếm hồ sơ khách hàng chỉ trong 1 giây.",
+    features: [
+      "Bảng số đo chuẩn hóa cho may đo Việt Nam: Áo dài, Váy đầm, Sơ mi, Quần tây, Veston",
+      "Tìm kiếm khách hàng siêu tốc theo tên hoặc số điện thoại",
+      "Quản lý tiến độ may: Chờ cắt may, Đang may / Thử đồ, Đã hoàn thành, Đã giao khách",
+      "Lưu ghi chú chi tiết kiểu cổ áo, tay áo, tà xẻ, màu sắc và yêu cầu riêng của từng khách",
+      "Sao chép nhanh bảng thông số số đo sang định dạng tin nhắn gửi qua Zalo",
+      "Xuất danh sách và số đo toàn bộ khách hàng ra tệp Excel CSV để lưu trữ",
+    ],
+    price: 59000,
+    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
+    demoUrl: "/products/App_06_SoDo_TiemMay.html",
+    downloadUrl: "/downloads/SoDo_TiemMay_v1.0.apk",
+    zipUrl: "/downloads/SoDo_TiemMay_v1.0.zip",
+    devicePrefix: "TM",
+    status: "available",
+    mockupIdea: "Cuộn thước dây may mặc đặt cạnh giao diện sổ ghi số đo khách hàng trên điện thoại.",
+  },
+
+  // ─── 08. Local Tic-Tac-Toe Pro & Bluetooth (Sheet ID 51) ───
   {
     slug: "game-tic-tac-toe-pro",
     name: "Cờ Ca Rô Offline & Bluetooth 2 Người (Local Tic-Tac-Toe Pro)",
@@ -179,19 +295,88 @@ export const PRODUCTS: Product[] = [
     status: "available",
     mockupIdea: "Hai chiếc điện thoại đặt cạnh nhau đang kết nối thi đấu cờ caro với bàn cờ bằng gỗ.",
   },
+
+  // ─── 09. Bluetooth Battleship Duel (Sheet ID 53) ───
+  {
+    slug: "game-battleship-duel",
+    name: "Đấu Tàu Chiến Hải Quân (Battleship Duel Offline)",
+    model: "download",
+    kind: "Android APK",
+    category: "games",
+    format: "Android APK",
+    tagline: "Game chiến hạm hải quân đối kháng 2 người: dàn trận giấu tàu bí mật và nã pháo đánh chìm hạm đội địch offline.",
+    description:
+      "Tựa game hải chiến kinh điển dành cho 2 người chơi hoặc đấu với máy AI: bố trí hạm đội gồm 4 lớp chiến hạm (Tàu sân bay, Tàu khu trục, Tàu ngầm, Tàu tuần tra) trên lưới radar hải quân 8x8. Lần lượt khai hỏa nã pháo vào tọa độ ẩn của đối phương, phát hiện vị trí tàu và đánh chìm toàn bộ hạm đội địch để giành chiến thắng vinh quang.",
+    features: [
+      "Chế độ Đấu Máy AI Offline thông minh tự động quét radar phản pháo",
+      "Chế độ Pass & Play 2 người chơi luân phiên trên 1 điện thoại với màn hình giấu tàu",
+      "Lưới hải quân 8x8 trực quan với hiệu ứng nổ pháo và tàu chìm sinh động",
+      "Bảng thống kê tỷ số thắng thua đối đầu chi tiết giữa 2 thuyền trưởng",
+      "100% chạy mượt mà không cần mạng Internet hay 4G",
+      "Sở hữu vĩnh viễn, không quảng cáo làm gián đoạn trận hải chiến",
+    ],
+    price: 39000,
+    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
+    demoUrl: "/products/Game_53_TauChien_Bluetooth.html",
+    downloadUrl: "/downloads/TauChien_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/TauChien_Bluetooth_v1.0.zip",
+    devicePrefix: "BS",
+    status: "available",
+    mockupIdea: "Bản đồ radar hải quân với các chiến hạm đang khai hỏa nã pháo trên biển.",
+  },
 ];
 
-// ───────────── COMBO / BUNDLE TIẾT KIỆM 35% (100% APK ĐÃ ĐÓNG GÓI) ─────────────
+// ───────────── COMBO / BUNDLE TIẾT KIỆM 35% - 40% (100% APK ĐÃ ĐÓNG GÓI) ─────────────
 export const BUNDLES: Bundle[] = [
   {
-    id: "bundle-master-apk-4in1",
-    name: "Combo Master 4 Mini App APK & Game Bluetooth",
-    tagline: "Trọn bộ 4 ứng dụng Android APK độc quyền: Bê Tông Pro + Định Giá Lợi Nhuận + Hóa Đơn Mini + Cờ Caro Bluetooth.",
+    id: "bundle-master-apk-9in1",
+    name: "Combo Master 9-in-1 Trọn Bộ Kho APK Zeebee",
+    tagline: "Sở hữu toàn bộ 9 ứng dụng Android APK & Game Bluetooth: Bê Tông, In 3D, Kỹ Thuật Điện, Định Giá, Hóa Đơn, Sổ Kho, Sổ Đo Tiệm May, Cờ Caro & Tàu Chiến.",
+    discountPercent: 40,
+    originalPrice: 481000,
+    bundlePrice: 289000,
+    products: [
+      "concrete-volume-estimator",
+      "3d-print-cost-calculator",
+      "electrical-calculator",
+      "pricing-profit-margin-pro",
+      "quotation-invoice-maker",
+      "mini-inventory-offline",
+      "tailor-measurement-book",
+      "game-tic-tac-toe-pro",
+      "game-battleship-duel"
+    ],
+    badge: "Tiết kiệm 40%",
+  },
+  {
+    id: "bundle-pro-tools-kỹ-thuật",
+    name: "Combo Kỹ Thuật & Xây Dựng Pro APK",
+    tagline: "Bộ 3 công cụ kỹ thuật thực địa: Bê Tông Pro + In 3D Cost + Kỹ Thuật Điện.",
     discountPercent: 35,
-    originalPrice: 206000,
-    bundlePrice: 134000,
-    products: ["concrete-volume-estimator", "pricing-profit-margin-pro", "quotation-invoice-maker", "game-tic-tac-toe-pro"],
+    originalPrice: 137000,
+    bundlePrice: 89000,
+    products: ["concrete-volume-estimator", "3d-print-cost-calculator", "electrical-calculator"],
     badge: "Tiết kiệm 35%",
+  },
+  {
+    id: "bundle-quan-ly-kinh-doanh",
+    name: "Combo Quản Lý Bán Hàng & Dịch Vụ Mini APK",
+    tagline: "Trọn bộ 4 ứng dụng kinh doanh bỏ túi: Định Giá Lợi Nhuận + Hóa Đơn Mini + Sổ Kho Mini + Sổ Đo Tiệm May.",
+    discountPercent: 35,
+    originalPrice: 276000,
+    bundlePrice: 179000,
+    products: ["pricing-profit-margin-pro", "quotation-invoice-maker", "mini-inventory-offline", "tailor-measurement-book"],
+    badge: "Tiết kiệm 35%",
+  },
+  {
+    id: "bundle-game-bluetooth-doi-khang",
+    name: "Combo 2 Game Đối Kháng Không Cần Mạng",
+    tagline: "Bộ đôi game thi đấu bạn bè giải lao: Cờ Ca Rô 5 Quân + Đấu Tàu Chiến Hải Quân.",
+    discountPercent: 28,
+    originalPrice: 68000,
+    bundlePrice: 49000,
+    products: ["game-tic-tac-toe-pro", "game-battleship-duel"],
+    badge: "Tiết kiệm 28%",
   },
 ];
 

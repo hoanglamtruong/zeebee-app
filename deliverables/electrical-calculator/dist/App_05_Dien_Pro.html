@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kỹ Thuật Điện Pro - Sổ Tay Tính Toán Định Luật Ohm & Dây Cáp Điện</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    .glass { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
+  </style>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-black">
+
+  <!-- HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-[#1e293b] sticky top-0 z-30 px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-yellow-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+        <i class="fa-solid fa-bolt-lightning"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-base tracking-wide text-white flex items-center gap-1.5">
+          KỸ THUẬT ĐIỆN PRO <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">100% Offline</span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Định Luật Ohm · Công Suất 1-3 Pha · Tiết Diện Dây Dẫn</p>
+      </div>
+    </div>
+    <span class="text-xs font-bold text-amber-400 bg-amber-950/60 px-2 py-1 rounded border border-amber-500/30">
+      app.zeebee.vn
+    </span>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-5 space-y-4">
+    
+    <!-- TABS -->
+    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+      <button onclick="switchTab('ohm')" id="tab-btn-ohm" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 transition flex items-center gap-1.5 whitespace-nowrap">
+        <i class="fa-solid fa-calculator"></i> Định Luật Ohm
+      </button>
+      <button onclick="switchTab('power')" id="tab-btn-power" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap">
+        <i class="fa-solid fa-plug"></i> Công Suất 1 & 3 Pha
+      </button>
+      <button onclick="switchTab('wire')" id="tab-btn-wire" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap">
+        <i class="fa-solid fa-arrows-split-up-and-left"></i> Tiết Diện Dây Cáp
+      </button>
+      <button onclick="switchTab('converter')" id="tab-btn-converter" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 hover:text-white transition flex items-center gap-1.5 whitespace-nowrap">
+        <i class="fa-solid fa-repeat"></i> Đổi Đơn Vị Điện
+      </button>
+    </div>
+
+    <!-- TAB 1: OHM LAW -->
+    <div id="tab-ohm" class="tab-content space-y-4">
+      <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-700/60 pb-2">
+          <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-bolt"></i> Tính Toán Định Luật Ohm (Nhập 2 Giá Trị Bất Kỳ)
+          </h2>
+          <button onclick="clearOhm()" class="text-[11px] text-slate-400 hover:text-white">Đặt lại</button>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Hiệu điện thế U (Volt):</label>
+            <input id="ohm-u" type="number" step="any" placeholder="Ví dụ: 220" oninput="calcOhm('u')" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-sm outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Cường độ dòng điện I (Ampe):</label>
+            <input id="ohm-i" type="number" step="any" placeholder="Ví dụ: 10" oninput="calcOhm('i')" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-sm outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Điện trở R (Ohm - Ω):</label>
+            <input id="ohm-r" type="number" step="any" placeholder="Ví dụ: 22" oninput="calcOhm('r')" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-sm outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Công suất P (Watt - W):</label>
+            <input id="ohm-p" type="number" step="any" placeholder="Ví dụ: 2200" oninput="calcOhm('p')" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-sm outline-none focus:border-amber-400">
+          </div>
+        </div>
+
+        <div id="ohm-result-box" class="p-4 rounded-xl bg-slate-900/80 border border-amber-500/30 text-xs space-y-1.5">
+          <span class="text-slate-400 font-semibold block text-[11px] uppercase">Kết quả công thức suy ra:</span>
+          <div id="ohm-formula-display" class="font-mono text-amber-300 text-sm">
+            Nhập 2 ô bất kỳ để hệ thống tự động suy ra 2 đại lượng còn lại.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: POWER 1 & 3 PHASE -->
+    <div id="tab-power" class="tab-content hidden space-y-4">
+      <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
+        <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-700/60 pb-2">
+          <i class="fa-solid fa-plug"></i> Tính Công Suất Tải & Dòng Điện Định Mức
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Hệ thống điện:</label>
+            <select id="p-phase" onchange="calcPower()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+              <option value="1">1 Pha (220V dân dụng)</option>
+              <option value="3">3 Pha (380V công nghiệp)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Tổng công suất tải P (kW):</label>
+            <input id="p-load" type="number" value="5" step="0.5" oninput="calcPower()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Điện áp danh định U (V):</label>
+            <input id="p-volt" type="number" value="220" oninput="calcPower()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Hệ số công suất cosφ (0.7 - 0.95):</label>
+            <input id="p-cos" type="number" value="0.85" step="0.05" max="1" min="0.5" oninput="calcPower()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-2">
+          <div class="flex justify-between items-center text-sm font-bold">
+            <span class="text-white">Dòng điện định mức I (Ampe):</span>
+            <span id="p-amp-result" class="text-2xl font-black text-amber-400">26.74 A</span>
+          </div>
+          <div class="text-[11px] text-slate-300 flex justify-between">
+            <span>Công suất biểu kiến S (kVA):</span>
+            <span id="p-kva-result" class="font-bold text-white">5.88 kVA</span>
+          </div>
+          <div class="text-[11px] text-slate-300 flex justify-between">
+            <span>Aptomat / CB khuyến nghị:</span>
+            <span id="p-cb-result" class="font-bold text-emerald-400">CB 32A hoặc 40A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: WIRE SIZE -->
+    <div id="tab-wire" class="tab-content hidden space-y-4">
+      <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
+        <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-700/60 pb-2">
+          <i class="fa-solid fa-arrows-split-up-and-left"></i> Tính Chọn Tiết Diện Dây Dẫn (Đồng / Nhôm)
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Dòng tải làm việc I (Ampe):</label>
+            <input id="wire-current" type="number" value="25" step="1" oninput="calcWire()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Loại lõi dây:</label>
+            <select id="wire-material" onchange="calcWire()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+              <option value="6">Lõi Đồng (Mật độ J = 6 A/mm²)</option>
+              <option value="4">Lõi Nhôm (Mật độ J = 4 A/mm²)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Chiều dài đường dây (Mét):</label>
+            <input id="wire-len" type="number" value="30" step="5" oninput="calcWire()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-700 text-xs space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-slate-400">Tiết diện tính toán lý thuyết S = I / J:</span>
+            <span id="wire-calc-s" class="font-mono text-white font-bold">4.17 mm²</span>
+          </div>
+          <div class="flex justify-between items-center text-sm font-bold pt-1 border-t border-slate-800">
+            <span class="text-amber-300">Tiết diện dây thương mại khuyến nghị:</span>
+            <span id="wire-rec-size" class="text-xl font-black text-amber-400">6.0 mm²</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-2">
+            * Quy cách dây cáp tiêu chuẩn Việt Nam: 1.5, 2.5, 4.0, 6.0, 10.0, 16.0, 25.0, 35.0, 50.0 mm². Luôn chọn bậc tiết diện cao hơn để chống phát nhiệt và sụt áp trên đường dây dài.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CONVERTER -->
+    <div id="tab-converter" class="tab-content hidden space-y-4">
+      <div class="glass rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+        <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-700/60 pb-2">
+          <i class="fa-solid fa-repeat"></i> Bảng Quy Đổi Đơn Vị Công Suất & Điện Năng
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Nhập giá trị Kilowatt (kW):</label>
+            <input id="conv-kw" type="number" value="1" oninput="convertFromKW(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-semibold mb-1">Mã lực (Horsepower - HP):</label>
+            <input id="conv-hp" type="number" value="1.341" oninput="convertFromHP(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs">
+          <div class="p-2.5 bg-slate-900/80 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">Watt (W)</span>
+            <span id="conv-w" class="font-bold text-white">1.000 W</span>
+          </div>
+          <div class="p-2.5 bg-slate-900/80 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">BTU/h (Điều hòa)</span>
+            <span id="conv-btu" class="font-bold text-white">3.412 BTU</span>
+          </div>
+          <div class="p-2.5 bg-slate-900/80 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">kVA (cosφ = 0.8)</span>
+            <span id="conv-kva" class="font-bold text-white">1.25 kVA</span>
+          </div>
+          <div class="p-2.5 bg-slate-900/80 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">Tiêu thụ/ngày (8h)</span>
+            <span id="conv-kwh" class="font-bold text-amber-300">8 kWh (~24k đ)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cảnh báo an toàn -->
+    <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200/90 leading-relaxed flex items-start gap-2">
+      <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5 shrink-0"></i>
+      <span>LƯU Ý KỸ THUẬT: Công cụ tính toán chỉ mang tính chất tham khảo bỏ túi cho kỹ thuật viên và thợ điện. Khi thi công lắp đặt thực tế cần tuân thủ Quy chuẩn kỹ thuật quốc gia về an toàn điện QCVN và thiết kế của kỹ sư có chứng chỉ hành nghề.</span>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-slate-950');
+        btn.classList.add('bg-slate-800', 'text-slate-400');
+      });
+
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      activeBtn.classList.remove('bg-slate-800', 'text-slate-400');
+      activeBtn.classList.add('bg-amber-500', 'text-slate-950');
+    }
+
+    // OHM LAW
+    function clearOhm() {
+      ['ohm-u', 'ohm-i', 'ohm-r', 'ohm-p'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('ohm-formula-display').innerText = 'Nhập 2 ô bất kỳ để hệ thống tự động suy ra 2 đại lượng còn lại.';
+    }
+
+    function calcOhm(trigger) {
+      let u = parseFloat(document.getElementById('ohm-u').value);
+      let i = parseFloat(document.getElementById('ohm-i').value);
+      let r = parseFloat(document.getElementById('ohm-r').value);
+      let p = parseFloat(document.getElementById('ohm-p').value);
+
+      let count = (!isNaN(u)?1:0) + (!isNaN(i)?1:0) + (!isNaN(r)?1:0) + (!isNaN(p)?1:0);
+      if (count < 2) return;
+
+      let formula = '';
+      if (!isNaN(u) && !isNaN(i)) {
+        r = u / i; p = u * i;
+        formula = `R = U / I = ${r.toFixed(2)} Ω | P = U × I = ${p.toFixed(2)} W`;
+      } else if (!isNaN(u) && !isNaN(r)) {
+        i = u / r; p = (u * u) / r;
+        formula = `I = U / R = ${i.toFixed(2)} A | P = U² / R = ${p.toFixed(2)} W`;
+      } else if (!isNaN(u) && !isNaN(p)) {
+        i = p / u; r = (u * u) / p;
+        formula = `I = P / U = ${i.toFixed(2)} A | R = U² / P = ${r.toFixed(2)} Ω`;
+      } else if (!isNaN(i) && !isNaN(r)) {
+        u = i * r; p = i * i * r;
+        formula = `U = I × R = ${u.toFixed(2)} V | P = I² × R = ${p.toFixed(2)} W`;
+      } else if (!isNaN(i) && !isNaN(p)) {
+        u = p / i; r = p / (i * i);
+        formula = `U = P / I = ${u.toFixed(2)} V | R = P / I² = ${r.toFixed(2)} Ω`;
+      } else if (!isNaN(r) && !isNaN(p)) {
+        u = Math.sqrt(p * r); i = Math.sqrt(p / r);
+        formula = `U = √(P × R) = ${u.toFixed(2)} V | I = √(P / R) = ${i.toFixed(2)} A`;
+      }
+
+      if (!isNaN(u)) document.getElementById('ohm-u').value = u.toFixed(2);
+      if (!isNaN(i)) document.getElementById('ohm-i').value = i.toFixed(2);
+      if (!isNaN(r)) document.getElementById('ohm-r').value = r.toFixed(2);
+      if (!isNaN(p)) document.getElementById('ohm-p').value = p.toFixed(2);
+      document.getElementById('ohm-formula-display').innerText = formula;
+    }
+
+    // POWER
+    function calcPower() {
+      const phase = parseInt(document.getElementById('p-phase').value, 10);
+      const kw = parseFloat(document.getElementById('p-load').value) || 0;
+      let volt = parseFloat(document.getElementById('p-volt').value) || 220;
+      if (phase === 3 && volt === 220) { volt = 380; document.getElementById('p-volt').value = 380; }
+      const cos = parseFloat(document.getElementById('p-cos').value) || 0.85;
+
+      const pWatt = kw * 1000;
+      let current = 0;
+      if (phase === 1) {
+        current = pWatt / (volt * cos);
+      } else {
+        current = pWatt / (Math.sqrt(3) * volt * cos);
+      }
+
+      const kva = kw / cos;
+      document.getElementById('p-amp-result').innerText = current.toFixed(2) + ' A';
+      document.getElementById('p-kva-result').innerText = kva.toFixed(2) + ' kVA';
+
+      let cb = Math.ceil(current * 1.25);
+      const standardCBs = [6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160];
+      let recCB = standardCBs.find(c => c >= cb) || cb;
+      document.getElementById('p-cb-result').innerText = `CB ${recCB}A (Bảo vệ dự phòng)`;
+
+      document.getElementById('wire-current').value = Math.round(current);
+      calcWire();
+    }
+
+    // WIRE SIZE
+    function calcWire() {
+      const i = parseFloat(document.getElementById('wire-current').value) || 0;
+      const j = parseFloat(document.getElementById('wire-material').value) || 6;
+
+      const s = i / j;
+      document.getElementById('wire-calc-s').innerText = s.toFixed(2) + ' mm²';
+
+      const stdSizes = [1.5, 2.5, 4.0, 6.0, 10.0, 16.0, 25.0, 35.0, 50.0];
+      const rec = stdSizes.find(size => size >= s) || stdSizes[stdSizes.length - 1];
+      document.getElementById('wire-rec-size').innerText = rec.toFixed(1) + ' mm²';
+    }
+
+    // CONVERTER
+    function convertFromKW(val) {
+      const kw = parseFloat(val) || 0;
+      document.getElementById('conv-hp').value = (kw * 1.34102).toFixed(3);
+      document.getElementById('conv-w').innerText = (kw * 1000).toLocaleString() + ' W';
+      document.getElementById('conv-btu').innerText = (kw * 3412.14).toFixed(0) + ' BTU/h';
+      document.getElementById('conv-kva').innerText = (kw / 0.8).toFixed(2) + ' kVA';
+      document.getElementById('conv-kwh').innerText = (kw * 8).toFixed(1) + ' kWh (~' + Math.round(kw * 8 * 3000).toLocaleString() + ' đ)';
+    }
+
+    function convertFromHP(val) {
+      const hp = parseFloat(val) || 0;
+      const kw = hp / 1.34102;
+      document.getElementById('conv-kw').value = kw.toFixed(3);
+      convertFromKW(kw);
+    }
+
+    // Init
+    calcPower();
+  </script>
+
+  <!-- ZEEBEE LICENSE GUARD -->
+  <script>
+  (function() {
+    const APP_CONFIG = {
+      appName: "Kỹ Thuật Điện Pro",
+      appPrefix: "EE",
+      appSlug: "electrical-calculator",
+      trialDays: 7,
+      secretSalt: "ZB_SECRET_2026_OFFLINE_PRO"
+    };
+
+    function sha256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      const mathPow = Math.pow; const maxWord = mathPow(2, 32); const lengthProperty = 'length';
+      let i, j; let result = ''; const words = []; const asciiBitLength = ascii[lengthProperty] * 8;
+      let hash = sha256.h = sha256.h || []; const k = sha256.k = sha256.k || [];
+      let primeCounter = k[lengthProperty]; const isComposite = {};
+      for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80'; while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i); if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+      for (j = 0; j < words[lengthProperty];) {
+        const w = words.slice(j, j += 16); const oldHash = hash; hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          const i2 = i + j; const w15 = w[i - 15], w2 = w[i - 2];
+          const a = hash[0], e = hash[4];
+          const temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash); hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j >= 0; j--) {
+          const b = (hash[i] >> (8 * j)) & 255;
+          result += ((b < 16) ? 0 : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    function calculateLicenseKey(deviceCode) {
+      const raw = deviceCode.trim().toUpperCase() + ":" + APP_CONFIG.secretSalt;
+      const h = sha256(raw).toUpperCase();
+      return "ZBKEY-" + h.slice(0, 4) + "-" + h.slice(4, 8) + "-" + h.slice(8, 12) + "-" + h.slice(12, 16);
+    }
+
+    function getDeviceCode() {
+      let code = localStorage.getItem("zb_device_code_" + APP_CONFIG.appPrefix);
+      if (!code) {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let rand = "";
+        for (let i = 0; i < 5; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        code = "ZB-" + APP_CONFIG.appPrefix + "-" + rand;
+        localStorage.setItem("zb_device_code_" + APP_CONFIG.appPrefix, code);
+      }
+      return code;
+    }
+
+    function getTrialInfo() {
+      let start = localStorage.getItem("zb_trial_start_" + APP_CONFIG.appPrefix);
+      if (!start) {
+        start = Date.now().toString();
+        localStorage.setItem("zb_trial_start_" + APP_CONFIG.appPrefix, start);
+      }
+      const daysPassed = (Date.now() - parseInt(start, 10)) / (86400 * 1000);
+      const daysLeft = Math.max(0, Math.ceil(APP_CONFIG.trialDays - daysPassed));
+      return { startTime: parseInt(start, 10), daysPassed, daysLeft, isExpired: daysPassed >= APP_CONFIG.trialDays };
+    }
+
+    function isActivated() {
+      const savedKey = localStorage.getItem("zb_license_key_" + APP_CONFIG.appPrefix);
+      if (!savedKey) return false;
+      const expected = calculateLicenseKey(getDeviceCode());
+      return savedKey.trim().toUpperCase() === expected;
+    }
+
+    function initUI() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      const badge = document.createElement("div");
+      badge.id = "zb-license-badge";
+      badge.className = "fixed bottom-3 right-3 z-50 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shadow-xl border flex items-center gap-1.5 transition";
+      if (activated) {
+        badge.className += " bg-emerald-950/90 border-emerald-500/60 text-emerald-300";
+        badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Đã kích hoạt vĩnh viễn`;
+      } else if (!trial.isExpired) {
+        badge.className += " bg-amber-950/90 border-amber-500/60 text-amber-300";
+        badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> Dùng thử: Còn ${trial.daysLeft} ngày`;
+      } else {
+        badge.className += " bg-red-950/90 border-red-500/60 text-red-300 animate-pulse";
+        badge.innerHTML = `<i class="fa-solid fa-lock text-red-400"></i> Đã hết hạn dùng thử`;
+      }
+      badge.onclick = () => openLicenseModal();
+      document.body.appendChild(badge);
+
+      if (trial.isExpired && !activated) {
+        setTimeout(openLicenseModal, 500);
+      }
+    }
+
+    window.openLicenseModal = function() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      let modal = document.getElementById("zb-license-modal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "zb-license-modal";
+        modal.className = "fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4";
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div class="bg-[#1e293b] border border-amber-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-slate-200 text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+            <h3 class="font-bold text-sm text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-key text-amber-400"></i> Bản Quyền ${APP_CONFIG.appName}
+            </h3>
+            <button onclick="closeLicenseModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+          </div>
+          
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Mã Thiết Bị Của Bạn:</span>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-base font-black text-amber-300">${deviceCode}</span>
+              <button onclick="copyDeviceCode('${deviceCode}')" class="px-2 py-1 rounded bg-slate-800 text-[11px] text-amber-400 hover:bg-slate-700">Sao chép</button>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            ${activated ? 'Ứng dụng đã được mở khóa trọn đời.' : trial.isExpired ? 'Thời gian dùng thử 7 ngày đã kết thúc. Vui lòng kích hoạt bản quyền để tiếp tục sử dụng.' : `Bạn đang trong thời hạn dùng thử 7 ngày (Còn <strong>${trial.daysLeft} ngày</strong>).`}
+          </p>
+
+          ${!activated ? `
+            <a href="https://app.zeebee.vn/mua-key?app=${APP_CONFIG.appSlug}&code=${deviceCode}" target="_blank" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center gap-2 shadow-lg transition">
+              <i class="fa-solid fa-cart-shopping"></i> Mua Key Kích Hoạt Vĩnh Viễn (39.000đ)
+            </a>
+
+            <div class="pt-2 space-y-2 border-t border-slate-800">
+              <label class="block text-xs font-semibold text-slate-300">Nhập License Key đã nhận:</label>
+              <div class="flex gap-2">
+                <input id="zb-key-input" type="text" placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-xs uppercase outline-none focus:border-amber-400">
+                <button onclick="activateKey()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-white">Mở khóa</button>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      modal.style.display = "flex";
+    };
+
+    window.closeLicenseModal = function() {
+      const trial = getTrialInfo();
+      const activated = isActivated();
+      if (!trial.isExpired || activated) {
+        const modal = document.getElementById("zb-license-modal");
+        if (modal) modal.style.display = "none";
+      } else {
+        alert("Vui lòng kích hoạt key bản quyền để sử dụng ứng dụng!");
+      }
+    };
+
+    window.copyDeviceCode = function(code) {
+      navigator.clipboard.writeText(code);
+      alert("Đã sao chép mã thiết bị: " + code);
+    };
+
+    window.activateKey = function() {
+      const input = document.getElementById("zb-key-input").value.trim().toUpperCase();
+      const expected = calculateLicenseKey(getDeviceCode());
+      if (input === expected) {
+        localStorage.setItem("zb_license_key_" + APP_CONFIG.appPrefix, input);
+        alert("🎉 Chúc mừng! Ứng dụng đã được kích hoạt bản quyền vĩnh viễn!");
+        location.reload();
+      } else {
+        alert("❌ Mã License Key không chính xác cho thiết bị này. Vui lòng kiểm tra lại!");
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", initUI);
+  })();
+  </script>
+</body>
+</html>

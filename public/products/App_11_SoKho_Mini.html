@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sổ Kho Mini Pro - Quản Lý Xuất Nhập Tồn Kho Offline</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0c1821; }
+    ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+    .glass { background: rgba(27, 38, 59, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
+  </style>
+</head>
+<body class="bg-[#0d1b2a] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-black">
+
+  <!-- HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-[#1b263b] sticky top-0 z-30 px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+        <i class="fa-solid fa-boxes-stacked"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-base tracking-wide text-white flex items-center gap-1.5">
+          SỔ KHO MINI PRO <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">100% Offline</span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Quản Lý Nhập - Xuất - Tồn Kho Mini & Cảnh Báo Hết Hàng</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="exportCSV()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-file-excel"></i> <span class="hidden sm:inline">Xuất File Excel</span>
+      </button>
+      <span class="text-xs font-bold text-amber-400 bg-amber-950/60 px-2 py-1 rounded border border-amber-500/30">
+        app.zeebee.vn
+      </span>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 space-y-4">
+    
+    <!-- DASHBOARD STATS -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="glass p-3.5 rounded-xl shadow-lg border-l-4 border-cyan-400">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block">Tổng Mã Hàng</span>
+        <span id="stat-total-skus" class="text-2xl font-black text-white mt-1 block">0</span>
+      </div>
+      <div class="glass p-3.5 rounded-xl shadow-lg border-l-4 border-emerald-400">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block">Tổng Sản Phẩm Tồn</span>
+        <span id="stat-total-qty" class="text-2xl font-black text-emerald-400 mt-1 block">0</span>
+      </div>
+      <div class="glass p-3.5 rounded-xl shadow-lg border-l-4 border-amber-400">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block">Giá Trị Tồn Kho</span>
+        <span id="stat-total-value" class="text-xl sm:text-2xl font-black text-amber-400 mt-1 block">0 đ</span>
+      </div>
+      <div class="glass p-3.5 rounded-xl shadow-lg border-l-4 border-rose-500">
+        <span class="text-[10px] uppercase font-bold text-slate-400 block">Hàng Sắp Hết (Cảnh báo)</span>
+        <span id="stat-low-stock" class="text-2xl font-black text-rose-400 mt-1 block">0</span>
+      </div>
+    </div>
+
+    <!-- ACTION BAR & SEARCH -->
+    <div class="glass p-3 sm:p-4 rounded-xl shadow-lg flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div class="relative w-full sm:w-72">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+        <input id="search-input" type="text" placeholder="Tìm theo SKU hoặc tên hàng..." oninput="renderTable()" class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-8 pr-3 py-2 text-xs text-white outline-none focus:border-amber-400">
+      </div>
+      <div class="flex gap-2 w-full sm:w-auto">
+        <button onclick="openProductModal()" class="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+          <i class="fa-solid fa-plus"></i> Thêm Mặt Hàng Mới
+        </button>
+        <button onclick="openTxModal('IN')" class="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition">
+          <i class="fa-solid fa-arrow-down"></i> Nhập Kho
+        </button>
+        <button onclick="openTxModal('OUT')" class="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-rose-700 hover:bg-rose-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition">
+          <i class="fa-solid fa-arrow-up"></i> Xuất Bán
+        </button>
+      </div>
+    </div>
+
+    <!-- PRODUCT LIST TABLE -->
+    <div class="glass rounded-xl shadow-xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-900/90 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+            <tr>
+              <th class="p-3">Mã SKU</th>
+              <th class="p-3">Tên Sản Phẩm</th>
+              <th class="p-3 text-right">Giá Vốn</th>
+              <th class="p-3 text-right">Giá Bán</th>
+              <th class="p-3 text-center">Tồn Kho</th>
+              <th class="p-3 text-center">Trạng Thái</th>
+              <th class="p-3 text-center">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody" class="divide-y divide-slate-800/80">
+            <!-- Render by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div id="empty-state" class="py-12 text-center text-slate-500 hidden">
+        <i class="fa-solid fa-box-open text-3xl mb-2 block opacity-40"></i>
+        <span>Chưa có mặt hàng nào. Nhấn "Thêm Mặt Hàng Mới" để bắt đầu!</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL THÊM / SỬA HÀNG HÓA -->
+  <div id="product-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-[#1b263b] border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-3 shadow-2xl text-xs">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-700">
+        <h3 id="modal-title" class="font-bold text-sm text-white">Thêm Sản Phẩm Mới</h3>
+        <button onclick="closeProductModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+      </div>
+      <input type="hidden" id="prod-id">
+      <div>
+        <label class="block text-slate-300 font-semibold mb-1">Mã SKU / Mã Vạch:</label>
+        <input id="prod-sku" type="text" placeholder="Ví dụ: SP001" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-mono uppercase outline-none focus:border-amber-400">
+      </div>
+      <div>
+        <label class="block text-slate-300 font-semibold mb-1">Tên Sản Phẩm:</label>
+        <input id="prod-name" type="text" placeholder="Ví dụ: Áo Thun Cổ Tròn Trắng" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-amber-400">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Giá Vốn (VNĐ):</label>
+          <input id="prod-cost" type="number" step="1000" placeholder="50000" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Giá Bán (VNĐ):</label>
+          <input id="prod-price" type="number" step="1000" placeholder="95000" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-amber-400">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Số Lượng Ban Đầu:</label>
+          <input id="prod-qty" type="number" value="10" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-amber-400">
+        </div>
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Ngưỡng Tồn Tối Thiểu:</label>
+          <input id="prod-min" type="number" value="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-amber-400">
+        </div>
+      </div>
+      <div class="pt-2 flex justify-end gap-2">
+        <button onclick="closeProductModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Hủy</button>
+        <button onclick="saveProduct()" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold">Lưu Sản Phẩm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GIAO DỊCH NHẬP / XUẤT -->
+  <div id="tx-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-[#1b263b] border border-slate-700 rounded-2xl max-w-sm w-full p-5 space-y-3 shadow-2xl text-xs">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-700">
+        <h3 id="tx-title" class="font-bold text-sm text-white">Tạo Phiếu Kho</h3>
+        <button onclick="closeTxModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+      </div>
+      <input type="hidden" id="tx-type">
+      <div>
+        <label class="block text-slate-300 font-semibold mb-1">Chọn sản phẩm:</label>
+        <select id="tx-product-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+      <div>
+        <label class="block text-slate-300 font-semibold mb-1">Số lượng:</label>
+        <input id="tx-qty" type="number" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white font-mono text-sm outline-none focus:border-amber-400">
+      </div>
+      <div>
+        <label class="block text-slate-300 font-semibold mb-1">Ghi chú (Tùy chọn):</label>
+        <input id="tx-note" type="text" placeholder="Khách mua lẻ / Đợt hàng xưởng..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none">
+      </div>
+      <div class="pt-2 flex justify-end gap-2">
+        <button onclick="closeTxModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold">Hủy</button>
+        <button id="tx-submit-btn" onclick="submitTx()" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Xác Nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getProducts() {
+      return JSON.parse(localStorage.getItem('zb_inventory_pro') || '[]');
+    }
+
+    function setProducts(items) {
+      localStorage.setItem('zb_inventory_pro', JSON.stringify(items));
+    }
+
+    function formatVND(n) {
+      return Math.round(n).toLocaleString('vi-VN') + ' đ';
+    }
+
+    // Seed default sample items if fresh
+    if (!localStorage.getItem('zb_inventory_pro')) {
+      setProducts([
+        { id: 1, sku: 'THUN-01', name: 'Áo Thun Trơn Unisex Cotton', cost: 45000, price: 95000, qty: 32, minQty: 10 },
+        { id: 2, sku: 'JEAN-02', name: 'Quần Jean Slimfit Co Giãn', cost: 120000, price: 250000, qty: 8, minQty: 10 },
+        { id: 3, sku: 'NON-03', name: 'Nón Kết Lưỡi Trai Thêu Chữ', cost: 25000, price: 65000, qty: 3, minQty: 5 }
+      ]);
+    }
+
+    function renderTable() {
+      const products = getProducts();
+      const q = document.getElementById('search-input').value.toLowerCase().trim();
+
+      const filtered = products.filter(p => 
+        p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+      );
+
+      // Stats
+      let totalQty = 0;
+      let totalVal = 0;
+      let lowCount = 0;
+
+      products.forEach(p => {
+        totalQty += p.qty;
+        totalVal += (p.qty * p.cost);
+        if (p.qty <= p.minQty) lowCount++;
+      });
+
+      document.getElementById('stat-total-skus').innerText = products.length;
+      document.getElementById('stat-total-qty').innerText = totalQty;
+      document.getElementById('stat-total-value').innerText = formatVND(totalVal);
+      document.getElementById('stat-low-stock').innerText = lowCount;
+
+      const tbody = document.getElementById('product-tbody');
+      const empty = document.getElementById('empty-state');
+
+      if (!filtered.length) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      tbody.innerHTML = filtered.map(p => {
+        const isLow = p.qty <= p.minQty;
+        const isOut = p.qty <= 0;
+
+        let statusBadge = '';
+        if (isOut) {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30">Hết Hàng</span>';
+        } else if (isLow) {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">Sắp Hết</span>';
+        } else {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">An Toàn</span>';
+        }
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-3 font-mono font-bold text-amber-300">${p.sku}</td>
+            <td class="p-3 font-semibold text-white">${p.name}</td>
+            <td class="p-3 text-right text-slate-300">${formatVND(p.cost)}</td>
+            <td class="p-3 text-right text-emerald-400 font-bold">${formatVND(p.price)}</td>
+            <td class="p-3 text-center font-bold font-mono text-base ${isLow ? 'text-rose-400' : 'text-white'}">${p.qty}</td>
+            <td class="p-3 text-center">${statusBadge}</td>
+            <td class="p-3 text-center space-x-2">
+              <button onclick="editProduct(${p.id})" class="text-cyan-400 hover:text-cyan-300"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteProduct(${p.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal Add/Edit
+    function openProductModal() {
+      document.getElementById('modal-title').innerText = 'Thêm Sản Phẩm Mới';
+      document.getElementById('prod-id').value = '';
+      document.getElementById('prod-sku').value = 'SP' + Math.floor(100 + Math.random()*900);
+      document.getElementById('prod-name').value = '';
+      document.getElementById('prod-cost').value = '';
+      document.getElementById('prod-price').value = '';
+      document.getElementById('prod-qty').value = '10';
+      document.getElementById('prod-min').value = '5';
+      document.getElementById('product-modal').style.display = 'flex';
+    }
+
+    function editProduct(id) {
+      const p = getProducts().find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('modal-title').innerText = 'Chỉnh Sửa Sản Phẩm';
+      document.getElementById('prod-id').value = p.id;
+      document.getElementById('prod-sku').value = p.sku;
+      document.getElementById('prod-name').value = p.name;
+      document.getElementById('prod-cost').value = p.cost;
+      document.getElementById('prod-price').value = p.price;
+      document.getElementById('prod-qty').value = p.qty;
+      document.getElementById('prod-min').value = p.minQty;
+      document.getElementById('product-modal').style.display = 'flex';
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').style.display = 'none';
+    }
+
+    function saveProduct() {
+      const id = document.getElementById('prod-id').value;
+      const sku = document.getElementById('prod-sku').value.trim().toUpperCase();
+      const name = document.getElementById('prod-name').value.trim();
+      const cost = parseFloat(document.getElementById('prod-cost').value) || 0;
+      const price = parseFloat(document.getElementById('prod-price').value) || 0;
+      const qty = parseInt(document.getElementById('prod-qty').value, 10) || 0;
+      const minQty = parseInt(document.getElementById('prod-min').value, 10) || 0;
+
+      if (!sku || !name) {
+        alert('Vui lòng nhập đầy đủ Mã SKU và Tên sản phẩm!');
+        return;
+      }
+
+      const products = getProducts();
+      if (id) {
+        const idx = products.findIndex(p => p.id == id);
+        if (idx !== -1) {
+          products[idx] = { id: Number(id), sku, name, cost, price, qty, minQty };
+        }
+      } else {
+        products.push({ id: Date.now(), sku, name, cost, price, qty, minQty });
+      }
+
+      setProducts(products);
+      closeProductModal();
+      renderTable();
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Xóa mặt hàng này khỏi kho?')) {
+        setProducts(getProducts().filter(p => p.id !== id));
+        renderTable();
+      }
+    }
+
+    // Modal Transactions
+    function openTxModal(type) {
+      const products = getProducts();
+      if (!products.length) {
+        alert('Vui lòng thêm sản phẩm vào danh mục trước!');
+        return;
+      }
+
+      document.getElementById('tx-type').value = type;
+      document.getElementById('tx-title').innerText = type === 'IN' ? 'Tạo Phiếu Nhập Kho (+)' : 'Tạo Phiếu Xuất Bán (-)';
+      
+      const submitBtn = document.getElementById('tx-submit-btn');
+      if (type === 'IN') {
+        submitBtn.className = "px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold";
+        submitBtn.innerText = "Xác Nhận Nhập";
+      } else {
+        submitBtn.className = "px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold";
+        submitBtn.innerText = "Xác Nhận Xuất";
+      }
+
+      const sel = document.getElementById('tx-product-select');
+      sel.innerHTML = products.map(p => `
+        <option value="${p.id}">[${p.sku}] ${p.name} (Tồn: ${p.qty})</option>
+      `).join('');
+
+      document.getElementById('tx-qty').value = '1';
+      document.getElementById('tx-note').value = '';
+      document.getElementById('tx-modal').style.display = 'flex';
+    }
+
+    function closeTxModal() {
+      document.getElementById('tx-modal').style.display = 'none';
+    }
+
+    function submitTx() {
+      const type = document.getElementById('tx-type').value;
+      const pid = Number(document.getElementById('tx-product-select').value);
+      const qty = parseInt(document.getElementById('tx-qty').value, 10) || 0;
+
+      if (qty <= 0) {
+        alert('Số lượng giao dịch phải lớn hơn 0!');
+        return;
+      }
+
+      const products = getProducts();
+      const p = products.find(x => x.id === pid);
+      if (!p) return;
+
+      if (type === 'OUT' && p.qty < qty) {
+        alert(`Không đủ tồn kho để xuất! Tồn hiện tại: ${p.qty}, yêu cầu xuất: ${qty}`);
+        return;
+      }
+
+      if (type === 'IN') {
+        p.qty += qty;
+      } else {
+        p.qty -= qty;
+      }
+
+      setProducts(products);
+      closeTxModal();
+      renderTable();
+      alert(`Đã cập nhật ${type === 'IN' ? 'nhập' : 'xuất'} ${qty} sản phẩm cho mã [${p.sku}] thành công!`);
+    }
+
+    function exportCSV() {
+      const products = getProducts();
+      let csv = "Mã SKU,Tên Sản Phẩm,Giá Vốn,Giá Bán,Số Lượng Tồn,Tồn Tối Thiểu,Giá Trị Tồn\n";
+      products.forEach(p => {
+        csv += `"${p.sku}","${p.name}",${p.cost},${p.price},${p.qty},${p.minQty},${p.qty * p.cost}\n`;
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `So_Kho_Mini_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    renderTable();
+  </script>
+
+  <!-- ZEEBEE LICENSE GUARD -->
+  <script>
+  (function() {
+    const APP_CONFIG = {
+      appName: "Sổ Kho Mini Pro",
+      appPrefix: "MK",
+      appSlug: "mini-inventory-offline",
+      trialDays: 7,
+      secretSalt: "ZB_SECRET_2026_OFFLINE_PRO"
+    };
+
+    function sha256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      const mathPow = Math.pow; const maxWord = mathPow(2, 32); const lengthProperty = 'length';
+      let i, j; let result = ''; const words = []; const asciiBitLength = ascii[lengthProperty] * 8;
+      let hash = sha256.h = sha256.h || []; const k = sha256.k = sha256.k || [];
+      let primeCounter = k[lengthProperty]; const isComposite = {};
+      for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80'; while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i); if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+      for (j = 0; j < words[lengthProperty];) {
+        const w = words.slice(j, j += 16); const oldHash = hash; hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          const i2 = i + j; const w15 = w[i - 15], w2 = w[i - 2];
+          const a = hash[0], e = hash[4];
+          const temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash); hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j >= 0; j--) {
+          const b = (hash[i] >> (8 * j)) & 255;
+          result += ((b < 16) ? 0 : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    function calculateLicenseKey(deviceCode) {
+      const raw = deviceCode.trim().toUpperCase() + ":" + APP_CONFIG.secretSalt;
+      const h = sha256(raw).toUpperCase();
+      return "ZBKEY-" + h.slice(0, 4) + "-" + h.slice(4, 8) + "-" + h.slice(8, 12) + "-" + h.slice(12, 16);
+    }
+
+    function getDeviceCode() {
+      let code = localStorage.getItem("zb_device_code_" + APP_CONFIG.appPrefix);
+      if (!code) {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let rand = "";
+        for (let i = 0; i < 5; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        code = "ZB-" + APP_CONFIG.appPrefix + "-" + rand;
+        localStorage.setItem("zb_device_code_" + APP_CONFIG.appPrefix, code);
+      }
+      return code;
+    }
+
+    function getTrialInfo() {
+      let start = localStorage.getItem("zb_trial_start_" + APP_CONFIG.appPrefix);
+      if (!start) {
+        start = Date.now().toString();
+        localStorage.setItem("zb_trial_start_" + APP_CONFIG.appPrefix, start);
+      }
+      const daysPassed = (Date.now() - parseInt(start, 10)) / (86400 * 1000);
+      const daysLeft = Math.max(0, Math.ceil(APP_CONFIG.trialDays - daysPassed));
+      return { startTime: parseInt(start, 10), daysPassed, daysLeft, isExpired: daysPassed >= APP_CONFIG.trialDays };
+    }
+
+    function isActivated() {
+      const savedKey = localStorage.getItem("zb_license_key_" + APP_CONFIG.appPrefix);
+      if (!savedKey) return false;
+      const expected = calculateLicenseKey(getDeviceCode());
+      return savedKey.trim().toUpperCase() === expected;
+    }
+
+    function initUI() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      const badge = document.createElement("div");
+      badge.id = "zb-license-badge";
+      badge.className = "fixed bottom-3 right-3 z-50 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shadow-xl border flex items-center gap-1.5 transition";
+      if (activated) {
+        badge.className += " bg-emerald-950/90 border-emerald-500/60 text-emerald-300";
+        badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Đã kích hoạt vĩnh viễn`;
+      } else if (!trial.isExpired) {
+        badge.className += " bg-amber-950/90 border-amber-500/60 text-amber-300";
+        badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> Dùng thử: Còn ${trial.daysLeft} ngày`;
+      } else {
+        badge.className += " bg-red-950/90 border-red-500/60 text-red-300 animate-pulse";
+        badge.innerHTML = `<i class="fa-solid fa-lock text-red-400"></i> Đã hết hạn dùng thử`;
+      }
+      badge.onclick = () => openLicenseModal();
+      document.body.appendChild(badge);
+
+      if (trial.isExpired && !activated) {
+        setTimeout(openLicenseModal, 500);
+      }
+    }
+
+    window.openLicenseModal = function() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      let modal = document.getElementById("zb-license-modal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "zb-license-modal";
+        modal.className = "fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4";
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div class="bg-[#1b263b] border border-amber-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-slate-200 text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+            <h3 class="font-bold text-sm text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-key text-amber-400"></i> Bản Quyền ${APP_CONFIG.appName}
+            </h3>
+            <button onclick="closeLicenseModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+          </div>
+          
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Mã Thiết Bị Của Bạn:</span>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-base font-black text-amber-300">${deviceCode}</span>
+              <button onclick="copyDeviceCode('${deviceCode}')" class="px-2 py-1 rounded bg-slate-800 text-[11px] text-amber-400 hover:bg-slate-700">Sao chép</button>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            ${activated ? 'Ứng dụng đã được mở khóa trọn đời.' : trial.isExpired ? 'Thời gian dùng thử 7 ngày đã kết thúc. Vui lòng kích hoạt bản quyền để tiếp tục sử dụng.' : `Bạn đang trong thời hạn dùng thử 7 ngày (Còn <strong>${trial.daysLeft} ngày</strong>).`}
+          </p>
+
+          ${!activated ? `
+            <a href="https://app.zeebee.vn/mua-key?app=${APP_CONFIG.appSlug}&code=${deviceCode}" target="_blank" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center gap-2 shadow-lg transition">
+              <i class="fa-solid fa-cart-shopping"></i> Mua Key Kích Hoạt Vĩnh Viễn (99.000đ)
+            </a>
+
+            <div class="pt-2 space-y-2 border-t border-slate-800">
+              <label class="block text-xs font-semibold text-slate-300">Nhập License Key đã nhận:</label>
+              <div class="flex gap-2">
+                <input id="zb-key-input" type="text" placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-xs uppercase outline-none focus:border-amber-400">
+                <button onclick="activateKey()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-white">Mở khóa</button>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      modal.style.display = "flex";
+    };
+
+    window.closeLicenseModal = function() {
+      const trial = getTrialInfo();
+      const activated = isActivated();
+      if (!trial.isExpired || activated) {
+        const modal = document.getElementById("zb-license-modal");
+        if (modal) modal.style.display = "none";
+      } else {
+        alert("Vui lòng kích hoạt key bản quyền để sử dụng ứng dụng!");
+      }
+    };
+
+    window.copyDeviceCode = function(code) {
+      navigator.clipboard.writeText(code);
+      alert("Đã sao chép mã thiết bị: " + code);
+    };
+
+    window.activateKey = function() {
+      const input = document.getElementById("zb-key-input").value.trim().toUpperCase();
+      const expected = calculateLicenseKey(getDeviceCode());
+      if (input === expected) {
+        localStorage.setItem("zb_license_key_" + APP_CONFIG.appPrefix, input);
+        alert("🎉 Chúc mừng! Ứng dụng đã được kích hoạt bản quyền vĩnh viễn!");
+        location.reload();
+      } else {
+        alert("❌ Mã License Key không chính xác cho thiết bị này. Vui lòng kiểm tra lại!");
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", initUI);
+  })();
+  </script>
+</body>
+</html>

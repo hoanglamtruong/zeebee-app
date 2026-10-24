@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sổ Đo Tiệm May Pro - Quản Lý Số Đo Khách Hàng Điện Tử</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #1a102f; }
+    ::-webkit-scrollbar-thumb { background: #3b2d54; border-radius: 4px; }
+    .glass { background: rgba(38, 24, 66, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
+  </style>
+</head>
+<body class="bg-[#130a24] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-fuchsia-500 selection:text-white">
+
+  <!-- HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-[#24143d] sticky top-0 z-30 px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-fuchsia-500 to-pink-500 flex items-center justify-center text-white font-black text-xl shadow-md">
+        <i class="fa-solid fa-tape"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-base tracking-wide text-white flex items-center gap-1.5">
+          SỔ ĐO TIỆM MAY PRO <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">100% Offline</span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Sổ Đo Áo Dài, Vest, Váy Đầm & Khách Hàng Tiệm May Bỏ Túi</p>
+      </div>
+    </div>
+    <span class="text-xs font-bold text-fuchsia-400 bg-fuchsia-950/60 px-2 py-1 rounded border border-fuchsia-500/30">
+      app.zeebee.vn
+    </span>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-5 space-y-4">
+    
+    <!-- TOP BAR -->
+    <div class="glass p-3 sm:p-4 rounded-xl shadow-lg flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div class="relative w-full sm:w-80">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+        <input id="search-client" type="text" placeholder="Tìm theo tên khách hàng hoặc SĐT..." oninput="renderClientList()" class="w-full bg-slate-900/90 border border-slate-700 rounded-lg pl-8 pr-3 py-2 text-xs text-white outline-none focus:border-fuchsia-400">
+      </div>
+      <button onclick="openClientModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg transition">
+        <i class="fa-solid fa-user-plus"></i> Thêm Khách Hàng Mới
+      </button>
+    </div>
+
+    <!-- CLIENT LIST & DETAIL SPLIT -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+      
+      <!-- CLIENT LIST -->
+      <div class="md:col-span-5 space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">
+            Danh Sách Khách Hàng (<span id="client-count">0</span>)
+          </span>
+          <button onclick="exportData()" class="text-[11px] text-fuchsia-400 hover:underline">
+            <i class="fa-solid fa-download"></i> Sao lưu CSV
+          </button>
+        </div>
+        <div id="client-list" class="space-y-2 max-h-[600px] overflow-y-auto pr-1">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- CLIENT MEASUREMENTS DETAIL -->
+      <div class="md:col-span-7">
+        <div id="detail-card" class="glass rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
+          <p class="text-center text-slate-500 py-16">
+            <i class="fa-solid fa-ruler-combined text-3xl mb-2 block opacity-40"></i>
+            Chọn một khách hàng bên trái để xem và chỉnh sửa bảng số đo.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL THÊM / SỬA KHÁCH HÀNG & SỐ ĐO -->
+  <div id="client-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-3 overflow-y-auto">
+    <div class="bg-[#24143d] border border-fuchsia-500/40 rounded-2xl max-w-2xl w-full p-5 space-y-4 shadow-2xl text-xs max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-700">
+        <h3 id="modal-client-title" class="font-bold text-sm text-white">Thêm Khách Hàng & Số Đo</h3>
+        <button onclick="closeClientModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+      </div>
+
+      <input type="hidden" id="form-id">
+
+      <!-- Thông tin liên hệ -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Tên khách hàng (*):</label>
+          <input id="form-name" type="text" placeholder="Chị Mai Lan" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-fuchsia-400">
+        </div>
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Số điện thoại (*):</label>
+          <input id="form-phone" type="text" placeholder="0908xxxxxx" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-fuchsia-400">
+        </div>
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Ngày hẹn lấy hàng:</label>
+          <input id="form-deadline" type="date" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-fuchsia-400">
+        </div>
+      </div>
+
+      <!-- Loại trang phục & Trạng thái -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Kiểu trang phục chính:</label>
+          <select id="form-category" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            <option value="Áo Dài Truyền Thống">Áo Dài Truyền Thống / Cách Tân</option>
+            <option value="Đầm Dạ Hội / Váy">Đầm Dạ Hội / Váy Công Sở</option>
+            <option value="Áo Sơ Mi / Quần Tây">Áo Sơ Mi / Quần Tây</option>
+            <option value="Bộ Vest Nữ / Nam">Bộ Vest Nữ / Nam</option>
+            <option value="Khác">Trang Phục Khác</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Tiến độ may:</label>
+          <select id="form-status" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            <option value="Chờ Cắt May">Chờ Cắt May</option>
+            <option value="Đang May / Thử Đồ">Đang May / Thử Đồ</option>
+            <option value="Đã Hoàn Thành">Đã Hoàn Thành</option>
+            <option value="Đã Giao Khách">Đã Giao Khách</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- BẢNG SỐ ĐO CHI TIẾT (ĐƠN VỊ CM) -->
+      <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 space-y-3">
+        <span class="font-bold text-fuchsia-400 uppercase text-[11px] block border-b border-slate-800 pb-1">
+          Bảng Số Đo Thân Hình (Đơn vị tính: Centimet - cm)
+        </span>
+        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+          <div>
+            <label class="block text-slate-400 text-[10px]">Vòng Cổ:</label>
+            <input id="m-co" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Vòng Ngực:</label>
+            <input id="m-nguc" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Hạ Ngực:</label>
+            <input id="m-hanguc" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Cách Ngực:</label>
+            <input id="m-cachnguc" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Vòng Eo:</label>
+            <input id="m-eo" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Hạ Eo:</label>
+            <input id="m-haeo" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Vòng Mông:</label>
+            <input id="m-mong" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Rộng Vai:</label>
+            <input id="m-vai" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Dài Tay:</label>
+            <input id="m-tay" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Bắp Tay / Cửa Tay:</label>
+            <input id="m-baptay" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Dài Áo:</label>
+            <input id="m-daiao" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[10px]">Dài Quần / Váy:</label>
+            <input id="m-daiquan" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white font-mono text-center">
+          </div>
+        </div>
+      </div>
+
+      <!-- Ghi chú vải & kiểu dáng -->
+      <div>
+        <label class="block text-slate-300 font-semibold mb-1">Ghi chú kiểu dáng & Yêu cầu vải:</label>
+        <textarea id="form-note" rows="2" placeholder="Ví dụ: Vải lụa tơ tằm, cổ tròn 2cm, tà áo xẻ cao, tay lửng có viền ren..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none focus:border-fuchsia-400"></textarea>
+      </div>
+
+      <div class="pt-2 flex justify-end gap-2">
+        <button onclick="closeClientModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-bold hover:bg-slate-700">Hủy</button>
+        <button onclick="saveClient()" class="px-5 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold">Lưu Hồ Sơ Số Đo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getClients() {
+      return JSON.parse(localStorage.getItem('zb_tailor_clients') || '[]');
+    }
+
+    function setClients(data) {
+      localStorage.setItem('zb_tailor_clients', JSON.stringify(data));
+    }
+
+    let selectedClientId = null;
+
+    // Seed default sample clients
+    if (!localStorage.getItem('zb_tailor_clients')) {
+      setClients([
+        {
+          id: 1,
+          name: "Chị Hoàng Lan",
+          phone: "0908123456",
+          deadline: "2026-11-15",
+          category: "Áo Dài Truyền Thống",
+          status: "Đang May / Thử Đồ",
+          m: { co: 36, nguc: 88, hanguc: 24, cachnguc: 17, eo: 68, haeo: 37, mong: 94, vai: 37, tay: 55, baptay: 27, daiao: 135, daiquan: 102 },
+          note: "Lụa gấm đỏ hoa văn sen chìm, cổ thuyền 2cm, tà áo lửng chạm gót."
+        },
+        {
+          id: 2,
+          name: "Anh Minh Quân",
+          phone: "0912345678",
+          deadline: "2026-11-20",
+          category: "Bộ Vest Nữ / Nam",
+          status: "Chờ Cắt May",
+          m: { co: 40, nguc: 96, hanguc: 0, cachnguc: 0, eo: 82, haeo: 42, mong: 98, vai: 44, tay: 60, baptay: 32, daiao: 72, daiquan: 100 },
+          note: "Dạ Ý xanh navy đậm, 2 khuy cài, xẻ tà đôi phía sau lưng."
+        }
+      ]);
+    }
+
+    function renderClientList() {
+      const clients = getClients();
+      const q = document.getElementById('search-client').value.toLowerCase().trim();
+      const filtered = clients.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q));
+
+      document.getElementById('client-count').innerText = clients.length;
+      const listEl = document.getElementById('client-list');
+
+      if (!filtered.length) {
+        listEl.innerHTML = '<p class="text-slate-500 text-center py-8 text-xs">Không tìm thấy khách hàng nào.</p>';
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(c => `
+        <div onclick="selectClient(${c.id})" class="p-3 rounded-xl border cursor-pointer transition ${selectedClientId === c.id ? 'bg-fuchsia-950/60 border-fuchsia-500/80 shadow-lg' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'}">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="font-bold text-white text-xs flex items-center gap-1.5">
+                ${c.name}
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-fuchsia-500/20 text-fuchsia-300 font-semibold">${c.category}</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5"><i class="fa-solid fa-phone text-[9px]"></i> ${c.phone}</div>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${c.status === 'Đã Giao Khách' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-300'}">
+              ${c.status}
+            </span>
+          </div>
+          ${c.deadline ? `<div class="text-[10px] text-slate-500 mt-1 flex items-center gap-1"><i class="fa-solid fa-calendar-check text-[9px]"></i> Hẹn giao: ${c.deadline}</div>` : ''}
+        </div>
+      `).join('');
+
+      if (!selectedClientId && clients.length) {
+        selectClient(clients[0].id);
+      }
+    }
+
+    function selectClient(id) {
+      selectedClientId = id;
+      const c = getClients().find(x => x.id === id);
+      if (!c) return;
+
+      const card = document.getElementById('detail-card');
+      card.innerHTML = `
+        <div class="flex items-start justify-between pb-3 border-b border-slate-700">
+          <div>
+            <h2 class="text-base font-black text-white flex items-center gap-2">
+              ${c.name}
+              <span class="text-xs px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 font-bold">${c.category}</span>
+            </h2>
+            <div class="text-xs text-slate-300 mt-1 flex items-center gap-3">
+              <span><i class="fa-solid fa-phone text-fuchsia-400"></i> ${c.phone}</span>
+              ${c.deadline ? `<span><i class="fa-solid fa-clock text-amber-400"></i> Hẹn: ${c.deadline}</span>` : ''}
+              <span class="font-bold text-amber-300">● ${c.status}</span>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editClient(${c.id})" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-cyan-300 border border-slate-700">
+              <i class="fa-solid fa-pen"></i> Sửa
+            </button>
+            <button onclick="deleteClient(${c.id})" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-rose-400 border border-slate-700">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <span class="font-bold text-xs text-slate-300 uppercase tracking-wide flex items-center gap-1.5">
+            <i class="fa-solid fa-ruler text-fuchsia-400"></i> Bảng Thông Số Số Đo (cm):
+          </span>
+          <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 text-xs">
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Cổ:</span> <b class="text-white font-mono text-sm">${c.m.co || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Ngực:</span> <b class="text-white font-mono text-sm">${c.m.nguc || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Hạ Ngực:</span> <b class="text-white font-mono text-sm">${c.m.hanguc || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Cách Ngực:</span> <b class="text-white font-mono text-sm">${c.m.cachnguc || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Eo:</span> <b class="text-white font-mono text-sm">${c.m.eo || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Hạ Eo:</span> <b class="text-white font-mono text-sm">${c.m.haeo || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Mông:</span> <b class="text-white font-mono text-sm">${c.m.mong || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Rộng Vai:</span> <b class="text-white font-mono text-sm">${c.m.vai || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Dài Tay:</span> <b class="text-white font-mono text-sm">${c.m.tay || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Bắp Tay:</span> <b class="text-white font-mono text-sm">${c.m.baptay || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Dài Áo:</span> <b class="text-white font-mono text-sm">${c.m.daiao || '--'}</b> cm</div>
+            <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800"><span class="text-slate-400 block text-[10px]">Dài Quần/Váy:</span> <b class="text-white font-mono text-sm">${c.m.daiquan || '--'}</b> cm</div>
+          </div>
+        </div>
+
+        ${c.note ? `
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-xs">
+            <span class="text-slate-400 font-semibold block text-[10px] uppercase">Ghi Chú Kiểu Dáng:</span>
+            <p class="text-slate-200 mt-1 leading-relaxed">${c.note}</p>
+          </div>
+        ` : ''}
+
+        <div class="pt-2 flex gap-2">
+          <button onclick="copyClientSheet(${c.id})" class="flex-1 py-2.5 rounded-xl bg-fuchsia-700 hover:bg-fuchsia-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-copy"></i> Sao Chép Số Đo Gửi Zalo
+          </button>
+          <button onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+            <i class="fa-solid fa-print"></i>
+          </button>
+        </div>
+      `;
+
+      renderClientList();
+    }
+
+    function openClientModal() {
+      document.getElementById('modal-client-title').innerText = 'Thêm Khách Hàng & Số Đo';
+      document.getElementById('form-id').value = '';
+      document.getElementById('form-name').value = '';
+      document.getElementById('form-phone').value = '';
+      document.getElementById('form-deadline').value = '';
+      document.getElementById('form-note').value = '';
+      ['co', 'nguc', 'hanguc', 'cachnguc', 'eo', 'haeo', 'mong', 'vai', 'tay', 'baptay', 'daiao', 'daiquan'].forEach(k => {
+        document.getElementById('m-' + k).value = '';
+      });
+      document.getElementById('client-modal').style.display = 'flex';
+    }
+
+    function editClient(id) {
+      const c = getClients().find(x => x.id === id);
+      if (!c) return;
+      document.getElementById('modal-client-title').innerText = 'Chỉnh Sửa Hồ Sơ Khách Hàng';
+      document.getElementById('form-id').value = c.id;
+      document.getElementById('form-name').value = c.name;
+      document.getElementById('form-phone').value = c.phone;
+      document.getElementById('form-deadline').value = c.deadline || '';
+      document.getElementById('form-category').value = c.category;
+      document.getElementById('form-status').value = c.status;
+      document.getElementById('form-note').value = c.note || '';
+
+      ['co', 'nguc', 'hanguc', 'cachnguc', 'eo', 'haeo', 'mong', 'vai', 'tay', 'baptay', 'daiao', 'daiquan'].forEach(k => {
+        document.getElementById('m-' + k).value = c.m[k] || '';
+      });
+      document.getElementById('client-modal').style.display = 'flex';
+    }
+
+    function closeClientModal() {
+      document.getElementById('client-modal').style.display = 'none';
+    }
+
+    function saveClient() {
+      const id = document.getElementById('form-id').value;
+      const name = document.getElementById('form-name').value.trim();
+      const phone = document.getElementById('form-phone').value.trim();
+      const deadline = document.getElementById('form-deadline').value;
+      const category = document.getElementById('form-category').value;
+      const status = document.getElementById('form-status').value;
+      const note = document.getElementById('form-note').value.trim();
+
+      if (!name || !phone) {
+        alert('Vui lòng nhập Tên và Số điện thoại khách hàng!');
+        return;
+      }
+
+      const m = {};
+      ['co', 'nguc', 'hanguc', 'cachnguc', 'eo', 'haeo', 'mong', 'vai', 'tay', 'baptay', 'daiao', 'daiquan'].forEach(k => {
+        m[k] = parseFloat(document.getElementById('m-' + k).value) || 0;
+      });
+
+      const clients = getClients();
+      if (id) {
+        const idx = clients.findIndex(x => x.id == id);
+        if (idx !== -1) {
+          clients[idx] = { id: Number(id), name, phone, deadline, category, status, m, note };
+        }
+      } else {
+        const newId = Date.now();
+        clients.unshift({ id: newId, name, phone, deadline, category, status, m, note });
+        selectedClientId = newId;
+      }
+
+      setClients(clients);
+      closeClientModal();
+      selectClient(selectedClientId);
+    }
+
+    function deleteClient(id) {
+      if (confirm('Xóa hồ sơ khách hàng này khỏi sổ đo?')) {
+        const clients = getClients().filter(x => x.id !== id);
+        setClients(clients);
+        selectedClientId = clients.length ? clients[0].id : null;
+        renderClientList();
+        if (selectedClientId) selectClient(selectedClientId);
+      }
+    }
+
+    function copyClientSheet(id) {
+      const c = getClients().find(x => x.id === id);
+      if (!c) return;
+
+      const text = `📐 BẢNG SỐ ĐO MAY ĐO CHUYÊN NGHIỆP
+- Khách hàng: ${c.name}
+- SĐT: ${c.phone}
+- Loại trang phục: ${c.category}
+- Hẹn giao: ${c.deadline || 'Chưa hẹn'}
+------------------------------------
+- Vòng ngực: ${c.m.nguc} cm | Hạ ngực: ${c.m.hanguc} cm
+- Vòng eo: ${c.m.eo} cm | Hạ eo: ${c.m.haeo} cm
+- Vòng mông: ${c.m.mong} cm | Rộng vai: ${c.m.vai} cm
+- Dài tay: ${c.m.tay} cm | Dài áo: ${c.m.daiao} cm
+- Dài quần/váy: ${c.m.daiquan} cm
+- Ghi chú: ${c.note || 'Không có'}
+------------------------------------
+Lưu trữ trên Sổ Đo Tiệm May Pro (app.zeebee.vn)`;
+
+      navigator.clipboard.writeText(text);
+      alert('Đã sao chép bảng số đo khách hàng vào bộ nhớ tạm!');
+    }
+
+    function exportData() {
+      const clients = getClients();
+      let csv = "ID,Tên Khách Hàng,SĐT,Hẹn Lấy,Trang Phục,Tiến Độ,Ngực,Eo,Mông,Dài Áo,Dài Quần,Ghi Chú\n";
+      clients.forEach(c => {
+        csv += `"${c.id}","${c.name}","${c.phone}","${c.deadline}","${c.category}","${c.status}",${c.m.nguc},${c.m.eo},${c.m.mong},${c.m.daiao},${c.m.daiquan},"${(c.note||'').replace(/"/g, '""')}"\n`;
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `So_Do_Tiem_May_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    renderClientList();
+  </script>
+
+  <!-- ZEEBEE LICENSE GUARD -->
+  <script>
+  (function() {
+    const APP_CONFIG = {
+      appName: "Sổ Đo Tiệm May Pro",
+      appPrefix: "TM",
+      appSlug: "tailor-measurement-book",
+      trialDays: 7,
+      secretSalt: "ZB_SECRET_2026_OFFLINE_PRO"
+    };
+
+    function sha256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      const mathPow = Math.pow; const maxWord = mathPow(2, 32); const lengthProperty = 'length';
+      let i, j; let result = ''; const words = []; const asciiBitLength = ascii[lengthProperty] * 8;
+      let hash = sha256.h = sha256.h || []; const k = sha256.k = sha256.k || [];
+      let primeCounter = k[lengthProperty]; const isComposite = {};
+      for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80'; while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i); if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+      for (j = 0; j < words[lengthProperty];) {
+        const w = words.slice(j, j += 16); const oldHash = hash; hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          const i2 = i + j; const w15 = w[i - 15], w2 = w[i - 2];
+          const a = hash[0], e = hash[4];
+          const temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash); hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j >= 0; j--) {
+          const b = (hash[i] >> (8 * j)) & 255;
+          result += ((b < 16) ? 0 : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    function calculateLicenseKey(deviceCode) {
+      const raw = deviceCode.trim().toUpperCase() + ":" + APP_CONFIG.secretSalt;
+      const h = sha256(raw).toUpperCase();
+      return "ZBKEY-" + h.slice(0, 4) + "-" + h.slice(4, 8) + "-" + h.slice(8, 12) + "-" + h.slice(12, 16);
+    }
+
+    function getDeviceCode() {
+      let code = localStorage.getItem("zb_device_code_" + APP_CONFIG.appPrefix);
+      if (!code) {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let rand = "";
+        for (let i = 0; i < 5; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        code = "ZB-" + APP_CONFIG.appPrefix + "-" + rand;
+        localStorage.setItem("zb_device_code_" + APP_CONFIG.appPrefix, code);
+      }
+      return code;
+    }
+
+    function getTrialInfo() {
+      let start = localStorage.getItem("zb_trial_start_" + APP_CONFIG.appPrefix);
+      if (!start) {
+        start = Date.now().toString();
+        localStorage.setItem("zb_trial_start_" + APP_CONFIG.appPrefix, start);
+      }
+      const daysPassed = (Date.now() - parseInt(start, 10)) / (86400 * 1000);
+      const daysLeft = Math.max(0, Math.ceil(APP_CONFIG.trialDays - daysPassed));
+      return { startTime: parseInt(start, 10), daysPassed, daysLeft, isExpired: daysPassed >= APP_CONFIG.trialDays };
+    }
+
+    function isActivated() {
+      const savedKey = localStorage.getItem("zb_license_key_" + APP_CONFIG.appPrefix);
+      if (!savedKey) return false;
+      const expected = calculateLicenseKey(getDeviceCode());
+      return savedKey.trim().toUpperCase() === expected;
+    }
+
+    function initUI() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      const badge = document.createElement("div");
+      badge.id = "zb-license-badge";
+      badge.className = "fixed bottom-3 right-3 z-50 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shadow-xl border flex items-center gap-1.5 transition";
+      if (activated) {
+        badge.className += " bg-emerald-950/90 border-emerald-500/60 text-emerald-300";
+        badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Đã kích hoạt vĩnh viễn`;
+      } else if (!trial.isExpired) {
+        badge.className += " bg-amber-950/90 border-amber-500/60 text-amber-300";
+        badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> Dùng thử: Còn ${trial.daysLeft} ngày`;
+      } else {
+        badge.className += " bg-red-950/90 border-red-500/60 text-red-300 animate-pulse";
+        badge.innerHTML = `<i class="fa-solid fa-lock text-red-400"></i> Đã hết hạn dùng thử`;
+      }
+      badge.onclick = () => openLicenseModal();
+      document.body.appendChild(badge);
+
+      if (trial.isExpired && !activated) {
+        setTimeout(openLicenseModal, 500);
+      }
+    }
+
+    window.openLicenseModal = function() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      let modal = document.getElementById("zb-license-modal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "zb-license-modal";
+        modal.className = "fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4";
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div class="bg-[#24143d] border border-fuchsia-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-slate-200 text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+            <h3 class="font-bold text-sm text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-key text-fuchsia-400"></i> Bản Quyền ${APP_CONFIG.appName}
+            </h3>
+            <button onclick="closeLicenseModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+          </div>
+          
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Mã Thiết Bị Của Bạn:</span>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-base font-black text-amber-300">${deviceCode}</span>
+              <button onclick="copyDeviceCode('${deviceCode}')" class="px-2 py-1 rounded bg-slate-800 text-[11px] text-fuchsia-400 hover:bg-slate-700">Sao chép</button>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            ${activated ? 'Ứng dụng đã được mở khóa trọn đời.' : trial.isExpired ? 'Thời gian dùng thử 7 ngày đã kết thúc. Vui lòng kích hoạt bản quyền để tiếp tục sử dụng.' : `Bạn đang trong thời hạn dùng thử 7 ngày (Còn <strong>${trial.daysLeft} ngày</strong>).`}
+          </p>
+
+          ${!activated ? `
+            <a href="https://app.zeebee.vn/mua-key?app=${APP_CONFIG.appSlug}&code=${deviceCode}" target="_blank" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-fuchsia-600 hover:bg-fuchsia-500 text-white flex items-center justify-center gap-2 shadow-lg transition">
+              <i class="fa-solid fa-cart-shopping"></i> Mua Key Kích Hoạt Vĩnh Viễn (59.000đ)
+            </a>
+
+            <div class="pt-2 space-y-2 border-t border-slate-800">
+              <label class="block text-xs font-semibold text-slate-300">Nhập License Key đã nhận:</label>
+              <div class="flex gap-2">
+                <input id="zb-key-input" type="text" placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-xs uppercase outline-none focus:border-fuchsia-400">
+                <button onclick="activateKey()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-white">Mở khóa</button>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      modal.style.display = "flex";
+    };
+
+    window.closeLicenseModal = function() {
+      const trial = getTrialInfo();
+      const activated = isActivated();
+      if (!trial.isExpired || activated) {
+        const modal = document.getElementById("zb-license-modal");
+        if (modal) modal.style.display = "none";
+      } else {
+        alert("Vui lòng kích hoạt key bản quyền để sử dụng ứng dụng!");
+      }
+    };
+
+    window.copyDeviceCode = function(code) {
+      navigator.clipboard.writeText(code);
+      alert("Đã sao chép mã thiết bị: " + code);
+    };
+
+    window.activateKey = function() {
+      const input = document.getElementById("zb-key-input").value.trim().toUpperCase();
+      const expected = calculateLicenseKey(getDeviceCode());
+      if (input === expected) {
+        localStorage.setItem("zb_license_key_" + APP_CONFIG.appPrefix, input);
+        alert("🎉 Chúc mừng! Ứng dụng đã được kích hoạt bản quyền vĩnh viễn!");
+        location.reload();
+      } else {
+        alert("❌ Mã License Key không chính xác cho thiết bị này. Vui lòng kiểm tra lại!");
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", initUI);
+  })();
+  </script>
+</body>
+</html>

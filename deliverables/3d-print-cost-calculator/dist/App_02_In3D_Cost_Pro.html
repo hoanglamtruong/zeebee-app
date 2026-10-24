@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>In 3D Pro - Tính Giá Thành & Báo Giá In 3D Chuẩn Xác</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0b132b; }
+    ::-webkit-scrollbar-thumb { background: #1c2541; border-radius: 4px; }
+    .glass { background: rgba(28, 37, 65, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
+  </style>
+</head>
+<body class="bg-[#0b132b] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
+
+  <!-- HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-[#1c2541] sticky top-0 z-30 px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+        <i class="fa-solid fa-cube"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-base tracking-wide text-white flex items-center gap-1.5">
+          IN 3D PRO <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">100% Offline</span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Dự Toán Giá Thành Nhựa, Điện, Khấu Hao & Báo Giá Maker</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="saveCurrentQuote()" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-floppy-disk"></i> <span class="hidden sm:inline">Lưu Báo Giá</span>
+      </button>
+      <span class="text-xs font-bold text-cyan-400 bg-cyan-950/60 px-2 py-1 rounded border border-cyan-500/30">
+        app.zeebee.vn
+      </span>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-5 space-y-4">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      
+      <!-- INPUTS -->
+      <div class="lg:col-span-7 space-y-4">
+        
+        <!-- Thông tin chung -->
+        <div class="glass rounded-2xl p-4 space-y-3 shadow-xl">
+          <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-700/60 pb-2">
+            <i class="fa-solid fa-tag"></i> 1. Thông Tin Chi Tiết Mô Hình
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Tên mô hình / File STL:</label>
+              <input id="item-name" type="text" value="Khung Vỏ Đỡ Động Cơ V2" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white focus:border-cyan-400 outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Khách hàng / Ghi chú:</label>
+              <input id="client-name" type="text" value="Anh Tuấn - HCM" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white focus:border-cyan-400 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Vật liệu nhựa & Thời gian in -->
+        <div class="glass rounded-2xl p-4 space-y-3 shadow-xl">
+          <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-700/60 pb-2">
+            <i class="fa-solid fa-scroll"></i> 2. Vật Liệu Filament & Thời Gian In
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Loại nhựa in:</label>
+              <select id="filament-type" onchange="onFilamentChange()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+                <option value="350000">PLA Chuẩn (350.000đ/kg)</option>
+                <option value="420000">PETG Chịu Nhiệt (420.000đ/kg)</option>
+                <option value="480000">ABS Kỹ Thuật (480.000đ/kg)</option>
+                <option value="650000">TPU Dẻo (650.000đ/kg)</option>
+                <option value="550000">Resin SLA (550.000đ/L)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Giá nhựa (VNĐ/kg):</label>
+              <input id="filament-price" type="number" value="350000" step="10000" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Khối lượng in (Gram):</label>
+              <input id="print-weight" type="number" value="85" step="1" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Thời gian in (Giờ):</label>
+              <input id="print-hours" type="number" value="4" step="0.5" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Tỷ lệ hao hụt / in lỗi (%):</label>
+              <input id="waste-rate" type="number" value="5" step="1" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Số lượng bản in:</label>
+              <input id="print-qty" type="number" value="1" min="1" step="1" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Máy in, Điện năng & Khấu hao -->
+        <div class="glass rounded-2xl p-4 space-y-3 shadow-xl">
+          <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-700/60 pb-2">
+            <i class="fa-solid fa-bolt"></i> 3. Điện Năng, Khấu Hao & Nhân Công
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Công suất máy (W):</label>
+              <input id="printer-watt" type="number" value="200" step="20" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Giá điện (VNĐ/kWh):</label>
+              <input id="power-rate" type="number" value="3000" step="500" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Khấu hao máy (đ/giờ):</label>
+              <input id="deprec-rate" type="number" value="4000" step="1000" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Công xử lý (đ/mẫu):</label>
+              <input id="labor-cost" type="number" value="20000" step="5000" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Lợi nhuận & Chiết khấu -->
+        <div class="glass rounded-2xl p-4 space-y-3 shadow-xl">
+          <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-700/60 pb-2">
+            <i class="fa-solid fa-chart-line"></i> 4. Biên Lợi Nhuận Mục Tiêu
+          </h2>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Tỷ lệ lợi nhuận Markup (%):</label>
+              <input id="markup-percent" type="number" value="50" step="5" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+              <span class="text-[10px] text-slate-400 mt-1 block">Markup 50% = Giá bán = Giá vốn × 1.5</span>
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Chiết khấu / Giảm giá (VNĐ):</label>
+              <input id="discount-amount" type="number" value="0" step="5000" oninput="calculate()" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg p-2 text-white outline-none">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RESULTS -->
+      <div class="lg:col-span-5 space-y-4">
+        
+        <div class="glass rounded-2xl p-5 space-y-4 shadow-xl border-cyan-500/40 relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 w-28 h-28 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="border-b border-slate-700 pb-3">
+            <span class="text-[11px] font-bold text-slate-400 uppercase">GIÁ BÁN ĐỀ XUẤT CHO KHÁCH</span>
+            <div id="final-price" class="text-3xl font-black text-amber-400 tracking-tight mt-1">
+              0 đ
+            </div>
+            <div id="unit-price" class="text-xs text-slate-300 mt-0.5">
+              Đơn giá mỗi chiếc: 0 đ
+            </div>
+          </div>
+
+          <!-- Bóc tách chi phí -->
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">1. Tiền nhựa (kèm 5% hao hụt):</span>
+              <span id="cost-filament" class="font-bold text-white">0 đ</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">2. Tiền điện tiêu thụ:</span>
+              <span id="cost-power" class="font-bold text-white">0 đ</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">3. Khấu hao máy & đầu đùn:</span>
+              <span id="cost-deprec" class="font-bold text-white">0 đ</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800">
+              <span class="text-slate-400">4. Công gỡ support & hậu kỳ:</span>
+              <span id="cost-labor" class="font-bold text-white">0 đ</span>
+            </div>
+            <div class="flex justify-between py-1.5 border-b border-slate-700 font-bold bg-slate-900/40 px-2 rounded">
+              <span class="text-cyan-300">Tổng giá vốn sản xuất (COGS):</span>
+              <span id="total-cogs" class="text-cyan-300">0 đ</span>
+            </div>
+            <div class="flex justify-between py-1.5 border-b border-slate-700 font-bold bg-emerald-950/30 px-2 rounded text-emerald-300">
+              <span>Lợi nhuận ròng thu về:</span>
+              <span id="net-profit">0 đ</span>
+            </div>
+          </div>
+
+          <!-- Nút xuất báo giá -->
+          <div class="pt-2 flex gap-2">
+            <button onclick="copyQuoteToClipboard()" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-cyan-300 border border-slate-700 flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-copy"></i> Sao Chép Báo Giá
+            </button>
+            <button onclick="window.print()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 border border-slate-700 transition">
+              <i class="fa-solid fa-print"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lịch sử báo giá đã lưu -->
+        <div class="glass rounded-2xl p-4 space-y-2 shadow-xl">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-700/60">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wide">
+              <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i> Lịch Sử Đơn Đã Lưu (<span id="history-count">0</span>)
+            </h3>
+            <button onclick="clearHistory()" class="text-[11px] text-red-400 hover:underline">Xóa hết</button>
+          </div>
+          <div id="history-list" class="space-y-2 max-h-48 overflow-y-auto text-xs pr-1">
+            <p class="text-slate-500 text-center py-4">Chưa có báo giá nào được lưu.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    function formatVND(n) {
+      return Math.round(n).toLocaleString('vi-VN') + ' đ';
+    }
+
+    function onFilamentChange() {
+      const sel = document.getElementById('filament-type');
+      document.getElementById('filament-price').value = sel.value;
+      calculate();
+    }
+
+    function calculate() {
+      const fPrice = parseFloat(document.getElementById('filament-price').value) || 0;
+      const weight = parseFloat(document.getElementById('print-weight').value) || 0;
+      const hours = parseFloat(document.getElementById('print-hours').value) || 0;
+      const wasteRate = parseFloat(document.getElementById('waste-rate').value) || 0;
+      const qty = parseInt(document.getElementById('print-qty').value, 10) || 1;
+
+      const pWatt = parseFloat(document.getElementById('printer-watt').value) || 0;
+      const pRate = parseFloat(document.getElementById('power-rate').value) || 0;
+      const deprecRate = parseFloat(document.getElementById('deprec-rate').value) || 0;
+      const laborCost = parseFloat(document.getElementById('labor-cost').value) || 0;
+
+      const markup = parseFloat(document.getElementById('markup-percent').value) || 0;
+      const discount = parseFloat(document.getElementById('discount-amount').value) || 0;
+
+      // 1. Tiền nhựa 1 chiếc
+      const unitFilamentCost = (weight / 1000) * fPrice * (1 + wasteRate / 100);
+      // 2. Tiền điện 1 chiếc (kWh = W * hours / 1000)
+      const unitPowerCost = (pWatt * hours / 1000) * pRate;
+      // 3. Khấu hao máy 1 chiếc
+      const unitDeprecCost = hours * deprecRate;
+      // 4. Nhân công 1 chiếc
+      const unitLabor = laborCost;
+
+      // Tổng COGS 1 chiếc
+      const unitCOGS = unitFilamentCost + unitPowerCost + unitDeprecCost + unitLabor;
+      const totalCOGS = unitCOGS * qty;
+
+      // Giá bán đề xuất
+      const totalSellingBeforeDiscount = totalCOGS * (1 + markup / 100);
+      const totalFinalPrice = Math.max(0, totalSellingBeforeDiscount - discount);
+      const unitFinalPrice = totalFinalPrice / qty;
+      const netProfit = totalFinalPrice - totalCOGS;
+
+      // Render
+      document.getElementById('cost-filament').innerText = formatVND(unitFilamentCost * qty);
+      document.getElementById('cost-power').innerText = formatVND(unitPowerCost * qty);
+      document.getElementById('cost-deprec').innerText = formatVND(unitDeprecCost * qty);
+      document.getElementById('cost-labor').innerText = formatVND(unitLabor * qty);
+
+      document.getElementById('total-cogs').innerText = formatVND(totalCOGS);
+      document.getElementById('net-profit').innerText = formatVND(netProfit);
+      document.getElementById('final-price').innerText = formatVND(totalFinalPrice);
+      document.getElementById('unit-price').innerText = `Đơn giá mỗi chiếc (${qty} chiếc): ${formatVND(unitFinalPrice)}`;
+    }
+
+    function saveCurrentQuote() {
+      const itemName = document.getElementById('item-name').value;
+      const clientName = document.getElementById('client-name').value;
+      const finalPrice = document.getElementById('final-price').innerText;
+      const qty = document.getElementById('print-qty').value;
+      const weight = document.getElementById('print-weight').value;
+      const hours = document.getElementById('print-hours').value;
+
+      const item = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('vi-VN'),
+        name: itemName,
+        client: clientName,
+        price: finalPrice,
+        qty: qty,
+        details: `${weight}g · ${hours}h in`
+      };
+
+      const history = JSON.parse(localStorage.getItem('zb_3d_history') || '[]');
+      history.unshift(item);
+      localStorage.setItem('zb_3d_history', JSON.stringify(history.slice(0, 30)));
+      renderHistory();
+      alert('Đã lưu báo giá vào lịch sử cục bộ!');
+    }
+
+    function renderHistory() {
+      const history = JSON.parse(localStorage.getItem('zb_3d_history') || '[]');
+      document.getElementById('history-count').innerText = history.length;
+      const list = document.getElementById('history-list');
+
+      if (!history.length) {
+        list.innerHTML = '<p class="text-slate-500 text-center py-4">Chưa có báo giá nào được lưu.</p>';
+        return;
+      }
+
+      list.innerHTML = history.map(h => `
+        <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-white">${h.name}</div>
+            <div class="text-[10px] text-slate-400">${h.client} · ${h.details} · SL: ${h.qty}</div>
+          </div>
+          <div class="text-right">
+            <span class="font-black text-amber-400 block">${h.price}</span>
+            <span class="text-[9px] text-slate-500">${h.date}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function clearHistory() {
+      if (confirm('Xóa toàn bộ lịch sử báo giá in 3D?')) {
+        localStorage.removeItem('zb_3d_history');
+        renderHistory();
+      }
+    }
+
+    function copyQuoteToClipboard() {
+      const item = document.getElementById('item-name').value;
+      const client = document.getElementById('client-name').value;
+      const qty = document.getElementById('print-qty').value;
+      const weight = document.getElementById('print-weight').value;
+      const hours = document.getElementById('print-hours').value;
+      const finalPrice = document.getElementById('final-price').innerText;
+
+      const text = `📋 BÁO GIÁ DỊCH VỤ IN 3D CHUYÊN NGHIỆP
+- Mô hình: ${item}
+- Khách hàng: ${client}
+- Số lượng: ${qty} sản phẩm
+- Trọng lượng nhựa: ${weight} gram / mẫu
+- Thời gian in máy: ${hours} giờ
+----------------------------------------
+💰 TỔNG CỘNG THANH TOÁN: ${finalPrice}
+(Đã bao gồm chi phí vật tư, điện năng, khấu hao máy và xử lý bề mặt)
+Cảm ơn quý khách đã tin tưởng dịch vụ!`;
+
+      navigator.clipboard.writeText(text);
+      alert('Đã sao chép nội dung báo giá vào bộ nhớ tạm!');
+    }
+
+    // Init
+    calculate();
+    renderHistory();
+  </script>
+
+  <!-- ZEEBEE 7-DAY TRIAL & OFFLINE LICENSE GUARD -->
+  <script>
+  (function() {
+    const APP_CONFIG = {
+      appName: "In 3D Pro Offline",
+      appPrefix: "3D",
+      appSlug: "3d-print-cost-calculator",
+      trialDays: 7,
+      secretSalt: "ZB_SECRET_2026_OFFLINE_PRO"
+    };
+
+    function sha256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      const mathPow = Math.pow; const maxWord = mathPow(2, 32); const lengthProperty = 'length';
+      let i, j; let result = ''; const words = []; const asciiBitLength = ascii[lengthProperty] * 8;
+      let hash = sha256.h = sha256.h || []; const k = sha256.k = sha256.k || [];
+      let primeCounter = k[lengthProperty]; const isComposite = {};
+      for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80'; while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i); if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+      for (j = 0; j < words[lengthProperty];) {
+        const w = words.slice(j, j += 16); const oldHash = hash; hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          const i2 = i + j; const w15 = w[i - 15], w2 = w[i - 2];
+          const a = hash[0], e = hash[4];
+          const temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash); hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j >= 0; j--) {
+          const b = (hash[i] >> (8 * j)) & 255;
+          result += ((b < 16) ? 0 : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    function calculateLicenseKey(deviceCode) {
+      const raw = deviceCode.trim().toUpperCase() + ":" + APP_CONFIG.secretSalt;
+      const h = sha256(raw).toUpperCase();
+      return "ZBKEY-" + h.slice(0, 4) + "-" + h.slice(4, 8) + "-" + h.slice(8, 12) + "-" + h.slice(12, 16);
+    }
+
+    function getDeviceCode() {
+      let code = localStorage.getItem("zb_device_code_" + APP_CONFIG.appPrefix);
+      if (!code) {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let rand = "";
+        for (let i = 0; i < 5; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        code = "ZB-" + APP_CONFIG.appPrefix + "-" + rand;
+        localStorage.setItem("zb_device_code_" + APP_CONFIG.appPrefix, code);
+      }
+      return code;
+    }
+
+    function getTrialInfo() {
+      let start = localStorage.getItem("zb_trial_start_" + APP_CONFIG.appPrefix);
+      if (!start) {
+        start = Date.now().toString();
+        localStorage.setItem("zb_trial_start_" + APP_CONFIG.appPrefix, start);
+      }
+      const daysPassed = (Date.now() - parseInt(start, 10)) / (86400 * 1000);
+      const daysLeft = Math.max(0, Math.ceil(APP_CONFIG.trialDays - daysPassed));
+      return { startTime: parseInt(start, 10), daysPassed, daysLeft, isExpired: daysPassed >= APP_CONFIG.trialDays };
+    }
+
+    function isActivated() {
+      const savedKey = localStorage.getItem("zb_license_key_" + APP_CONFIG.appPrefix);
+      if (!savedKey) return false;
+      const expected = calculateLicenseKey(getDeviceCode());
+      return savedKey.trim().toUpperCase() === expected;
+    }
+
+    function initUI() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      const badge = document.createElement("div");
+      badge.id = "zb-license-badge";
+      badge.className = "fixed bottom-3 right-3 z-50 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shadow-xl border flex items-center gap-1.5 transition";
+      if (activated) {
+        badge.className += " bg-emerald-950/90 border-emerald-500/60 text-emerald-300";
+        badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Đã kích hoạt vĩnh viễn`;
+      } else if (!trial.isExpired) {
+        badge.className += " bg-amber-950/90 border-amber-500/60 text-amber-300";
+        badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> Dùng thử: Còn ${trial.daysLeft} ngày`;
+      } else {
+        badge.className += " bg-red-950/90 border-red-500/60 text-red-300 animate-pulse";
+        badge.innerHTML = `<i class="fa-solid fa-lock text-red-400"></i> Đã hết hạn dùng thử`;
+      }
+      badge.onclick = () => openLicenseModal();
+      document.body.appendChild(badge);
+
+      if (trial.isExpired && !activated) {
+        setTimeout(openLicenseModal, 500);
+      }
+    }
+
+    window.openLicenseModal = function() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      let modal = document.getElementById("zb-license-modal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "zb-license-modal";
+        modal.className = "fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4";
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div class="bg-[#1c2541] border border-cyan-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-slate-200 text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+            <h3 class="font-bold text-sm text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-key text-cyan-400"></i> Bản Quyền ${APP_CONFIG.appName}
+            </h3>
+            <button onclick="closeLicenseModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+          </div>
+          
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Mã Thiết Bị Của Bạn:</span>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-base font-black text-amber-300">${deviceCode}</span>
+              <button onclick="copyDeviceCode('${deviceCode}')" class="px-2 py-1 rounded bg-slate-800 text-[11px] text-cyan-400 hover:bg-slate-700">Sao chép</button>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            ${activated ? 'Ứng dụng đã được mở khóa trọn đời.' : trial.isExpired ? 'Thời gian dùng thử 7 ngày đã kết thúc. Vui lòng kích hoạt bản quyền để tiếp tục sử dụng.' : `Bạn đang trong thời hạn dùng thử 7 ngày (Còn <strong>${trial.daysLeft} ngày</strong>).`}
+          </p>
+
+          ${!activated ? `
+            <a href="https://app.zeebee.vn/mua-key?app=${APP_CONFIG.appSlug}&code=${deviceCode}" target="_blank" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center gap-2 shadow-lg transition">
+              <i class="fa-solid fa-cart-shopping"></i> Mua Key Kích Hoạt Vĩnh Viễn (39.000đ)
+            </a>
+
+            <div class="pt-2 space-y-2 border-t border-slate-800">
+              <label class="block text-xs font-semibold text-slate-300">Nhập License Key đã nhận:</label>
+              <div class="flex gap-2">
+                <input id="zb-key-input" type="text" placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-xs uppercase outline-none focus:border-cyan-400">
+                <button onclick="activateKey()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-white">Mở khóa</button>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      modal.style.display = "flex";
+    };
+
+    window.closeLicenseModal = function() {
+      const trial = getTrialInfo();
+      const activated = isActivated();
+      if (!trial.isExpired || activated) {
+        const modal = document.getElementById("zb-license-modal");
+        if (modal) modal.style.display = "none";
+      } else {
+        alert("Vui lòng kích hoạt key bản quyền để sử dụng ứng dụng!");
+      }
+    };
+
+    window.copyDeviceCode = function(code) {
+      navigator.clipboard.writeText(code);
+      alert("Đã sao chép mã thiết bị: " + code);
+    };
+
+    window.activateKey = function() {
+      const input = document.getElementById("zb-key-input").value.trim().toUpperCase();
+      const expected = calculateLicenseKey(getDeviceCode());
+      if (input === expected) {
+        localStorage.setItem("zb_license_key_" + APP_CONFIG.appPrefix, input);
+        alert("🎉 Chúc mừng! Ứng dụng đã được kích hoạt bản quyền vĩnh viễn!");
+        location.reload();
+      } else {
+        alert("❌ Mã License Key không chính xác cho thiết bị này. Vui lòng kiểm tra lại!");
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", initUI);
+  })();
+  </script>
+</body>
+</html>

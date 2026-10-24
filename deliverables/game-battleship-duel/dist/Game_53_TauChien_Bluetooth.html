@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đấu Tàu Chiến Hải Quân - Game Đối Kháng 2 Người Offline</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #051923; }
+    ::-webkit-scrollbar-thumb { background: #003554; border-radius: 4px; }
+    .glass { background: rgba(0, 53, 84, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .grid-cell { width: 34px; height: 34px; font-size: 11px; }
+    @media (min-width: 640px) {
+      .grid-cell { width: 40px; height: 40px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body class="bg-[#051923] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-black select-none">
+
+  <!-- HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-[#003554] sticky top-0 z-30 px-4 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md">
+        <i class="fa-solid fa-ship"></i>
+      </div>
+      <div>
+        <h1 class="font-extrabold text-base tracking-wide text-white flex items-center gap-1.5">
+          ĐẤU TÀU CHIẾN PRO <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold">100% Offline</span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Chiến Hạm Hải Quân Đối Kháng 2 Người · Đấu Máy AI</p>
+      </div>
+    </div>
+    <span class="text-xs font-bold text-cyan-400 bg-cyan-950/60 px-2 py-1 rounded border border-cyan-500/30">
+      app.zeebee.vn
+    </span>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-5 space-y-4">
+    
+    <!-- GAME STATUS BAR -->
+    <div class="glass p-3 sm:p-4 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span id="turn-indicator" class="px-3 py-1 rounded-full text-xs font-extrabold bg-cyan-500 text-slate-950 flex items-center gap-1.5 shadow">
+          <i class="fa-solid fa-crosshairs"></i> Lượt: Người Chơi 1
+        </span>
+        <span id="game-status-text" class="text-xs text-slate-300 font-semibold">
+          Hãy khai hỏa vào tọa độ hạm đội đối phương!
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold text-amber-300 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-700">
+          Tỷ số: P1 (<span id="score-p1">0</span>) - P2/AI (<span id="score-p2">0</span>)
+        </span>
+        <button onclick="newGame()" class="px-3 py-1 rounded-lg bg-cyan-700 hover:bg-cyan-600 text-xs font-bold text-white transition">
+          <i class="fa-solid fa-rotate-right"></i> Ván Mới
+        </button>
+      </div>
+    </div>
+
+    <!-- MODE TOGGLE -->
+    <div class="flex justify-center gap-2 text-xs">
+      <button id="mode-ai-btn" onclick="setMode('AI')" class="px-3 py-1.5 rounded-xl font-bold bg-cyan-500 text-slate-950 shadow">
+        <i class="fa-solid fa-robot"></i> Đấu Máy AI Offline
+      </button>
+      <button id="mode-p2-btn" onclick="setMode('P2')" class="px-3 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-400 hover:text-white border border-slate-700">
+        <i class="fa-solid fa-users"></i> Chơi 2 Người (Pass & Play)
+      </button>
+    </div>
+
+    <!-- BATTLE BOARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <!-- BOARD 1: BẢN ĐỒ BẮN (TARGET GRID) -->
+      <div class="glass rounded-2xl p-4 shadow-xl space-y-3 border-cyan-500/30">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+          <h2 class="text-xs font-black text-cyan-400 uppercase tracking-wide flex items-center gap-1.5">
+            <i class="fa-solid fa-crosshairs"></i> Vùng Biển Đối Phương (Nhấp để khai hỏa)
+          </h2>
+          <span class="text-[10px] text-slate-400 font-mono">Tàu địch còn: <b id="enemy-ships-left" class="text-amber-400 font-bold">4</b></span>
+        </div>
+        <div class="flex justify-center">
+          <div id="target-grid" class="grid grid-cols-8 gap-1 bg-slate-950 p-2 rounded-xl border border-slate-800">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- BOARD 2: HẠM ĐỘI CỦA BẠN (RADAR GRID) -->
+      <div class="glass rounded-2xl p-4 shadow-xl space-y-3 border-slate-700">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+          <h2 class="text-xs font-black text-slate-300 uppercase tracking-wide flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved text-emerald-400"></i> Hạm Đội Của Bạn (Phòng Thủ)
+          </h2>
+          <span class="text-[10px] text-slate-400 font-mono">Tàu ta còn: <b id="my-ships-left" class="text-emerald-400 font-bold">4</b></span>
+        </div>
+        <div class="flex justify-center">
+          <div id="my-grid" class="grid grid-cols-8 gap-1 bg-slate-950 p-2 rounded-xl border border-slate-800 pointer-events-none">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- HƯỚNG DẪN CHIẾN THUẬT -->
+    <div class="glass p-3 rounded-xl text-xs text-slate-300 space-y-1">
+      <span class="font-bold text-amber-300 block text-[11px] uppercase">Hạm Đội Bao Gồm:</span>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-slate-400">
+        <div>🚢 Tàu Sân Bay: <b>4 ô</b></div>
+        <div>⚓ Tàu Khu Trục: <b>3 ô</b></div>
+        <div>🛥️ Tàu Ngầm: <b>2 ô</b></div>
+        <div>🚤 Tàu Tuần Tra: <b>1 ô</b></div>
+      </div>
+      <p class="text-[10px] text-slate-500 pt-1">
+        * Ký hiệu: Ô xanh nước biển = Bắn hụt nước; Ô đỏ có lửa = Trúng tàu chiến địch!
+      </p>
+    </div>
+
+  </main>
+
+  <script>
+    const GRID_SIZE = 8;
+    const SHIPS = [4, 3, 2, 1];
+
+    let gameMode = 'AI'; // 'AI' or 'P2'
+    let currentTurn = 1; // 1 or 2
+    let gameOver = false;
+    let scores = { p1: 0, p2: 0 };
+
+    let p1Board = [];
+    let p2Board = [];
+    let p1Hits = [];
+    let p2Hits = [];
+
+    function initBoard() {
+      const b = [];
+      for (let r = 0; r < GRID_SIZE; r++) {
+        b.push(new Array(GRID_SIZE).fill(0));
+      }
+      return b;
+    }
+
+    function placeShipsRandomly(board) {
+      SHIPS.forEach((len, idx) => {
+        const shipId = idx + 1;
+        let placed = false;
+        while (!placed) {
+          const horiz = Math.random() < 0.5;
+          const r = Math.floor(Math.random() * (horiz ? GRID_SIZE : GRID_SIZE - len + 1));
+          const c = Math.floor(Math.random() * (horiz ? GRID_SIZE - len + 1 : GRID_SIZE));
+
+          let canPlace = true;
+          for (let i = 0; i < len; i++) {
+            const cr = horiz ? r : r + i;
+            const cc = horiz ? c + i : c;
+            if (board[cr][cc] !== 0) { canPlace = false; break; }
+          }
+
+          if (canPlace) {
+            for (let i = 0; i < len; i++) {
+              const cr = horiz ? r : r + i;
+              const cc = horiz ? c + i : c;
+              board[cr][cc] = shipId;
+            }
+            placed = true;
+          }
+        }
+      });
+    }
+
+    function setMode(mode) {
+      gameMode = mode;
+      document.getElementById('mode-ai-btn').className = mode === 'AI' 
+        ? "px-3 py-1.5 rounded-xl font-bold bg-cyan-500 text-slate-950 shadow" 
+        : "px-3 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-400 hover:text-white border border-slate-700";
+      document.getElementById('mode-p2-btn').className = mode === 'P2' 
+        ? "px-3 py-1.5 rounded-xl font-bold bg-cyan-500 text-slate-950 shadow" 
+        : "px-3 py-1.5 rounded-xl font-bold bg-slate-800 text-slate-400 hover:text-white border border-slate-700";
+      newGame();
+    }
+
+    function newGame() {
+      gameOver = false;
+      currentTurn = 1;
+      p1Board = initBoard();
+      p2Board = initBoard();
+      p1Hits = initBoard();
+      p2Hits = initBoard();
+
+      placeShipsRandomly(p1Board);
+      placeShipsRandomly(p2Board);
+
+      updateTurnUI();
+      renderBoards();
+    }
+
+    function updateTurnUI() {
+      const turnEl = document.getElementById('turn-indicator');
+      const textEl = document.getElementById('game-status-text');
+
+      if (gameOver) return;
+
+      if (currentTurn === 1) {
+        turnEl.className = "px-3 py-1 rounded-full text-xs font-extrabold bg-cyan-500 text-slate-950 flex items-center gap-1.5 shadow";
+        turnEl.innerHTML = `<i class="fa-solid fa-crosshairs"></i> Lượt: Người Chơi 1`;
+        textEl.innerText = "Chọn 1 tọa độ trên bản đồ đối phương để nã pháo!";
+      } else {
+        turnEl.className = "px-3 py-1 rounded-full text-xs font-extrabold bg-amber-500 text-slate-950 flex items-center gap-1.5 shadow";
+        turnEl.innerHTML = `<i class="fa-solid fa-crosshairs"></i> Lượt: ${gameMode === 'AI' ? 'Máy AI' : 'Người Chơi 2'}`;
+        textEl.innerText = gameMode === 'AI' ? "Máy tính đang quét radar tìm tàu của bạn..." : "Chuyển máy cho Người chơi 2 chọn tọa độ bắn!";
+      }
+    }
+
+    function renderBoards() {
+      const targetGrid = document.getElementById('target-grid');
+      const myGrid = document.getElementById('my-grid');
+
+      targetGrid.innerHTML = '';
+      myGrid.innerHTML = '';
+
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          // Target board (where P1 fires at P2)
+          const hitVal = p2Hits[r][c]; // 0: unshot, 1: miss, 2: hit
+          const btn = document.createElement('button');
+          btn.className = `grid-cell rounded font-bold flex items-center justify-center transition border ${
+            hitVal === 2 ? 'bg-rose-600 border-rose-400 text-white' :
+            hitVal === 1 ? 'bg-cyan-950/80 border-cyan-800 text-cyan-500' :
+            'bg-slate-900 border-slate-800 hover:bg-slate-800 text-transparent'
+          }`;
+          if (hitVal === 2) btn.innerHTML = '<i class="fa-solid fa-fire animate-bounce"></i>';
+          else if (hitVal === 1) btn.innerHTML = '●';
+          btn.onclick = () => onCellClick(r, c);
+          targetGrid.appendChild(btn);
+
+          // My board (P1 ships and P2 shots at P1)
+          const myCell = p1Board[r][c];
+          const enemyShot = p1Hits[r][c];
+          const div = document.createElement('div');
+          div.className = `grid-cell rounded font-bold flex items-center justify-center border ${
+            enemyShot === 2 ? 'bg-rose-900/90 border-rose-500 text-rose-300' :
+            enemyShot === 1 ? 'bg-cyan-950 border-cyan-800 text-cyan-600' :
+            myCell > 0 ? 'bg-emerald-900/60 border-emerald-500/50 text-emerald-300' :
+            'bg-slate-900 border-slate-800'
+          }`;
+          if (enemyShot === 2) div.innerHTML = '💥';
+          else if (myCell > 0) div.innerHTML = '<i class="fa-solid fa-shield text-[10px]"></i>';
+          else if (enemyShot === 1) div.innerHTML = '●';
+          myGrid.appendChild(div);
+        }
+      }
+
+      // Check ships left
+      const p2Left = countShipsLeft(p2Board, p2Hits);
+      const p1Left = countShipsLeft(p1Board, p1Hits);
+      document.getElementById('enemy-ships-left').innerText = p2Left;
+      document.getElementById('my-ships-left').innerText = p1Left;
+    }
+
+    function countShipsLeft(board, hits) {
+      let remaining = 0;
+      for (let shipId = 1; shipId <= SHIPS.length; shipId++) {
+        let shipAlive = false;
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            if (board[r][c] === shipId && hits[r][c] !== 2) {
+              shipAlive = true;
+              break;
+            }
+          }
+          if (shipAlive) break;
+        }
+        if (shipAlive) remaining++;
+      }
+      return remaining;
+    }
+
+    function onCellClick(r, c) {
+      if (gameOver || currentTurn !== 1) return;
+      if (p2Hits[r][c] !== 0) return; // already shot
+
+      // Fire shot
+      if (p2Board[r][c] > 0) {
+        p2Hits[r][c] = 2; // HIT
+      } else {
+        p2Hits[r][c] = 1; // MISS
+      }
+
+      renderBoards();
+
+      // Check win
+      if (countShipsLeft(p2Board, p2Hits) === 0) {
+        gameOver = true;
+        scores.p1++;
+        document.getElementById('score-p1').innerText = scores.p1;
+        alert("🎉 CHIẾN THẮNG RỰC RỠ!\nNgười Chơi 1 đã bắn chìm toàn bộ hạm đội đối phương!");
+        return;
+      }
+
+      // Switch turn
+      currentTurn = 2;
+      updateTurnUI();
+
+      if (gameMode === 'AI') {
+        setTimeout(makeAIMove, 700);
+      }
+    }
+
+    function makeAIMove() {
+      if (gameOver) return;
+
+      let r, c;
+      let valid = false;
+      while (!valid) {
+        r = Math.floor(Math.random() * GRID_SIZE);
+        c = Math.floor(Math.random() * GRID_SIZE);
+        if (p1Hits[r][c] === 0) valid = true;
+      }
+
+      if (p1Board[r][c] > 0) {
+        p1Hits[r][c] = 2; // AI HIT
+      } else {
+        p1Hits[r][c] = 1; // AI MISS
+      }
+
+      renderBoards();
+
+      if (countShipsLeft(p1Board, p1Hits) === 0) {
+        gameOver = true;
+        scores.p2++;
+        document.getElementById('score-p2').innerText = scores.p2;
+        alert("💀 HẠM ĐỘI BỊ ĐÁNH CHÌM!\nMáy tính đã bắn chìm toàn bộ tàu chiến của bạn!");
+        return;
+      }
+
+      currentTurn = 1;
+      updateTurnUI();
+    }
+
+    newGame();
+  </script>
+
+  <!-- ZEEBEE LICENSE GUARD -->
+  <script>
+  (function() {
+    const APP_CONFIG = {
+      appName: "Đấu Tàu Chiến Pro",
+      appPrefix: "BS",
+      appSlug: "game-battleship-duel",
+      trialDays: 7,
+      secretSalt: "ZB_SECRET_2026_OFFLINE_PRO"
+    };
+
+    function sha256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      const mathPow = Math.pow; const maxWord = mathPow(2, 32); const lengthProperty = 'length';
+      let i, j; let result = ''; const words = []; const asciiBitLength = ascii[lengthProperty] * 8;
+      let hash = sha256.h = sha256.h || []; const k = sha256.k = sha256.k || [];
+      let primeCounter = k[lengthProperty]; const isComposite = {};
+      for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1/3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80'; while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i); if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+      for (j = 0; j < words[lengthProperty];) {
+        const w = words.slice(j, j += 16); const oldHash = hash; hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          const i2 = i + j; const w15 = w[i - 15], w2 = w[i - 2];
+          const a = hash[0], e = hash[4];
+          const temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash); hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j >= 0; j--) {
+          const b = (hash[i] >> (8 * j)) & 255;
+          result += ((b < 16) ? 0 : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    function calculateLicenseKey(deviceCode) {
+      const raw = deviceCode.trim().toUpperCase() + ":" + APP_CONFIG.secretSalt;
+      const h = sha256(raw).toUpperCase();
+      return "ZBKEY-" + h.slice(0, 4) + "-" + h.slice(4, 8) + "-" + h.slice(8, 12) + "-" + h.slice(12, 16);
+    }
+
+    function getDeviceCode() {
+      let code = localStorage.getItem("zb_device_code_" + APP_CONFIG.appPrefix);
+      if (!code) {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let rand = "";
+        for (let i = 0; i < 5; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+        code = "ZB-" + APP_CONFIG.appPrefix + "-" + rand;
+        localStorage.setItem("zb_device_code_" + APP_CONFIG.appPrefix, code);
+      }
+      return code;
+    }
+
+    function getTrialInfo() {
+      let start = localStorage.getItem("zb_trial_start_" + APP_CONFIG.appPrefix);
+      if (!start) {
+        start = Date.now().toString();
+        localStorage.setItem("zb_trial_start_" + APP_CONFIG.appPrefix, start);
+      }
+      const daysPassed = (Date.now() - parseInt(start, 10)) / (86400 * 1000);
+      const daysLeft = Math.max(0, Math.ceil(APP_CONFIG.trialDays - daysPassed));
+      return { startTime: parseInt(start, 10), daysPassed, daysLeft, isExpired: daysPassed >= APP_CONFIG.trialDays };
+    }
+
+    function isActivated() {
+      const savedKey = localStorage.getItem("zb_license_key_" + APP_CONFIG.appPrefix);
+      if (!savedKey) return false;
+      const expected = calculateLicenseKey(getDeviceCode());
+      return savedKey.trim().toUpperCase() === expected;
+    }
+
+    function initUI() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      const badge = document.createElement("div");
+      badge.id = "zb-license-badge";
+      badge.className = "fixed bottom-3 right-3 z-50 px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shadow-xl border flex items-center gap-1.5 transition";
+      if (activated) {
+        badge.className += " bg-emerald-950/90 border-emerald-500/60 text-emerald-300";
+        badge.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Đã kích hoạt vĩnh viễn`;
+      } else if (!trial.isExpired) {
+        badge.className += " bg-amber-950/90 border-amber-500/60 text-amber-300";
+        badge.innerHTML = `<i class="fa-solid fa-clock text-amber-400"></i> Dùng thử: Còn ${trial.daysLeft} ngày`;
+      } else {
+        badge.className += " bg-red-950/90 border-red-500/60 text-red-300 animate-pulse";
+        badge.innerHTML = `<i class="fa-solid fa-lock text-red-400"></i> Đã hết hạn dùng thử`;
+      }
+      badge.onclick = () => openLicenseModal();
+      document.body.appendChild(badge);
+
+      if (trial.isExpired && !activated) {
+        setTimeout(openLicenseModal, 500);
+      }
+    }
+
+    window.openLicenseModal = function() {
+      const deviceCode = getDeviceCode();
+      const trial = getTrialInfo();
+      const activated = isActivated();
+
+      let modal = document.getElementById("zb-license-modal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "zb-license-modal";
+        modal.className = "fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4";
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div class="bg-[#003554] border border-cyan-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-slate-200 text-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+            <h3 class="font-bold text-sm text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-key text-cyan-400"></i> Bản Quyền ${APP_CONFIG.appName}
+            </h3>
+            <button onclick="closeLicenseModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+          </div>
+          
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Mã Thiết Bị Của Bạn:</span>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-base font-black text-amber-300">${deviceCode}</span>
+              <button onclick="copyDeviceCode('${deviceCode}')" class="px-2 py-1 rounded bg-slate-800 text-[11px] text-cyan-400 hover:bg-slate-700">Sao chép</button>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            ${activated ? 'Ứng dụng đã được mở khóa trọn đời.' : trial.isExpired ? 'Thời gian dùng thử 7 ngày đã kết thúc. Vui lòng kích hoạt bản quyền để tiếp tục sử dụng.' : `Bạn đang trong thời hạn dùng thử 7 ngày (Còn <strong>${trial.daysLeft} ngày</strong>).`}
+          </p>
+
+          ${!activated ? `
+            <a href="https://app.zeebee.vn/mua-key?app=${APP_CONFIG.appSlug}&code=${deviceCode}" target="_blank" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center gap-2 shadow-lg transition">
+              <i class="fa-solid fa-cart-shopping"></i> Mua Key Kích Hoạt Vĩnh Viễn (39.000đ)
+            </a>
+
+            <div class="pt-2 space-y-2 border-t border-slate-800">
+              <label class="block text-xs font-semibold text-slate-300">Nhập License Key đã nhận:</label>
+              <div class="flex gap-2">
+                <input id="zb-key-input" type="text" placeholder="ZBKEY-XXXX-XXXX-XXXX-XXXX" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-xs uppercase outline-none focus:border-cyan-400">
+                <button onclick="activateKey()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 font-bold rounded-lg text-white">Mở khóa</button>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      modal.style.display = "flex";
+    };
+
+    window.closeLicenseModal = function() {
+      const trial = getTrialInfo();
+      const activated = isActivated();
+      if (!trial.isExpired || activated) {
+        const modal = document.getElementById("zb-license-modal");
+        if (modal) modal.style.display = "none";
+      } else {
+        alert("Vui lòng kích hoạt key bản quyền để sử dụng ứng dụng!");
+      }
+    };
+
+    window.copyDeviceCode = function(code) {
+      navigator.clipboard.writeText(code);
+      alert("Đã sao chép mã thiết bị: " + code);
+    };
+
+    window.activateKey = function() {
+      const input = document.getElementById("zb-key-input").value.trim().toUpperCase();
+      const expected = calculateLicenseKey(getDeviceCode());
+      if (input === expected) {
+        localStorage.setItem("zb_license_key_" + APP_CONFIG.appPrefix, input);
+        alert("🎉 Chúc mừng! Ứng dụng đã được kích hoạt bản quyền vĩnh viễn!");
+        location.reload();
+      } else {
+        alert("❌ Mã License Key không chính xác cho thiết bị này. Vui lòng kiểm tra lại!");
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", initUI);
+  })();
+  </script>
+</body>
+</html>
