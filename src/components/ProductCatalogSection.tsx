@@ -22,10 +22,9 @@ import {
 } from "@/lib/catalog";
 
 function getCardIcon(p: Product) {
-  if (p.kind.includes("Game")) return Gamepad2;
+  if (p.kind.includes("Game") || p.category === "games") return Gamepad2;
   if (p.category === "pro-tools") return HardHat;
   if (p.category === "business") return Briefcase;
-  if (p.category === "utility") return HeartHandshake;
   return Smartphone;
 }
 

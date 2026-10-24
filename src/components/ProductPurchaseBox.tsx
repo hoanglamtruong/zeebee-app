@@ -98,7 +98,7 @@ export default function ProductPurchaseBox({ product }: { product: Product }) {
       {/* Hành động 1: Tải về dùng thử 7 ngày */}
       <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-emerald-950/30 to-teal-950/30 border border-emerald-500/30 shadow-lg">
         <div className="flex items-center gap-2 text-xs font-bold text-emerald-300 uppercase tracking-wide">
-          <Sparkles size={15} /> Bước 1: Trải nghiệm thực tế
+          <Sparkles size={15} /> Bước 1: Trải nghiệm thực tế (File APK Android)
         </div>
 
         <button
@@ -110,22 +110,31 @@ export default function ProductPurchaseBox({ product }: { product: Product }) {
             "Đang chuẩn bị file tải..."
           ) : (
             <>
-              <Download size={18} /> Tải Về Dùng Thử 7 Ngày (Miễn Phí)
+              <Download size={18} /> Cài Đặt APK Dùng Thử 7 Ngày (Miễn Phí)
             </>
           )}
         </button>
 
-        <p className="text-[11px] text-[var(--zb-muted)] text-center">
-          * File chạy trực tiếp trên thiết bị của bạn. Không cần đăng ký tài khoản.
-        </p>
+        <div className="flex items-center justify-between text-[11px] text-[var(--zb-muted)] pt-1">
+          <span>* File cài đặt .APK chuẩn Android</span>
+          {product.zipUrl && (
+            <a
+              href={product.zipUrl}
+              download
+              className="text-cyan-400 hover:underline flex items-center gap-1 font-medium"
+            >
+              <Download size={12} /> Tải file nén .ZIP (.apk + HDSD)
+            </a>
+          )}
+        </div>
 
         {downloadSuccess && (
           <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-xs text-emerald-200 space-y-1.5 animate-in fade-in">
             <p className="font-bold flex items-center gap-1.5 text-emerald-300">
-              <CheckCircle2 size={15} /> Đã kích hoạt tải xuống!
+              <CheckCircle2 size={15} /> Đã kích hoạt tải file cài đặt .APK!
             </p>
             <p className="text-[11px] leading-relaxed">
-              Bạn có <strong>7 ngày trải nghiệm không giới hạn</strong>. Sau 7 ngày, mở ứng dụng lấy <strong>Mã Thiết Bị</strong> để mua key mở khóa vĩnh viễn.
+              Nhấp vào file .apk vừa tải về trên điện thoại Android để cài đặt (cho phép cài đặt từ nguồn này nếu máy hỏi). Bạn có <strong>7 ngày trải nghiệm không giới hạn</strong>. Sau 7 ngày, mở ứng dụng lấy <strong>Mã Thiết Bị</strong> để mua key mở khóa vĩnh viễn.
             </p>
           </div>
         )}

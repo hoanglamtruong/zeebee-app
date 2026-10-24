@@ -79,6 +79,19 @@ Mô tả sản phẩm được đối chiếu với app thật (không bịa tí
 - **Dọn dẹp tệp**: Xóa toàn bộ file nguồn & dist trong `deliverables/excel`, `deliverables/zqr-offline`, `deliverables/thuoc-do-goc-tho-moc`, `public/products/App_33_...` và `public/downloads/ThuocDoGoc_...`.
 - **Kho sản phẩm chuẩn hóa**: Giữ lại 17 sản phẩm Android APK thuần túy; cập nhật lại Combo Bundle và tab danh mục.
 
+### 24/10/2026 (Tối) — ĐÓNG GÓI 100% ANDROID APK THẬT & XÓA CÁC SẢN PHẨM MOCKUP CHƯA CÓ APK
+- **Vấn đề phản hồi**: Khách tải file `.zip` giải nén ra vẫn là `.html` thay vì `.apk` cài đặt trực tiếp; yêu cầu xóa tất cả sản phẩm chưa đóng gói APK.
+- **Thực thi**:
+  - Dùng OpenJDK 21, Android SDK Build-Tools 34.0.0 (aapt2, d8, zipalign, apksigner) thiết lập pipeline đóng gói Android WebView App tự động.
+  - Biên dịch, tối ưu và ký số (keystore 10.000 ngày) 4 ứng dụng APK độc lập chuẩn:
+    1. `BeTong_Pro_v1.0.apk` (`vn.zeebee.betongpro`)
+    2. `DinhGia_Cost_Pro_v1.0.apk` (`vn.zeebee.dinhgiapro`)
+    3. `HoaDon_Mini_v1.0.apk` (`vn.zeebee.hoadonmini`)
+    4. `CoCaro_Bluetooth_v1.0.apk` (`vn.zeebee.cocarobluetooth`)
+  - Đóng gói file `.zip` chứa file `.apk` và hướng dẫn cài đặt `README_Huong_Dan_Cai_Dat_APK.txt` (loại bỏ hoàn toàn file HTML trong zip).
+  - Cập nhật kho `catalog.ts`: Chỉ giữ lại 4 sản phẩm đã đóng gói APK thật 100%, xóa toàn bộ 13 sản phẩm mockup chưa có APK. Cung cấp đường dẫn tải trực tiếp `.apk` và tải `.zip`.
+  - Cập nhật Combo Master 4-in-1 APK giảm 35% (`Zeebee_Wave1_Bundle_4in1_APK.zip`).
+
 ## Bài học
 | Sự cố | Bài học |
 |---|---|
