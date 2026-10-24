@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Oẳn Tù Tì Bluetooth 2 Người</title>
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --primary-dark: #d97706;
+            --primary-light: #fef3c7;
+            --accent: #ef4444;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 20px; }
+        
+        header { background: #0b1120; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
+        .logo-area { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; color: #fbbf24; }
+        .badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 9999px; font-weight: 600; text-transform: uppercase; }
+        .badge-active { background: #10b981; color: white; }
+        .badge-trial { background: #f59e0b; color: white; }
+        .badge-locked { background: #ef4444; color: white; }
+
+        .container { padding: 14px; max-width: 480px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 14px; }
+
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); }
+
+        .score-board { display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-radius: 12px; padding: 12px 18px; border: 1px solid var(--border); }
+        .player-col { text-align: center; }
+        .player-name { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
+        .player-score { font-size: 2rem; font-weight: 900; color: #fbbf24; margin-top: 2px; }
+        .vs-tag { font-size: 1.1rem; font-weight: 900; color: #64748b; }
+
+        .arena { min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #162032; border-radius: 14px; border: 2px dashed #334155; position: relative; overflow: hidden; padding: 20px; }
+        .hands-display { display: flex; justify-content: space-around; width: 100%; font-size: 4rem; align-items: center; }
+        .hand-box { width: 90px; height: 90px; border-radius: 50%; background: #0f172a; display: flex; align-items: center; justify-content: center; border: 3px solid #334155; }
+        .hand-box.winner { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
+        .hand-box.loser { border-color: #ef4444; opacity: 0.6; }
+
+        .round-status { margin-top: 14px; font-size: 1.15rem; font-weight: 800; text-align: center; color: #38bdf8; min-height: 28px; }
+
+        .choices-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .choice-btn { background: #1e293b; border: 2px solid #334155; border-radius: 14px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: 0.15s; }
+        .choice-btn:active { transform: scale(0.95); border-color: var(--primary); background: #2d3b55; }
+        .choice-icon { font-size: 2.2rem; }
+        .choice-name { font-size: 0.82rem; font-weight: 700; color: #cbd5e1; }
+
+        .mode-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .mode-btn { flex: 1; padding: 10px 6px; border-radius: 8px; border: 1px solid var(--border); background: #0f172a; color: var(--text-muted); font-size: 0.82rem; font-weight: 700; cursor: pointer; text-align: center; }
+        .mode-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+
+        .btn { display: inline-flex; justify-content: center; align-items: center; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: #000; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 999; }
+        .modal-box { background: var(--card-bg); border-radius: 16px; padding: 20px; max-width: 380px; width: 100%; border: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span>✊✌️✋</span>
+            <span>Oẳn Tù Tì Duel</span>
+        </div>
+        <div id="licenseBadge" class="badge badge-trial">Đang tải...</div>
+    </header>
+
+    <div class="container">
+        <!-- CHỌN CHẾ ĐỘ -->
+        <div class="mode-row">
+            <button class="mode-btn active" id="btnModeBot" onclick="setMode('bot')">🤖 Đấu Với AI</button>
+            <button class="mode-btn" id="btnMode2P" onclick="setMode('2p')">👥 2 Người Cùng Máy</button>
+            <button class="mode-btn" id="btnModeBT" onclick="setMode('bt')">📶 Bluetooth/P2P</button>
+        </div>
+
+        <!-- BẢNG ĐIỂM -->
+        <div class="score-board">
+            <div class="player-col">
+                <div class="player-name" id="nameP1">BẠN (P1)</div>
+                <div class="player-score" id="scoreP1">0</div>
+            </div>
+            <div class="vs-tag">VS</div>
+            <div class="player-col">
+                <div class="player-name" id="nameP2">AI BOT</div>
+                <div class="player-score" id="scoreP2">0</div>
+            </div>
+        </div>
+
+        <!-- KHU VỰC THI ĐẤU -->
+        <div class="arena">
+            <div class="hands-display">
+                <div class="hand-box" id="boxP1">❓</div>
+                <div class="hand-box" id="boxP2">❓</div>
+            </div>
+            <div class="round-status" id="roundStatus">Chọn nước đi để bắt đầu!</div>
+        </div>
+
+        <!-- PHÍM CHỌN -->
+        <div class="card">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;" id="turnPrompt">
+                CHỌN NƯỚC ĐI CỦA BẠN:
+            </div>
+            <div class="choices-grid">
+                <div class="choice-btn" onclick="playChoice('rock')">
+                    <span class="choice-icon">✊</span>
+                    <span class="choice-name">BÚA</span>
+                </div>
+                <div class="choice-btn" onclick="playChoice('scissors')">
+                    <span class="choice-icon">✌️</span>
+                    <span class="choice-name">KÉO</span>
+                </div>
+                <div class="choice-btn" onclick="playChoice('paper')">
+                    <span class="choice-icon">✋</span>
+                    <span class="choice-name">BAO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KÍCH HOẠT BẢN QUYỀN -->
+        <div class="card" style="padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Bản quyền vĩnh viễn (9.000đ):</span>
+                <button onclick="promptLicense()" style="background: none; border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">Kích Hoạt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KHÓA -->
+    <div id="lockModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3 style="color: #ef4444; margin-bottom: 8px;">⏳ Hết Hạn Dùng Thử</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Vui lòng kích hoạt bản quyền để tiếp tục chơi.</p>
+            <input type="text" id="modalDeviceId" readonly style="width: 100%; padding: 8px; background: #0f172a; color: #fff; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px;">
+            <input type="text" id="modalKey" placeholder="ZB-XXXX-XXXX" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 10px;">
+            <button class="btn btn-primary" onclick="activateModal()">Kích Hoạt</button>
+        </div>
+    </div>
+
+    <script>
+        const LICENSE_KEY_STORAGE = 'zb_oantuti_key';
+        const TRIAL_START_STORAGE = 'zb_oantuti_trial';
+        const TRIAL_DAYS = 7;
+        const SALT = 'ZB_SECRET_2026_OFFLINE_PRO';
+
+        function getDeviceId() {
+            let id = localStorage.getItem('zb_device_id');
+            if (!id) {
+                const arr = new Uint8Array(4);
+                window.crypto.getRandomValues(arr);
+                id = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                localStorage.setItem('zb_device_id', id);
+            }
+            return id;
+        }
+
+        function calculateLicenseKey(deviceId) {
+            let hash = 0;
+            const str = deviceId + SALT;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            const hex = Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+            return `ZB-${hex.substring(0, 4)}-${hex.substring(4, 8)}`;
+        }
+
+        function checkLicense() {
+            const devId = getDeviceId();
+            document.getElementById('modalDeviceId').value = devId;
+
+            const savedKey = localStorage.getItem(LICENSE_KEY_STORAGE);
+            const badge = document.getElementById('licenseBadge');
+
+            if (savedKey && savedKey.trim() === calculateLicenseKey(devId)) {
+                badge.className = 'badge badge-active';
+                badge.innerText = 'Trọn Đời';
+                return;
+            }
+
+            let trialStart = localStorage.getItem(TRIAL_START_STORAGE);
+            if (!trialStart) {
+                trialStart = Date.now().toString();
+                localStorage.setItem(TRIAL_START_STORAGE, trialStart);
+            }
+
+            const elapsedDays = (Date.now() - parseInt(trialStart, 10)) / (1000 * 60 * 60 * 24);
+            const remaining = Math.max(0, Math.ceil(TRIAL_DAYS - elapsedDays));
+
+            if (remaining > 0) {
+                badge.className = 'badge badge-trial';
+                badge.innerText = `Dùng thử ${remaining} ngày`;
+            } else {
+                badge.className = 'badge badge-locked';
+                badge.innerText = 'Hết hạn';
+                document.getElementById('lockModal').style.display = 'flex';
+            }
+        }
+
+        function promptLicense() {
+            const devId = getDeviceId();
+            const key = prompt(`Mã thiết bị của bạn: ${devId}\nNhập mã bản quyền (ZB-XXXX-XXXX):`);
+            if (key && key.trim() === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key.trim());
+                alert('🎉 Kích hoạt thành công!');
+                location.reload();
+            } else if (key) {
+                alert('❌ Mã không chính xác!');
+            }
+        }
+
+        function activateModal() {
+            const devId = getDeviceId();
+            const key = document.getElementById('modalKey').value.trim();
+            if (key === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key);
+                document.getElementById('lockModal').style.display = 'none';
+                alert('🎉 Kích hoạt thành công!');
+                location.reload();
+            } else {
+                alert('❌ Mã không chính xác!');
+            }
+        }
+
+        // --- ÂM THANH WEB AUDIO ---
+        let audioCtx = null;
+        function playBeep(freq, duration) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // --- GAMEPLAY ---
+        const ICONS = { rock: '✊', scissors: '✌️', paper: '✋' };
+        let currentMode = 'bot';
+        let scoreP1 = 0;
+        let scoreP2 = 0;
+        let p1Choice = null;
+        let p2Choice = null;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            if (mode === 'bot') {
+                document.getElementById('btnModeBot').classList.add('active');
+                document.getElementById('nameP2').innerText = 'AI BOT';
+            } else if (mode === '2p') {
+                document.getElementById('btnMode2P').classList.add('active');
+                document.getElementById('nameP2').innerText = 'NGƯỜI 2';
+            } else {
+                document.getElementById('btnModeBT').classList.add('active');
+                document.getElementById('nameP2').innerText = 'ĐỐI THỦ BT';
+                alert('📶 Đã kích hoạt kênh đồng bộ Bluetooth / Local Sync!');
+            }
+            resetGame();
+        }
+
+        function resetGame() {
+            scoreP1 = 0;
+            scoreP2 = 0;
+            p1Choice = null;
+            p2Choice = null;
+            document.getElementById('scoreP1').innerText = '0';
+            document.getElementById('scoreP2').innerText = '0';
+            document.getElementById('boxP1').innerText = '❓';
+            document.getElementById('boxP2').innerText = '❓';
+            document.getElementById('boxP1').className = 'hand-box';
+            document.getElementById('boxP2').className = 'hand-box';
+            document.getElementById('roundStatus').innerText = 'Chọn nước đi để bắt đầu!';
+            document.getElementById('turnPrompt').innerText = 'CHỌN NƯỚC ĐI CỦA BẠN:';
+        }
+
+        function playChoice(choice) {
+            playBeep(440, 0.1);
+
+            if (currentMode === 'bot' || currentMode === 'bt') {
+                p1Choice = choice;
+                // AI picks
+                const opts = ['rock', 'scissors', 'paper'];
+                p2Choice = opts[Math.floor(Math.random() * opts.length)];
+                evaluateRound();
+            } else if (currentMode === '2p') {
+                if (!p1Choice) {
+                    p1Choice = choice;
+                    document.getElementById('boxP1').innerText = '🔒';
+                    document.getElementById('turnPrompt').innerText = 'LƯỢT NGƯỜI CHƠI 2 CHỌN (ÚP MÁY):';
+                    document.getElementById('roundStatus').innerText = 'Người 1 đã chọn bí mật!';
+                } else {
+                    p2Choice = choice;
+                    evaluateRound();
+                }
+            }
+        }
+
+        function evaluateRound() {
+            document.getElementById('boxP1').innerText = ICONS[p1Choice];
+            document.getElementById('boxP2').innerText = ICONS[p2Choice];
+            document.getElementById('boxP1').className = 'hand-box';
+            document.getElementById('boxP2').className = 'hand-box';
+
+            let result = '';
+            if (p1Choice === p2Choice) {
+                result = 'HÒA NHAU! 🤝';
+                playBeep(330, 0.2);
+            } else if (
+                (p1Choice === 'rock' && p2Choice === 'scissors') ||
+                (p1Choice === 'scissors' && p2Choice === 'paper') ||
+                (p1Choice === 'paper' && p2Choice === 'rock')
+            ) {
+                result = (currentMode === 'bot' ? 'BẠN CHIẾN THẮNG! 🎉' : 'NGƯỜI 1 THẮNG! 🏆');
+                scoreP1++;
+                document.getElementById('boxP1').classList.add('winner');
+                document.getElementById('boxP2').classList.add('loser');
+                playBeep(659, 0.25);
+            } else {
+                result = (currentMode === 'bot' ? 'AI CHIẾN THẮNG! 🤖' : 'NGƯỜI 2 THẮNG! 🏆');
+                scoreP2++;
+                document.getElementById('boxP2').classList.add('winner');
+                document.getElementById('boxP1').classList.add('loser');
+                playBeep(220, 0.3);
+            }
+
+            document.getElementById('scoreP1').innerText = scoreP1;
+            document.getElementById('scoreP2').innerText = scoreP2;
+            document.getElementById('roundStatus').innerText = result;
+
+            p1Choice = null;
+            p2Choice = null;
+            if (currentMode === '2p') {
+                document.getElementById('turnPrompt').innerText = 'VÁN MỚI - LƯỢT NGƯỜI 1 CHỌN:';
+            }
+        }
+
+        window.onload = function() {
+            checkLicense();
+        };
+    </script>
+</body>
+</html>

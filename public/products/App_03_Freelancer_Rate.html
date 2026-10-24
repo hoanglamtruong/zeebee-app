@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Định Giá Giờ Công Freelancer Pro</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 24px; }
+        header { background: #0f172a; color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
+        .logo-area { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; }
+        .badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 9999px; font-weight: 600; text-transform: uppercase; }
+        .badge-active { background: #10b981; color: white; }
+        .badge-trial { background: #f59e0b; color: white; }
+        .badge-locked { background: #ef4444; color: white; }
+
+        .tabs { display: flex; background: white; border-bottom: 1px solid var(--border); padding: 0 8px; }
+        .tab-btn { flex: 1; padding: 12px 6px; border: none; background: transparent; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); border-bottom: 3px solid transparent; cursor: pointer; text-align: center; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        .container { padding: 14px; max-width: 540px; margin: 0 auto; width: 100%; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; color: #1e293b; }
+
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+        .input-wrap { position: relative; display: flex; align-items: center; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fff; color: var(--text-main); font-weight: 600; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .unit-tag { position: absolute; right: 12px; font-size: 0.8rem; color: var(--text-muted); pointer-events: none; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .stat-box { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .stat-box.highlight { background: var(--primary-light); border-color: #7dd3fc; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+        .stat-value { font-size: 1.15rem; font-weight: 800; color: #0369a1; margin-top: 4px; }
+
+        .btn { display: inline-flex; justify-content: center; align-items: center; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: 0.2s; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); margin-top: 8px; }
+
+        .breakdown-row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 0.85rem; border-bottom: 1px dashed var(--border); }
+        .breakdown-row:last-child { border-bottom: none; font-weight: 700; color: var(--text-main); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 999; backdrop-filter: blur(2px); }
+        .modal-box { background: white; border-radius: 16px; padding: 20px; max-width: 400px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
+        .quote-box { background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.82rem; white-space: pre-wrap; margin-top: 10px; user-select: all; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span>💼</span>
+            <span>Freelancer Rate Pro</span>
+        </div>
+        <div id="licenseBadge" class="badge badge-trial">Đang tải...</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-rate')">Định Giá Giờ</button>
+        <button class="tab-btn" onclick="switchTab('tab-project')">Báo Giá Dự Án</button>
+        <button class="tab-btn" onclick="switchTab('tab-license')">Bản Quyền</button>
+    </div>
+
+    <div class="container">
+        <!-- TAB 1: TÍNH THÙ LAO GIỜ CÔNG -->
+        <div id="tab-rate" class="tab-content active">
+            <div class="card">
+                <div class="card-title">🎯 Thu Nhập & Chi Phí Mục Tiêu</div>
+                <div class="form-group">
+                    <label>Thu nhập ròng mong muốn bỏ túi (VND/tháng)</label>
+                    <div class="input-wrap">
+                        <input type="number" id="targetIncome" value="25000000" step="1000000" oninput="calculateRate()">
+                        <span class="unit-tag">đ/tháng</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Chi phí cố định (Mạng, điện, cafe, phần mềm, máy móc)</label>
+                    <div class="input-wrap">
+                        <input type="number" id="fixedExpense" value="3500000" step="500000" oninput="calculateRate()">
+                        <span class="unit-tag">đ/tháng</span>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Thuế & Quỹ dự phòng</label>
+                        <select id="taxReserve" onchange="calculateRate()">
+                            <option value="0.10">10%</option>
+                            <option value="0.15" selected>15% (Chuẩn)</option>
+                            <option value="0.20">20% (An toàn)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tỷ lệ giờ tính phí</label>
+                        <select id="billableRatio" onchange="calculateRate()">
+                            <option value="0.50">50% (Mới bắt đầu)</option>
+                            <option value="0.65" selected>65% (Tiêu chuẩn)</option>
+                            <option value="0.80">80% (Dày kinh nghiệm)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">⏱️ Quỹ Thời Gian Làm Việc</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Số ngày làm/tuần</label>
+                        <input type="number" id="workDaysWeek" value="5" min="1" max="7" oninput="calculateRate()">
+                    </div>
+                    <div class="form-group">
+                        <label>Số giờ ngồi máy/ngày</label>
+                        <input type="number" id="workHoursDay" value="7" min="1" max="14" oninput="calculateRate()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Số ngày nghỉ phép & ốm đau/năm</label>
+                    <input type="number" id="vacationDays" value="20" min="0" max="60" oninput="calculateRate()">
+                </div>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--primary);">
+                <div class="card-title" style="color: var(--primary);">💎 Kết Quả Định Giá Đề Xuất</div>
+                
+                <div class="stat-grid">
+                    <div class="stat-box highlight">
+                        <div class="stat-label">GIỜ CÔNG CHUẨN</div>
+                        <div class="stat-value" id="valHourlyRate">0 đ</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">GIÁ HÒA VỐN TỐI THIỂU</div>
+                        <div class="stat-value" id="valBreakEven">0 đ</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">GIÁ 1 NGÀY (8H)</div>
+                        <div class="stat-value" id="valDailyRate">0 đ</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">GÓI THÁNG (RETAINER)</div>
+                        <div class="stat-value" id="valMonthlyRate">0 đ</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 14px;">
+                    <div class="breakdown-row"><span>Tổng ngân sách cần kiếm/tháng:</span><strong id="bkTotalNeeded">0 đ</strong></div>
+                    <div class="breakdown-row"><span>Số giờ tính phí thực tế/tháng:</span><strong id="bkBillableHours">0 giờ</strong></div>
+                    <div class="breakdown-row"><span>Biên an toàn rủi ro + thuế:</span><strong id="bkTaxAmount">0 đ</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BÁO GIÁ DỰ ÁN NHANH -->
+        <div id="tab-project" class="tab-content">
+            <div class="card">
+                <div class="card-title">📝 Dự Toán Hợp Đồng Dự Án</div>
+                <div class="form-group">
+                    <label>Tên dự án / Khách hàng</label>
+                    <input type="text" id="projName" placeholder="VD: Thiết kế Landing Page Zeebee">
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Ước tính số giờ làm</label>
+                        <input type="number" id="projHours" value="25" oninput="calcProject()">
+                    </div>
+                    <div class="form-group">
+                        <label>Độ phức tạp / Gấp gáp</label>
+                        <select id="projComplexity" onchange="calcProject()">
+                            <option value="1.0">Bình thường (1.0x)</option>
+                            <option value="1.2">Cần gấp / Khó (+20%)</option>
+                            <option value="1.4">Khẩn cấp 24/7 (+40%)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Phí bản quyền / Tài nguyên mua ngoài (VND)</label>
+                    <input type="number" id="projExtraFee" value="500000" step="100000" oninput="calcProject()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💰 Tổng Báo Giá Dự Án</div>
+                <div class="stat-box highlight" style="margin-bottom: 12px;">
+                    <div class="stat-label">TỔNG CHI PHÍ BÁO KHÁCH</div>
+                    <div class="stat-value" style="font-size: 1.5rem;" id="valProjTotal">0 đ</div>
+                </div>
+                <div class="quote-box" id="quoteText"></div>
+                <button class="btn btn-primary" style="margin-top: 10px;" onclick="copyQuote()">📋 Sao Chép Báo Giá Gửi Khách</button>
+            </div>
+        </div>
+
+        <!-- TAB 3: BẢN QUYỀN -->
+        <div id="tab-license" class="tab-content">
+            <div class="card">
+                <div class="card-title">🔑 Kích Hoạt Bản Quyền Offline</div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+                    Phần mềm chạy 100% Offline trên thiết bị của bạn. Mua 1 lần dùng vĩnh viễn, không phí gia hạn.
+                </p>
+                <div class="form-group">
+                    <label>Mã thiết bị của bạn (Device ID):</label>
+                    <input type="text" id="inputDeviceId" readonly style="background: #f1f5f9; color: #334155;">
+                </div>
+                <div class="form-group">
+                    <label>Nhập Mã Bản Quyền (License Key):</label>
+                    <input type="text" id="inputLicenseKey" placeholder="ZB-XXXX-XXXX">
+                </div>
+                <button class="btn btn-primary" onclick="activateLicense()">Kích Hoạt Ngay</button>
+                <button class="btn btn-outline" onclick="copyDeviceId()">Sao Chép Mã Thiết Bị Gửi Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL HẾT HẠN DÙNG THỬ -->
+    <div id="lockModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3 style="color: var(--danger); margin-bottom: 8px;">⏳ Hết Hạn Dùng Thử</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px;">
+                Phiên bản dùng thử 7 ngày đã kết thúc. Vui lòng kích hoạt bản quyền để tiếp tục sử dụng trọn đời.
+            </p>
+            <div class="form-group">
+                <label>Mã thiết bị của bạn:</label>
+                <input type="text" id="modalDeviceId" readonly style="background: #f1f5f9;">
+            </div>
+            <div class="form-group">
+                <label>Nhập Mã Bản Quyền:</label>
+                <input type="text" id="modalKey" placeholder="ZB-XXXX-XXXX">
+            </div>
+            <button class="btn btn-primary" onclick="activateModal()">Kích Hoạt Ngay</button>
+        </div>
+    </div>
+
+    <script>
+        const LICENSE_KEY_STORAGE = 'zb_freelancer_rate_key';
+        const TRIAL_START_STORAGE = 'zb_freelancer_rate_trial';
+        const TRIAL_DAYS = 7;
+        const SALT = 'ZB_SECRET_2026_OFFLINE_PRO';
+
+        function getDeviceId() {
+            let id = localStorage.getItem('zb_device_id');
+            if (!id) {
+                const arr = new Uint8Array(4);
+                window.crypto.getRandomValues(arr);
+                id = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                localStorage.setItem('zb_device_id', id);
+            }
+            return id;
+        }
+
+        function calculateLicenseKey(deviceId) {
+            let hash = 0;
+            const str = deviceId + SALT;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            const hex = Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+            return `ZB-${hex.substring(0, 4)}-${hex.substring(4, 8)}`;
+        }
+
+        let isActivated = false;
+        let currentHourlyRate = 200000;
+
+        function checkLicense() {
+            const devId = getDeviceId();
+            document.getElementById('inputDeviceId').value = devId;
+            document.getElementById('modalDeviceId').value = devId;
+
+            const savedKey = localStorage.getItem(LICENSE_KEY_STORAGE);
+            const badge = document.getElementById('licenseBadge');
+
+            if (savedKey && savedKey.trim() === calculateLicenseKey(devId)) {
+                isActivated = true;
+                badge.className = 'badge badge-active';
+                badge.innerText = 'Trọn Đời';
+                return;
+            }
+
+            let trialStart = localStorage.getItem(TRIAL_START_STORAGE);
+            if (!trialStart) {
+                trialStart = Date.now().toString();
+                localStorage.setItem(TRIAL_START_STORAGE, trialStart);
+            }
+
+            const elapsedDays = (Date.now() - parseInt(trialStart, 10)) / (1000 * 60 * 60 * 24);
+            const remaining = Math.max(0, Math.ceil(TRIAL_DAYS - elapsedDays));
+
+            if (remaining > 0) {
+                badge.className = 'badge badge-trial';
+                badge.innerText = `Dùng thử ${remaining} ngày`;
+            } else {
+                badge.className = 'badge badge-locked';
+                badge.innerText = 'Hết hạn';
+                document.getElementById('lockModal').style.display = 'flex';
+            }
+        }
+
+        function activateLicense() {
+            const devId = getDeviceId();
+            const key = document.getElementById('inputLicenseKey').value.trim();
+            if (key === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key);
+                alert('🎉 Kích hoạt bản quyền trọn đời thành công!');
+                location.reload();
+            } else {
+                alert('❌ Mã kích hoạt không chính xác!');
+            }
+        }
+
+        function activateModal() {
+            const devId = getDeviceId();
+            const key = document.getElementById('modalKey').value.trim();
+            if (key === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key);
+                document.getElementById('lockModal').style.display = 'none';
+                alert('🎉 Kích hoạt bản quyền trọn đời thành công!');
+                location.reload();
+            } else {
+                alert('❌ Mã kích hoạt không chính xác!');
+            }
+        }
+
+        function copyDeviceId() {
+            navigator.clipboard.writeText(getDeviceId()).then(() => alert('Đã sao chép mã thiết bị: ' + getDeviceId()));
+        }
+
+        function switchTab(id) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        }
+
+        function formatVND(n) {
+            return Math.round(n).toLocaleString('vi-VN') + ' đ';
+        }
+
+        function calculateRate() {
+            const income = parseFloat(document.getElementById('targetIncome').value) || 0;
+            const expense = parseFloat(document.getElementById('fixedExpense').value) || 0;
+            const taxPct = parseFloat(document.getElementById('taxReserve').value) || 0.15;
+            const billablePct = parseFloat(document.getElementById('billableRatio').value) || 0.65;
+            const daysWeek = parseFloat(document.getElementById('workDaysWeek').value) || 5;
+            const hoursDay = parseFloat(document.getElementById('workHoursDay').value) || 7;
+            const vacDays = parseFloat(document.getElementById('vacationDays').value) || 20;
+
+            const totalYearlyNeed = (income + expense) * 12 / (1 - taxPct);
+            const totalWorkDaysYear = (daysWeek * 52) - vacDays;
+            const totalWorkHoursYear = totalWorkDaysYear * hoursDay;
+            const totalBillableHoursYear = totalWorkHoursYear * billablePct;
+            const billableHoursMonth = totalBillableHoursYear / 12;
+
+            const hourlyRate = totalYearlyNeed / (totalBillableHoursYear || 1);
+            const breakEvenRate = (expense * 12 / (1 - taxPct)) / (totalBillableHoursYear || 1);
+            const dailyRate = hourlyRate * hoursDay * billablePct;
+            const monthlyRate = hourlyRate * billableHoursMonth;
+
+            currentHourlyRate = hourlyRate;
+
+            document.getElementById('valHourlyRate').innerText = formatVND(hourlyRate);
+            document.getElementById('valBreakEven').innerText = formatVND(breakEvenRate);
+            document.getElementById('valDailyRate').innerText = formatVND(dailyRate);
+            document.getElementById('valMonthlyRate').innerText = formatVND(monthlyRate);
+
+            document.getElementById('bkTotalNeeded').innerText = formatVND(totalYearlyNeed / 12);
+            document.getElementById('bkBillableHours').innerText = `${Math.round(billableHoursMonth)} giờ`;
+            document.getElementById('bkTaxAmount').innerText = formatVND((income + expense) * taxPct);
+
+            calcProject();
+        }
+
+        function calcProject() {
+            const name = document.getElementById('projName').value || 'Dự Án Phần Mềm / Thiết Kế';
+            const hours = parseFloat(document.getElementById('projHours').value) || 0;
+            const multiplier = parseFloat(document.getElementById('projComplexity').value) || 1.0;
+            const extra = parseFloat(document.getElementById('projExtraFee').value) || 0;
+
+            const laborCost = hours * currentHourlyRate * multiplier;
+            const totalCost = laborCost + extra;
+
+            document.getElementById('valProjTotal').innerText = formatVND(totalCost);
+
+            const quote = `📋 BÁO GIÁ DỊCH VỤ CHUYÊN NGHIỆP
+Dự án: ${name}
+-----------------------------
+• Thời lượng dự kiến: ${hours} giờ làm việc
+• Đơn giá cơ sở: ${formatVND(currentHourlyRate)}/giờ
+• Hệ số phức tạp: ${multiplier}x
+• Chi phí nhân công: ${formatVND(laborCost)}
+• Chi phí tài nguyên/bản quyền: ${formatVND(extra)}
+-----------------------------
+👉 TỔNG CHI PHÍ DỰ ÁN: ${formatVND(totalCost)}
+(Cam kết bàn giao đúng hạn, hỗ trợ chỉnh sửa theo thỏa thuận)`;
+
+            document.getElementById('quoteText').innerText = quote;
+        }
+
+        function copyQuote() {
+            const text = document.getElementById('quoteText').innerText;
+            navigator.clipboard.writeText(text).then(() => alert('Đã sao chép báo giá vào bộ nhớ tạm!'));
+        }
+
+        window.onload = function() {
+            checkLicense();
+            calculateRate();
+        };
+    </script>
+</body>
+</html>

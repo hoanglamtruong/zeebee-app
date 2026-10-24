@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đấu Trí Đố Vui Bluetooth 2 Người</title>
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --primary-light: #ede9fe;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 20px; }
+        
+        header { background: #0b1120; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
+        .logo-area { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; color: #c4b5fd; }
+        .badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 9999px; font-weight: 600; text-transform: uppercase; }
+        .badge-active { background: #10b981; color: white; }
+        .badge-trial { background: #f59e0b; color: white; }
+        .badge-locked { background: #ef4444; color: white; }
+
+        .container { padding: 14px; max-width: 480px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); }
+
+        .scoreboard { display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-radius: 12px; padding: 10px 16px; border: 1px solid var(--border); }
+        .p-box { text-align: center; }
+        .p-name { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+        .p-score { font-size: 1.8rem; font-weight: 900; color: #a78bfa; }
+        .timer-badge { font-size: 1.2rem; font-weight: 900; background: #312e81; color: #e0e7ff; padding: 6px 14px; border-radius: 20px; border: 1px solid #6366f1; }
+
+        .question-card { background: #1e1b4b; border-radius: 14px; padding: 16px; border: 2px solid #4338ca; min-height: 110px; display: flex; flex-direction: column; justify-content: center; }
+        .q-meta { font-size: 0.75rem; color: #a5b4fc; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .q-text { font-size: 1.05rem; font-weight: 700; line-height: 1.4; color: #fff; }
+
+        .answers-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 4px; }
+        .ans-btn { background: #1e293b; border: 2px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 0.95rem; font-weight: 600; color: #fff; text-align: left; cursor: pointer; transition: 0.15s; display: flex; align-items: center; gap: 10px; }
+        .ans-btn:active { background: #334155; }
+        .ans-btn.correct { background: #065f46; border-color: #10b981; }
+        .ans-btn.wrong { background: #7f1d1d; border-color: #ef4444; }
+        .ans-tag { font-weight: 900; font-size: 0.9rem; color: #c4b5fd; background: rgba(0,0,0,0.3); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        .btn { display: inline-flex; justify-content: center; align-items: center; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: #fff; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 999; }
+        .modal-box { background: var(--card-bg); border-radius: 16px; padding: 20px; max-width: 380px; width: 100%; border: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span>🧠⚡</span>
+            <span>Đấu Trí Đố Vui Bluetooth</span>
+        </div>
+        <div id="licenseBadge" class="badge badge-trial">Đang tải...</div>
+    </header>
+
+    <div class="container">
+        <!-- BẢNG ĐIỂM & ĐỒNG HỒ -->
+        <div class="scoreboard">
+            <div class="p-box">
+                <div class="p-name" id="nameP1">BẠN (P1)</div>
+                <div class="p-score" id="scoreP1">0</div>
+            </div>
+            <div class="timer-badge" id="timerBox">⏱️ 10s</div>
+            <div class="p-box">
+                <div class="p-name" id="nameP2">AI BOT</div>
+                <div class="p-score" id="scoreP2">0</div>
+            </div>
+        </div>
+
+        <!-- CÂU HỎI -->
+        <div class="question-card">
+            <div class="q-meta" id="qCategory">Khoa học & Đời sống</div>
+            <div class="q-text" id="qContent">Đang chuẩn bị câu hỏi...</div>
+        </div>
+
+        <!-- 4 LỰA CHỌN -->
+        <div class="answers-grid" id="ansGrid"></div>
+
+        <!-- NÚT TIẾP TỤC -->
+        <button class="btn btn-primary" id="btnNext" style="display: none;" onclick="nextQuestion()">👉 Câu Hỏi Tiếp Theo</button>
+
+        <!-- BẢN QUYỀN -->
+        <div class="card" style="padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Bản quyền trọn đời (39.000đ):</span>
+            <button onclick="promptLicense()" style="background: none; border: 1px solid var(--primary); color: #c4b5fd; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">Kích Hoạt</button>
+        </div>
+    </div>
+
+    <!-- MODAL KHÓA -->
+    <div id="lockModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3 style="color: #ef4444; margin-bottom: 8px;">⏳ Hết Hạn Dùng Thử</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Vui lòng kích hoạt bản quyền để tiếp tục chơi.</p>
+            <input type="text" id="modalDeviceId" readonly style="width: 100%; padding: 8px; background: #0f172a; color: #fff; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px;">
+            <input type="text" id="modalKey" placeholder="ZB-XXXX-XXXX" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 10px;">
+            <button class="btn btn-primary" onclick="activateModal()">Kích Hoạt</button>
+        </div>
+    </div>
+
+    <script>
+        const LICENSE_KEY_STORAGE = 'zb_quizduel_key';
+        const TRIAL_START_STORAGE = 'zb_quizduel_trial';
+        const TRIAL_DAYS = 7;
+        const SALT = 'ZB_SECRET_2026_OFFLINE_PRO';
+
+        function getDeviceId() {
+            let id = localStorage.getItem('zb_device_id');
+            if (!id) {
+                const arr = new Uint8Array(4);
+                window.crypto.getRandomValues(arr);
+                id = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                localStorage.setItem('zb_device_id', id);
+            }
+            return id;
+        }
+
+        function calculateLicenseKey(deviceId) {
+            let hash = 0;
+            const str = deviceId + SALT;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            const hex = Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+            return `ZB-${hex.substring(0, 4)}-${hex.substring(4, 8)}`;
+        }
+
+        function checkLicense() {
+            const devId = getDeviceId();
+            document.getElementById('modalDeviceId').value = devId;
+
+            const savedKey = localStorage.getItem(LICENSE_KEY_STORAGE);
+            const badge = document.getElementById('licenseBadge');
+
+            if (savedKey && savedKey.trim() === calculateLicenseKey(devId)) {
+                badge.className = 'badge badge-active';
+                badge.innerText = 'Trọn Đời';
+                return;
+            }
+
+            let trialStart = localStorage.getItem(TRIAL_START_STORAGE);
+            if (!trialStart) {
+                trialStart = Date.now().toString();
+                localStorage.setItem(TRIAL_START_STORAGE, trialStart);
+            }
+
+            const elapsedDays = (Date.now() - parseInt(trialStart, 10)) / (1000 * 60 * 60 * 24);
+            const remaining = Math.max(0, Math.ceil(TRIAL_DAYS - elapsedDays));
+
+            if (remaining > 0) {
+                badge.className = 'badge badge-trial';
+                badge.innerText = `Dùng thử ${remaining} ngày`;
+            } else {
+                badge.className = 'badge badge-locked';
+                badge.innerText = 'Hết hạn';
+                document.getElementById('lockModal').style.display = 'flex';
+            }
+        }
+
+        function promptLicense() {
+            const devId = getDeviceId();
+            const key = prompt(`Mã thiết bị của bạn: ${devId}\nNhập mã bản quyền (ZB-XXXX-XXXX):`);
+            if (key && key.trim() === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key.trim());
+                alert('🎉 Kích hoạt thành công!');
+                location.reload();
+            } else if (key) {
+                alert('❌ Mã không chính xác!');
+            }
+        }
+
+        function activateModal() {
+            const devId = getDeviceId();
+            const key = document.getElementById('modalKey').value.trim();
+            if (key === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key);
+                document.getElementById('lockModal').style.display = 'none';
+                alert('🎉 Kích hoạt thành công!');
+                location.reload();
+            } else {
+                alert('❌ Mã không chính xác!');
+            }
+        }
+
+        // --- ÂM THANH WEB AUDIO ---
+        let audioCtx = null;
+        function playTone(freq, duration, type='sine') {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // --- KHO CÂU HỎI OFFLINE ---
+        const QUESTIONS = [
+            { cat: "Địa lý Việt Nam", q: "Đỉnh núi nào được mệnh danh là 'Nóc nhà Đông Dương'?", a: ["Phan Xi Păng (Fansipan)", "Tây Côn Lĩnh", "Bạch Mộc Lương Tử", "Langbiang"], correct: 0 },
+            { cat: "Khoa học Tự nhiên", q: "Kim loại nào có nhiệt độ nóng chảy cao nhất?", a: ["Titan", "Vonfram (Tungsten)", "Bạch kim", "Sắt"], correct: 1 },
+            { cat: "Lịch sử Việt Nam", q: "Chiến thắng Điện Biên Phủ 'lừng lẫy năm châu' diễn ra vào năm nào?", a: ["1945", "1954", "1972", "1975"], correct: 1 },
+            { cat: "Công nghệ & Máy tính", q: "Hệ điều hành Android được phát triển ban đầu dựa trên nền tảng nhân (kernel) nào?", a: ["BSD Unix", "Linux", "Windows NT", "Mach"], correct: 1 },
+            { cat: "Khoa học Vũ trụ", q: "Hành tinh nào gần Mặt Trời nhất trong Hệ Mặt Trời?", a: ["Sao Kim (Venus)", "Sao Thủy (Mercury)", "Sao Hỏa (Mars)", "Trái Đất"], correct: 1 },
+            { cat: "Đố vui Trí tuệ", q: "Con gì đập thì sống, không đập thì chết?", a: ["Con tim", "Con đê", "Con muỗi", "Con cua"], correct: 0 },
+            { cat: "Khoa học Tự nhiên", q: "Khí nào chiếm tỷ lệ phần trăm lớn nhất trong khí quyển Trái Đất?", a: ["Oxy (Oxygen)", "Nitơ (Nitrogen)", "Cacbonic (CO2)", "Argon"], correct: 1 },
+            { cat: "Địa lý Thế giới", q: "Kênh đào nào nối liền Địa Trung Hải và Biển Đỏ?", a: ["Kênh Panama", "Kênh Suez", "Kênh Kiel", "Kênh Corinth"], correct: 1 },
+            { cat: "Toán học & Logic", q: "Số nguyên tố chẵn duy nhất là số nào?", a: ["Số 0", "Số 2", "Số 4", "Không có"], correct: 1 },
+            { cat: "Văn hóa Việt Nam", q: "Tác phẩm 'Truyện Kiều' bất hủ do ai sáng tác?", a: ["Nguyễn Trãi", "Nguyễn Du", "Hồ Xuân Hương", "Đoàn Thị Điểm"], correct: 1 }
+        ];
+
+        let currentQIndex = 0;
+        let scoreP1 = 0;
+        let scoreP2 = 0;
+        let timer = null;
+        let timeLeft = 10;
+        let answered = false;
+
+        function loadQuestion() {
+            if (currentQIndex >= QUESTIONS.length) {
+                currentQIndex = 0; // lặp lại ngẫu nhiên
+            }
+            const q = QUESTIONS[currentQIndex];
+            document.getElementById('qCategory').innerText = q.cat;
+            document.getElementById('qContent').innerText = `${currentQIndex + 1}. ${q.q}`;
+            document.getElementById('btnNext').style.display = 'none';
+
+            const grid = document.getElementById('ansGrid');
+            grid.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+
+            q.a.forEach((ans, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'ans-btn';
+                btn.innerHTML = `<span class="ans-tag">${labels[idx]}</span> <span>${ans}</span>`;
+                btn.onclick = () => selectAnswer(idx, btn);
+                grid.appendChild(btn);
+            });
+
+            answered = false;
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 10;
+            document.getElementById('timerBox').innerText = `⏱️ ${timeLeft}s`;
+
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timerBox').innerText = `⏱️ ${timeLeft}s`;
+                if (timeLeft <= 3 && timeLeft > 0) playTone(880, 0.08);
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (!answered) timeoutRound();
+                }
+            }, 1000);
+        }
+
+        function selectAnswer(userPick, btn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timer);
+
+            const q = QUESTIONS[currentQIndex];
+            const allBtns = document.querySelectorAll('.ans-btn');
+
+            if (userPick === q.correct) {
+                btn.classList.add('correct');
+                scoreP1 += (10 + timeLeft * 2);
+                document.getElementById('scoreP1').innerText = scoreP1;
+                playTone(587, 0.15);
+                setTimeout(() => playTone(880, 0.25), 100);
+            } else {
+                btn.classList.add('wrong');
+                allBtns[q.correct].classList.add('correct');
+                playTone(220, 0.35, 'sawtooth');
+            }
+
+            // AI bot simulation (70% đúng nếu câu vừa phải)
+            if (Math.random() < 0.7) {
+                scoreP2 += (10 + Math.floor(Math.random() * 8));
+                document.getElementById('scoreP2').innerText = scoreP2;
+            }
+
+            document.getElementById('btnNext').style.display = 'block';
+        }
+
+        function timeoutRound() {
+            answered = true;
+            const q = QUESTIONS[currentQIndex];
+            const allBtns = document.querySelectorAll('.ans-btn');
+            allBtns[q.correct].classList.add('correct');
+            playTone(180, 0.4, 'sawtooth');
+            document.getElementById('btnNext').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            loadQuestion();
+        }
+
+        window.onload = function() {
+            checkLicense();
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>

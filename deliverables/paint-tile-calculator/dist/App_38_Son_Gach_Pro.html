@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tính Sơn Tường & Gạch Lát Pro</title>
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 24px; }
+        header { background: #064e3b; color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); }
+        .logo-area { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; }
+        .badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 9999px; font-weight: 600; text-transform: uppercase; }
+        .badge-active { background: #10b981; color: white; }
+        .badge-trial { background: #f59e0b; color: white; }
+        .badge-locked { background: #ef4444; color: white; }
+
+        .tabs { display: flex; background: white; border-bottom: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 12px 6px; border: none; background: transparent; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); border-bottom: 3px solid transparent; cursor: pointer; text-align: center; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        .container { padding: 14px; max-width: 540px; margin: 0 auto; width: 100%; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; color: #1e293b; }
+
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+        .input-wrap { position: relative; display: flex; align-items: center; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fff; color: var(--text-main); font-weight: 600; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .unit-tag { position: absolute; right: 12px; font-size: 0.8rem; color: var(--text-muted); pointer-events: none; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .stat-box { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .stat-box.highlight { background: var(--primary-light); border-color: #6ee7b7; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+        .stat-value { font-size: 1.2rem; font-weight: 800; color: #065f46; margin-top: 4px; }
+
+        .btn { display: inline-flex; justify-content: center; align-items: center; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: 0.2s; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); margin-top: 8px; }
+
+        .breakdown-row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 0.85rem; border-bottom: 1px dashed var(--border); }
+        .breakdown-row:last-child { border-bottom: none; font-weight: 700; color: var(--text-main); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 999; backdrop-filter: blur(2px); }
+        .modal-box { background: white; border-radius: 16px; padding: 20px; max-width: 400px; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span>🎨</span>
+            <span>Tính Sơn & Gạch Lát Pro</span>
+        </div>
+        <div id="licenseBadge" class="badge badge-trial">Đang tải...</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-paint')">Sơn Tường</button>
+        <button class="tab-btn" onclick="switchTab('tab-tile')">Gạch Lát Nền</button>
+        <button class="tab-btn" onclick="switchTab('tab-license')">Bản Quyền</button>
+    </div>
+
+    <div class="container">
+        <!-- TAB 1: SƠN TƯỜNG -->
+        <div id="tab-paint" class="tab-content active">
+            <div class="card">
+                <div class="card-title">📐 Kích Thước Phòng & Diện Tích</div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Dài (m)</label>
+                        <input type="number" id="pLength" value="5" step="0.1" oninput="calcPaint()">
+                    </div>
+                    <div class="form-group">
+                        <label>Rộng (m)</label>
+                        <input type="number" id="pWidth" value="4" step="0.1" oninput="calcPaint()">
+                    </div>
+                    <div class="form-group">
+                        <label>Cao (m)</label>
+                        <input type="number" id="pHeight" value="3.5" step="0.1" oninput="calcPaint()">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Trừ cửa sổ & cửa đi (m²)</label>
+                        <input type="number" id="pDoorsArea" value="6" step="0.5" oninput="calcPaint()">
+                    </div>
+                    <div class="form-group">
+                        <label>Sơn cả trần nhà?</label>
+                        <select id="pIncludeCeiling" onchange="calcPaint()">
+                            <option value="yes">Có sơn trần</option>
+                            <option value="no" selected>Không sơn trần</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Số lớp sơn phủ</label>
+                        <select id="pCoats" onchange="calcPaint()">
+                            <option value="1">1 lớp</option>
+                            <option value="2" selected>2 lớp (Tiêu chuẩn)</option>
+                            <option value="3">3 lớp</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hao hụt thi công</label>
+                        <select id="pLoss" onchange="calcPaint()">
+                            <option value="0.05">5% (Tường phẳng)</option>
+                            <option value="0.10" selected>10% (Chuẩn)</option>
+                            <option value="0.15">15% (Tường gồ ghề)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--primary);">
+                <div class="card-title" style="color: var(--primary);">🪣 Khối Lượng Vật Tư Sơn Cần Mua</div>
+                <div class="stat-grid">
+                    <div class="stat-box highlight">
+                        <div class="stat-label">TỔNG SỐ LÍT SƠN PHỦ</div>
+                        <div class="stat-value" id="valPaintLiters">0 Lít</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">SƠN LÓT KHÁNG KIỀM</div>
+                        <div class="stat-value" id="valPrimerLiters">0 Lít</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">QUY ĐỔI THÙNG 18L</div>
+                        <div class="stat-value" id="valBuckets18">0 Thùng</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">LON LẺ 5L BỔ SUNG</div>
+                        <div class="stat-value" id="valCans5">0 Lon</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 14px;">
+                    <div class="breakdown-row"><span>Diện tích tường thực tế:</span><strong id="bkWallArea">0 m²</strong></div>
+                    <div class="breakdown-row"><span>Định mức độ phủ sơn:</span><strong>10 m² / lít / lớp</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: GẠCH LÁT NỀN -->
+        <div id="tab-tile" class="tab-content">
+            <div class="card">
+                <div class="card-title">📏 Kích Thước Sàn & Loại Gạch</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Chiều dài sàn (m)</label>
+                        <input type="number" id="tLength" value="6" step="0.1" oninput="calcTile()">
+                    </div>
+                    <div class="form-group">
+                        <label>Chiều rộng sàn (m)</label>
+                        <input type="number" id="tWidth" value="4" step="0.1" oninput="calcTile()">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Kích thước viên gạch</label>
+                        <select id="tSize" onchange="calcTile()">
+                            <option value="0.30">30 x 30 cm</option>
+                            <option value="0.40">40 x 40 cm</option>
+                            <option value="0.50">50 x 50 cm</option>
+                            <option value="0.60" selected>60 x 60 cm (Phổ biến)</option>
+                            <option value="0.80">80 x 80 cm (Cao cấp)</option>
+                            <option value="0.72">60 x 120 cm (Đá khổ lớn)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Số viên / hộp đóng gói</label>
+                        <input type="number" id="tBoxTiles" value="4" oninput="calcTile()">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Tỷ lệ hao hụt cắt viền</label>
+                        <select id="tLoss" onchange="calcTile()">
+                            <option value="0.05">5% (Sàn vuông vức)</option>
+                            <option value="0.08" selected>8% (Chuẩn)</option>
+                            <option value="0.12">12% (Nhiều góc cạnh)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Giá tiền 1 m² gạch (đ)</label>
+                        <input type="number" id="tPriceM2" value="180000" step="10000" oninput="calcTile()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--primary);">
+                <div class="card-title" style="color: var(--primary);">📦 Số Lượng Gạch & Chi Phí</div>
+                <div class="stat-grid">
+                    <div class="stat-box highlight">
+                        <div class="stat-label">SỐ HỘP GẠCH CẦN MUA</div>
+                        <div class="stat-value" id="valTileBoxes">0 Hộp</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">TỔNG SỐ VIÊN GẠCH</div>
+                        <div class="stat-value" id="valTotalTiles">0 Viên</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">TỔNG DIỆN TÍCH TÍNH HAO HỤT</div>
+                        <div class="stat-value" id="valTileArea">0 m²</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">KEO DÁN GẠCH (BAO 25KG)</div>
+                        <div class="stat-value" id="valAdhesiveBags">0 Bao</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 14px;">
+                    <div class="breakdown-row"><span>Diện tích sàn thực tế:</span><strong id="bkFloorReal">0 m²</strong></div>
+                    <div class="breakdown-row"><span>Ước tính tiền gạch:</span><strong id="bkTileCost" style="color: #059669;">0 đ</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: BẢN QUYỀN -->
+        <div id="tab-license" class="tab-content">
+            <div class="card">
+                <div class="card-title">🔑 Kích Hoạt Bản Quyền Offline</div>
+                <div class="form-group">
+                    <label>Mã thiết bị của bạn:</label>
+                    <input type="text" id="inputDeviceId" readonly style="background: #f1f5f9;">
+                </div>
+                <div class="form-group">
+                    <label>Mã kích hoạt:</label>
+                    <input type="text" id="inputLicenseKey" placeholder="ZB-XXXX-XXXX">
+                </div>
+                <button class="btn btn-primary" onclick="activateLicense()">Kích Hoạt Trọn Đời</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="lockModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3 style="color: #ef4444; margin-bottom: 8px;">⏳ Hết Hạn Dùng Thử</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px;">Vui lòng kích hoạt bản quyền để tiếp tục sử dụng trọn đời.</p>
+            <div class="form-group">
+                <label>Mã thiết bị:</label>
+                <input type="text" id="modalDeviceId" readonly style="background: #f1f5f9;">
+            </div>
+            <div class="form-group">
+                <label>Mã bản quyền:</label>
+                <input type="text" id="modalKey" placeholder="ZB-XXXX-XXXX">
+            </div>
+            <button class="btn btn-primary" onclick="activateModal()">Kích Hoạt</button>
+        </div>
+    </div>
+
+    <script>
+        const LICENSE_KEY_STORAGE = 'zb_painttile_key';
+        const TRIAL_START_STORAGE = 'zb_painttile_trial';
+        const TRIAL_DAYS = 7;
+        const SALT = 'ZB_SECRET_2026_OFFLINE_PRO';
+
+        function getDeviceId() {
+            let id = localStorage.getItem('zb_device_id');
+            if (!id) {
+                const arr = new Uint8Array(4);
+                window.crypto.getRandomValues(arr);
+                id = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                localStorage.setItem('zb_device_id', id);
+            }
+            return id;
+        }
+
+        function calculateLicenseKey(deviceId) {
+            let hash = 0;
+            const str = deviceId + SALT;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            const hex = Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+            return `ZB-${hex.substring(0, 4)}-${hex.substring(4, 8)}`;
+        }
+
+        function checkLicense() {
+            const devId = getDeviceId();
+            document.getElementById('inputDeviceId').value = devId;
+            document.getElementById('modalDeviceId').value = devId;
+
+            const savedKey = localStorage.getItem(LICENSE_KEY_STORAGE);
+            const badge = document.getElementById('licenseBadge');
+
+            if (savedKey && savedKey.trim() === calculateLicenseKey(devId)) {
+                badge.className = 'badge badge-active';
+                badge.innerText = 'Trọn Đời';
+                return;
+            }
+
+            let trialStart = localStorage.getItem(TRIAL_START_STORAGE);
+            if (!trialStart) {
+                trialStart = Date.now().toString();
+                localStorage.setItem(TRIAL_START_STORAGE, trialStart);
+            }
+
+            const elapsedDays = (Date.now() - parseInt(trialStart, 10)) / (1000 * 60 * 60 * 24);
+            const remaining = Math.max(0, Math.ceil(TRIAL_DAYS - elapsedDays));
+
+            if (remaining > 0) {
+                badge.className = 'badge badge-trial';
+                badge.innerText = `Dùng thử ${remaining} ngày`;
+            } else {
+                badge.className = 'badge badge-locked';
+                badge.innerText = 'Hết hạn';
+                document.getElementById('lockModal').style.display = 'flex';
+            }
+        }
+
+        function activateLicense() {
+            const devId = getDeviceId();
+            const key = document.getElementById('inputLicenseKey').value.trim();
+            if (key === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key);
+                alert('🎉 Kích hoạt thành công!');
+                location.reload();
+            } else {
+                alert('❌ Mã kích hoạt không hợp lệ!');
+            }
+        }
+
+        function activateModal() {
+            const devId = getDeviceId();
+            const key = document.getElementById('modalKey').value.trim();
+            if (key === calculateLicenseKey(devId)) {
+                localStorage.setItem(LICENSE_KEY_STORAGE, key);
+                document.getElementById('lockModal').style.display = 'none';
+                alert('🎉 Kích hoạt thành công!');
+                location.reload();
+            } else {
+                alert('❌ Mã kích hoạt không hợp lệ!');
+            }
+        }
+
+        function switchTab(id) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        }
+
+        function calcPaint() {
+            const l = parseFloat(document.getElementById('pLength').value) || 0;
+            const w = parseFloat(document.getElementById('pWidth').value) || 0;
+            const h = parseFloat(document.getElementById('pHeight').value) || 0;
+            const doors = parseFloat(document.getElementById('pDoorsArea').value) || 0;
+            const incCeiling = document.getElementById('pIncludeCeiling').value === 'yes';
+            const coats = parseInt(document.getElementById('pCoats').value, 10) || 2;
+            const loss = parseFloat(document.getElementById('pLoss').value) || 0.1;
+
+            let wallArea = 2 * (l + w) * h;
+            if (incCeiling) wallArea += (l * w);
+            const netArea = Math.max(0, wallArea - doors);
+
+            // 1 lít sơn phủ được ~10m²/lớp
+            const coveragePerLiter = 10;
+            const totalPaintNeeded = (netArea * coats * (1 + loss)) / coveragePerLiter;
+            const primerNeeded = (netArea * 1 * (1 + loss)) / coveragePerLiter; // 1 lớp sơn lót
+
+            const buckets18 = Math.floor(totalPaintNeeded / 18);
+            const remainingLiters = totalPaintNeeded % 18;
+            const cans5 = Math.ceil(remainingLiters / 5);
+
+            document.getElementById('valPaintLiters').innerText = totalPaintNeeded.toFixed(1) + ' Lít';
+            document.getElementById('valPrimerLiters').innerText = primerNeeded.toFixed(1) + ' Lít';
+            document.getElementById('valBuckets18').innerText = buckets18 + ' Thùng';
+            document.getElementById('valCans5').innerText = cans5 + ' Lon';
+            document.getElementById('bkWallArea').innerText = netArea.toFixed(1) + ' m²';
+        }
+
+        function calcTile() {
+            const l = parseFloat(document.getElementById('tLength').value) || 0;
+            const w = parseFloat(document.getElementById('tWidth').value) || 0;
+            const tileSizeM = parseFloat(document.getElementById('tSize').value) || 0.6;
+            const boxTiles = parseInt(document.getElementById('tBoxTiles').value, 10) || 4;
+            const loss = parseFloat(document.getElementById('tLoss').value) || 0.08;
+            const priceM2 = parseFloat(document.getElementById('tPriceM2').value) || 0;
+
+            const floorArea = l * w;
+            const totalAreaWithLoss = floorArea * (1 + loss);
+
+            let tileAreaM2 = 0;
+            if (tileSizeM === 0.72) {
+                tileAreaM2 = 0.6 * 1.2;
+            } else {
+                tileAreaM2 = tileSizeM * tileSizeM;
+            }
+
+            const totalTiles = Math.ceil(totalAreaWithLoss / tileAreaM2);
+            const totalBoxes = Math.ceil(totalTiles / boxTiles);
+            const adhesiveBags = Math.ceil(floorArea * 5 / 25); // ~5kg keo dán/m2, bao 25kg
+
+            document.getElementById('valTileBoxes').innerText = totalBoxes + ' Hộp';
+            document.getElementById('valTotalTiles').innerText = totalTiles + ' Viên';
+            document.getElementById('valTileArea').innerText = totalAreaWithLoss.toFixed(1) + ' m²';
+            document.getElementById('valAdhesiveBags').innerText = adhesiveBags + ' Bao';
+            document.getElementById('bkFloorReal').innerText = floorArea.toFixed(1) + ' m²';
+            document.getElementById('bkTileCost').innerText = Math.round(totalAreaWithLoss * priceM2).toLocaleString('vi-VN') + ' đ';
+        }
+
+        window.onload = function() {
+            checkLicense();
+            calcPaint();
+            calcTile();
+        };
+    </script>
+</body>
+</html>
