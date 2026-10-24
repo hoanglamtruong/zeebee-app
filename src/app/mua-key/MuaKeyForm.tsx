@@ -44,8 +44,7 @@ export default function MuaKeyForm({
     const groups: Record<string, { label: string; items: Product[] }> = {
       "pro-tools": { label: "🏗️ Công Cụ Kỹ Thuật & Xây Dựng", items: [] },
       "business": { label: "💼 Quản Lý Bán Hàng & Kinh Doanh", items: [] },
-      "excel": { label: "📊 File Excel Quản Lý Chuyên Nghiệp", items: [] },
-      "utility": { label: "🛠️ Tiện Ích Đời Sống & Đồ Họa", items: [] },
+      "utility": { label: "🛠️ Tiện Ích Đời Sống & Quản Lý", items: [] },
       "games": { label: "🎮 Game Bluetooth Đấu 2 Máy", items: [] },
     };
 

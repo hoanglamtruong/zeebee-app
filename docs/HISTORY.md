@@ -73,6 +73,12 @@ Mô tả sản phẩm được đối chiếu với app thật (không bịa tí
   - Trang `/build`: Nâng cấp thành trang dịch vụ may đo phần mềm chuyên nghiệp (4 cam kết, 5 hạng mục, 3 gói giá minh bạch, case studies, form thu yêu cầu).
   - Form đặt hàng & Telegram: Tối ưu thông điệp đặt mua có sẵn và đăng ký sớm nhận ưu đãi 50%.
 
+### 24/10/2026 — LỌC & XÓA TOÀN BỘ SẢN PHẨM KHÔNG ĐÓNG GÓI APK
+- **Chính sách**: Toàn bộ cửa hàng app.zeebee.vn chỉ tập trung 100% vào danh mục **Android Mini App APK & Game Bluetooth**.
+- **Đã xóa**: 6 sản phẩm không đóng gói APK (HTML lẻ và file Excel) gồm: `zqr-offline`, `excel-quan-ly-ban-hang`, `excel-cham-cong-tinh-luong`, `excel-so-thu-chi-gia-dinh`, `thuoc-do-goc-tho-moc`, `nen-anh-hang-loat`.
+- **Dọn dẹp tệp**: Xóa toàn bộ file nguồn & dist trong `deliverables/excel`, `deliverables/zqr-offline`, `deliverables/thuoc-do-goc-tho-moc`, `public/products/App_33_...` và `public/downloads/ThuocDoGoc_...`.
+- **Kho sản phẩm chuẩn hóa**: Giữ lại 17 sản phẩm Android APK thuần túy; cập nhật lại Combo Bundle và tab danh mục.
+
 ## Bài học
 | Sự cố | Bài học |
 |---|---|

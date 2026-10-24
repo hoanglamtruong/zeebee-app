@@ -5,8 +5,6 @@ import Link from "next/link";
 import {
   Smartphone,
   Gamepad2,
-  FileSpreadsheet,
-  QrCode,
   Sparkles,
   CheckCircle2,
   Download,
@@ -21,13 +19,10 @@ import {
   CATEGORY_TABS,
   formatVnd,
   type Product,
-  type ProductCategory,
 } from "@/lib/catalog";
 
 function getCardIcon(p: Product) {
-  if (p.slug === "zqr-offline") return QrCode;
   if (p.kind.includes("Game")) return Gamepad2;
-  if (p.kind.includes("Excel")) return FileSpreadsheet;
   if (p.category === "pro-tools") return HardHat;
   if (p.category === "business") return Briefcase;
   if (p.category === "utility") return HeartHandshake;
@@ -40,10 +35,10 @@ export default function ProductCatalogSection() {
   const filteredProducts =
     activeTab === "all"
       ? PRODUCTS
-      : PRODUCTS.filter((p) => {
-          if (activeTab === "excel") return p.kind.includes("Excel");
-          return p.category === activeTab;
-        });
+      : PRODUCTS.filter((p) => p.category === activeTab);
+
+  const availableCount = PRODUCTS.filter((p) => p.status === "available").length;
+  const comingSoonCount = PRODUCTS.filter((p) => p.status === "coming_soon").length;
 
   return (
     <section id="san-pham" className="max-w-6xl mx-auto px-4 sm:px-6 py-10 scroll-mt-20">
@@ -51,21 +46,25 @@ export default function ProductCatalogSection() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
           <span className="text-xs font-bold text-[var(--zb-gold)] uppercase tracking-wider">
-            Kho Sản Phẩm Số Độc Lập
+            Kho Android Mini App APK (Zstore)
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
-            Sản Phẩm Tải Về Dùng Trọn Đời (Offline-First)
+            Ứng Dụng &amp; Game Android APK Tải Về Trọn Đời
           </h2>
           <p className="text-sm text-[var(--zb-muted)] mt-1 max-w-2xl">
-            Sở hữu vĩnh viễn với 1 lần trả phí — 100% không phát sinh thuê bao tháng — Chạy độc lập trên máy của bạn.
+            100% đóng gói dạng tệp cài đặt Android APK độc lập. Trả 1 lần sở hữu vĩnh viễn — 0 phí duy trì — Hoạt động offline bảo mật cục bộ.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-[var(--zb-muted)] shrink-0">
           <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-          <span>4 Có sẵn</span>
-          <span className="mx-1">·</span>
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-          <span>13 Sắp ra mắt (Ưu đãi 50%)</span>
+          <span>{availableCount} Sẵn sàng tải</span>
+          {comingSoonCount > 0 && (
+            <>
+              <span className="mx-1">·</span>
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span>{comingSoonCount} Sắp ra mắt (Ưu đãi 50%)</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -76,9 +75,7 @@ export default function ProductCatalogSection() {
           const count =
             tab.id === "all"
               ? PRODUCTS.length
-              : tab.id === "excel"
-                ? PRODUCTS.filter((p) => p.kind.includes("Excel")).length
-                : PRODUCTS.filter((p) => p.category === tab.id).length;
+              : PRODUCTS.filter((p) => p.category === tab.id).length;
 
           return (
             <button
@@ -127,7 +124,7 @@ export default function ProductCatalogSection() {
                     </span>
                   ) : (
                     <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
-                      <CheckCircle2 size={11} /> Sẵn sàng tải ngay
+                      <CheckCircle2 size={11} /> Sẵn sàng tải APK
                     </span>
                   )}
                 </div>
@@ -170,7 +167,7 @@ export default function ProductCatalogSection() {
                     </>
                   ) : (
                     <>
-                      Tải ngay <Download size={13} />
+                      Tải APK <Download size={13} />
                     </>
                   )}
                 </span>
