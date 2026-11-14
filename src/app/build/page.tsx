@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import CustomRequestForm from "@/components/CustomRequestForm";
-import { CASE_STUDIES } from "@/lib/catalog";
+import { CASE_STUDIES, type CaseStudy } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Dịch vụ Build Phần Mềm & Mini Tool Theo Yêu Cầu | app.zeebee.vn",
@@ -246,7 +246,7 @@ export default function BuildPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {CASE_STUDIES.map((c) => (
+            {CASE_STUDIES.map((c: CaseStudy) => (
               <div
                 key={c.slug}
                 className="p-4 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] space-y-2 flex flex-col justify-between"

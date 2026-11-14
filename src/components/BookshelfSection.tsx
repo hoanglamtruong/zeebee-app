@@ -4,16 +4,14 @@ import React, { useState, useMemo } from "react";
 import {
   Search,
   Sparkles,
-  SlidersHorizontal,
   Bookmark,
-  Layers,
-  HardHat,
-  Briefcase,
   Gamepad2,
-  Info,
   Gift,
+  Swords,
+  Users,
+  Puzzle,
 } from "lucide-react";
-import { PRODUCTS, Product, CATEGORY_TABS, formatVnd } from "@/lib/catalog";
+import { PRODUCTS, Product, CATEGORY_TABS } from "@/lib/catalog";
 import BookCard from "./BookCard";
 import BookDetailModal from "./BookDetailModal";
 import YourStackDrawer from "./YourStackDrawer";
@@ -23,7 +21,7 @@ import AffiliateMissionModal from "./AffiliateMissionModal";
 interface ShelfTier {
   id: string;
   title: string;
-  category: "pro-tools" | "business" | "games";
+  category: "bluetooth-pvp" | "coop-arcade" | "puzzle-board";
   subtitle: string;
   icon: string;
   badge: string;
@@ -31,27 +29,27 @@ interface ShelfTier {
 
 const SHELF_TIERS: ShelfTier[] = [
   {
-    id: "pro-tools",
-    category: "pro-tools",
-    title: "Kỹ Thuật & Xây Dựng Thực Chiến",
-    subtitle: "Công cụ tính toán công trường, bóc tách bê tông, in 3D, điện & hoàn thiện",
-    icon: "📐",
-    badge: "5 Ứng Dụng",
+    id: "bluetooth-pvp",
+    category: "bluetooth-pvp",
+    title: "Đối Kháng Bluetooth 2 Người (PvP)",
+    subtitle: "Kết nối trực tiếp 2 máy qua Bluetooth không cần mạng: Cờ Caro, Hải Chiến, Oẳn Tù Tì, Đố Vui & Party Pack",
+    icon: "⚔️",
+    badge: "5 Tựa Game",
   },
   {
-    id: "business",
-    category: "business",
-    title: "Quản Lý Bán Hàng & Dịch Vụ",
-    subtitle: "Sổ kho mini, báo giá hóa đơn, định giá lợi nhuận, sổ đo tiệm may & thù lao",
-    icon: "💼",
-    badge: "5 Ứng Dụng",
-  },
-  {
-    id: "games",
-    category: "games",
-    title: "Mini Game Đối Kháng Bluetooth & Cục Bộ",
-    subtitle: "Cờ caro, đấu tàu chiến, oẳn tù tì, đố vui trí tuệ & party pack 2 người",
+    id: "coop-arcade",
+    category: "coop-arcade",
+    title: "Hợp Tác Chiến Thuật & Arcade Co-op",
+    subtitle: "Cùng bạn bè hợp lực vượt ải: Bóng Bàn Pong, Mê Cung Co-op, Thủ Thành, Đặt Bom & Bắn Thiên Thạch",
     icon: "🎮",
+    badge: "5 Tựa Game",
+  },
+  {
+    id: "puzzle-board",
+    category: "puzzle-board",
+    title: "Game Boardgame & Trí Tuệ Cổ Điển",
+    subtitle: "Thư giãn đấu trí rèn luyện trí não: Cờ Cá Ngựa, Xếp Hình Gỗ, Nối Thú Onet, Cờ Tào Cáo & Lật Hình",
+    icon: "🧩",
     badge: "5 Tựa Game",
   },
 ];
@@ -94,7 +92,7 @@ export default function BookshelfSection() {
         !q ||
         p.name.toLowerCase().includes(q) ||
         p.tagline.toLowerCase().includes(q) ||
-        p.format.toLowerCase().includes(q) ||
+        p.gameMode.toLowerCase().includes(q) ||
         (p.devicePrefix && p.devicePrefix.toLowerCase().includes(q));
       return matchCat && matchSearch;
     });
@@ -103,19 +101,19 @@ export default function BookshelfSection() {
   return (
     <section id="san-pham" className="relative py-12 scroll-mt-20 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Section Heading & Search Control Bar (Leafbound Inspired) */}
+        {/* Section Heading & Search Control Bar */}
         <div className="mb-10 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-mono font-bold text-emerald-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>KHO ỨNG DỤNG OFFLINE · 100% MIỄN PHÍ TẢI VỀ 2026</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-xs font-mono font-bold text-amber-300">
+            <Gamepad2 size={14} />
+            <span>KHO GAME RETRO &amp; BLUETOOTH OFFLINE VAULT 2026</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-serif uppercase">
-            Tủ Trưng Bày Ứng Dụng &amp; Game Android APK
+            Tủ Trưng Bày Game Offline &amp; Bluetooth
           </h2>
 
           <p className="text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto opacity-90 leading-relaxed font-sans">
-            Tải về cài đặt và sử dụng miễn phí trọn đời — 100% Hoạt động Offline không cần mạng — Mở khóa thêm tính năng VIP hoặc qua màn game thông qua nhiệm vụ tài trợ đối tác.
+            Mỗi tựa game là một trò chơi hoàn chỉnh độc lập — Tải về chạy trực tiếp 100% offline — Kết nối Bluetooth ngang hàng 2 máy mọi lúc mọi nơi.
           </p>
 
           {/* Quick Mission Trigger Button */}
@@ -125,7 +123,7 @@ export default function BookshelfSection() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-400/20 via-amber-300/20 to-orange-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold hover:bg-amber-400/30 transition-all shadow cursor-pointer"
             >
               <Gift size={15} />
-              <span>🎁 Bảng Nhiệm Vụ Đối Tác: Mở Khóa License Key PRO Trọn Đời (0đ)</span>
+              <span>🎁 Bảng Nhiệm Vụ: Nhận Thêm Mạng Chơi &amp; Mở Khóa Màn Kế Tiếp</span>
             </button>
           </div>
 
@@ -140,7 +138,7 @@ export default function BookshelfSection() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm tên ứng dụng, công cụ, hoặc game trên kệ..."
+                placeholder="Tìm tựa game, thể loại, hoặc chế độ chơi trên kệ..."
                 className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#091b2c] border border-white/15 text-white placeholder-neutral-400 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-inner"
               />
               {searchQuery && (
@@ -167,7 +165,7 @@ export default function BookshelfSection() {
                         : "bg-white/5 text-neutral-300 hover:bg-white/10 border border-white/10"
                     }`}
                   >
-                    {tab.label.replace("Tất cả Mini App APK", "Tất Cả Kệ").replace("Công cụ ", "").replace("Quản lý ", "")}
+                    {tab.label}
                   </button>
                 );
               })}
@@ -175,7 +173,7 @@ export default function BookshelfSection() {
           </div>
         </div>
 
-        {/* The Bookshelf Presentation (Từng Tầng Kệ Sách) */}
+        {/* The Bookshelf Presentation (Từng Tầng Kệ Hộp Game) */}
         <div className="space-y-14">
           {SHELF_TIERS.map((tier, index) => {
             const tierProducts = filteredProducts.filter(
@@ -201,8 +199,8 @@ export default function BookshelfSection() {
                         <h3 className="text-sm sm:text-base font-black font-serif uppercase tracking-wider text-amber-300">
                           {tier.title}
                         </h3>
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                          {tierProducts.length} SP · 0Đ
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/30">
+                          {tierProducts.length} GAME
                         </span>
                       </div>
                       <span className="text-[10px] text-neutral-400 hidden sm:block">
@@ -211,9 +209,9 @@ export default function BookshelfSection() {
                     </div>
                   </div>
 
-                  {/* Shelf Bay: The Books Standing Side-by-Side */}
+                  {/* Shelf Bay: The Games Standing Side-by-Side */}
                   <div className="relative px-2 sm:px-6">
-                    {/* Standing Books Grid */}
+                    {/* Standing Game Cartridges Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-4 gap-x-3 sm:gap-x-4 md:gap-x-6 justify-items-center items-end pb-1">
                       {tierProducts.map((product) => {
                         const isInStack = stack.some((s) => s.slug === product.slug);
@@ -253,14 +251,14 @@ export default function BookshelfSection() {
                         }}
                       >
                         <div className="text-[9px] font-mono text-amber-400/40 tracking-widest hidden sm:block">
-                          ZEEBEE SHELF REF. {tier.id.toUpperCase()}
+                          ZEEBEE GAME SHELF · {tier.id.toUpperCase()}
                         </div>
-                        <div className="text-[9px] font-mono text-emerald-400/70 tracking-widest hidden sm:block font-bold">
-                          100% FREE DOWNLOAD · OFFLINE-FIRST
+                        <div className="text-[9px] font-mono text-amber-300/70 tracking-widest hidden sm:block font-bold">
+                          BLUETOOTH CLASSIC &amp; OFFLINE 2026
                         </div>
                       </div>
 
-                      {/* Deep Shelf Under-Shadow casting onto the wall behind */}
+                      {/* Deep Shelf Under-Shadow */}
                       <div className="w-full h-8 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none" />
                     </div>
                   </div>
@@ -270,10 +268,12 @@ export default function BookshelfSection() {
                 {index === 0 && (
                   <AdBanner
                     variant="shelf"
-                    customTitle="Mở Thẻ Ngân Hàng Số Techcombank / MB Miễn Phí — Tặng 100K Cho Chủ Shop & Cai Thầu"
-                    customSubtitle="Chuyển khoản 0 đồng trọn đời, hỗ trợ quét mã VietQR tự động không lo phí duy trì"
-                    customCta="Mở Tài Khoản Số 0đ"
-                    customUrl="https://techcombank.com.vn"
+                    tag="TÀI TRỢ GAMING"
+                    sponsorName="Shopee Gaming Store"
+                    customTitle="Săn Deal Tay Cầm Chơi Game & Phụ Kiện Điện Thoại Bluetooth Giảm Đến 50%"
+                    customSubtitle="Nâng tầm trải nghiệm chiến game đối kháng 2 người mượt mà"
+                    customCta="Khám Phá Phụ Kiện Game"
+                    customUrl="https://shopee.vn"
                   />
                 )}
               </React.Fragment>
@@ -282,8 +282,8 @@ export default function BookshelfSection() {
 
           {filteredProducts.length === 0 && (
             <div className="py-16 text-center space-y-3 bg-black/20 rounded-2xl border border-white/5">
-              <div className="text-3xl">🔍</div>
-              <h3 className="font-bold text-lg text-white">Không tìm thấy ứng dụng phù hợp</h3>
+              <div className="text-3xl">🎮</div>
+              <h3 className="font-bold text-lg text-white">Không tìm thấy tựa game phù hợp</h3>
               <p className="text-xs text-neutral-400">
                 Hãy thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc danh mục.
               </p>
@@ -294,7 +294,7 @@ export default function BookshelfSection() {
                 }}
                 className="px-4 py-2 rounded-xl bg-amber-400 text-neutral-950 text-xs font-bold"
               >
-                Xem Toàn Bộ 15 Ứng Dụng Miễn Phí
+                Xem Toàn Bộ 15 Tựa Game
               </button>
             </div>
           )}
@@ -313,10 +313,10 @@ export default function BookshelfSection() {
       <AffiliateMissionModal
         isOpen={isOfferwallOpen}
         onClose={() => setIsOfferwallOpen(false)}
-        targetFeature="Mã Master Unlock kích hoạt toàn bộ tính năng PRO trên 15 ứng dụng"
+        targetFeature="Nhận 5 mạng hồi sinh & Mở khóa qua màn khó"
       />
 
-      {/* Floating Sticky Bottom Drawer: "YOUR STACK" */}
+      {/* Floating Sticky Bottom Drawer: "YOUR VAULT" */}
       <YourStackDrawer
         stack={stack}
         onRemoveFromStack={handleRemoveFromStack}

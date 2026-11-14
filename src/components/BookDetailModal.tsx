@@ -17,8 +17,11 @@ import {
   Plus,
   Check,
   Gift,
+  Gamepad2,
+  Radio,
+  Users,
 } from "lucide-react";
-import { Product, getProductTheme, formatVnd } from "@/lib/catalog";
+import { Product, getProductTheme } from "@/lib/catalog";
 import AdBanner from "@/components/AdBanner";
 import AffiliateMissionModal from "@/components/AffiliateMissionModal";
 
@@ -118,7 +121,7 @@ export default function BookDetailModal({
                       color: theme.accentColor,
                     }}
                   >
-                    100% FREE APK
+                    APK · OFFLINE
                   </span>
                   <span className="text-[10px] font-mono opacity-80" style={{ color: theme.textColor }}>
                     {product.devicePrefix}
@@ -137,29 +140,29 @@ export default function BookDetailModal({
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-white/5 text-neutral-300">
                 <span className="flex items-center gap-1.5 text-neutral-400">
-                  <Cpu size={13} /> Nền tảng:
+                  <Radio size={13} /> Kết nối:
                 </span>
-                <span className="font-mono text-neutral-200">Android APK / Web</span>
+                <span className="font-mono text-neutral-200">Bluetooth P2P / Offline</span>
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-white/5 text-neutral-300">
                 <span className="flex items-center gap-1.5 text-neutral-400">
-                  <ShieldCheck size={13} /> Bản quyền:
+                  <Users size={13} /> Chế độ:
                 </span>
-                <span className="font-bold text-emerald-400">100% Miễn Phí (0đ)</span>
+                <span className="font-bold text-cyan-300">{product.playerCount}</span>
               </div>
             </div>
           </div>
 
           {/* Right Side: Editorial Information & Action CTAs */}
           <div className="flex-1 p-6 sm:p-8 overflow-y-auto space-y-5">
-            {/* Header & Price */}
+            {/* Header */}
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[rgba(234,189,23,0.15)] text-[var(--zb-gold)] border border-[rgba(234,189,23,0.3)]">
-                  {product.format}
+                  {product.gameMode}
                 </span>
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Hoạt động 100% Offline
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  {product.playerCount}
                 </span>
               </div>
 
@@ -170,35 +173,19 @@ export default function BookDetailModal({
               <p className="text-sm text-[var(--zb-gold-light)] font-medium italic">
                 &ldquo;{product.tagline}&rdquo;
               </p>
-
-              {/* Free Price display */}
-              <div className="flex flex-wrap items-baseline gap-3 pt-2">
-                <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">
-                  0đ · MIỄN PHÍ TẢI VỀ
-                </div>
-                <span className="text-xs text-neutral-400 line-through">
-                  Giá gốc: {formatVnd(product.originalPrice || 59000)}
-                </span>
-                <span className="text-xs text-amber-300 font-bold px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">
-                  Tài trợ 100%
-                </span>
-              </div>
             </div>
 
             {/* In-Modal Sponsored Placement */}
             <AdBanner
               variant="modal"
-              customTitle={
-                product.category === "games"
-                  ? "Đối Tác Game: Ưu Đãi Tay Cầm Bluetooth & Phụ Kiện Săn Sale"
-                  : "Đối Tác Kỹ Thuật: Gian Hàng Thiết Bị, Dụng Cụ & Tài Khoản 0đ"
-              }
+              customTitle="Đối Tác Game: Ưu Đãi Tay Cầm Bluetooth & Phụ Kiện Săn Sale"
+              customSubtitle="Ghé thăm gian hàng đối tác để nhận quà tặng trong game"
             />
 
             {/* Description */}
             <div className="space-y-1.5">
               <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                Mô tả chi tiết giải pháp
+                Giới thiệu gameplay
               </h4>
               <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed opacity-90">
                 {product.description}
@@ -208,12 +195,12 @@ export default function BookDetailModal({
             {/* Core Feature Checklist */}
             <div className="space-y-2">
               <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                Tính năng nổi bật
+                Điểm nổi bật
               </h4>
               <div className="grid sm:grid-cols-2 gap-2 text-xs">
                 {product.features.map((f, idx) => (
                   <div key={idx} className="flex items-start gap-2 bg-white/5 p-2 rounded-lg border border-white/5">
-                    <CheckCircle2 size={15} className="text-emerald-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 size={15} className="text-amber-400 shrink-0 mt-0.5" />
                     <span className="text-neutral-200">{f}</span>
                   </div>
                 ))}
@@ -229,9 +216,9 @@ export default function BookDetailModal({
               >
                 <Gift size={16} />
                 <span>
-                  {product.category === "games"
-                    ? "🎁 Làm Nhiệm Vụ: Hồi Sinh 5 Mạng / Qua Màn Khó Ngay"
-                    : "🎁 Làm Nhiệm Vụ: Mở Khóa Tính Năng PRO Trọn Đời (0đ)"}
+                  {product.proUnlockMission?.reward
+                    ? `🎁 Nhiệm Vụ Đối Tác: ${product.proUnlockMission.reward}`
+                    : "🎁 Nhiệm Vụ Đối Tác: Nhận Thêm Mạng & Mở Khóa Màn Kế Tiếp"}
                 </span>
               </button>
 
@@ -241,10 +228,10 @@ export default function BookDetailModal({
                   <a
                     href={product.downloadUrl}
                     download
-                    className="flex-1 px-4 py-3 rounded-xl font-bold text-sm bg-emerald-500 text-neutral-950 hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 shadow-lg"
+                    className="flex-1 px-4 py-3 rounded-xl font-bold text-sm bg-amber-400 text-neutral-950 hover:bg-amber-300 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
                   >
                     <Download size={17} />
-                    <span>Tải File .APK Cài Ngay (0đ)</span>
+                    <span>Tải Cài Đặt Game .APK</span>
                   </a>
                 )}
 
@@ -257,7 +244,7 @@ export default function BookDetailModal({
                     className="flex-1 px-4 py-3 rounded-xl font-bold text-sm bg-white/10 hover:bg-white/15 border border-white/15 text-white transition-all flex items-center justify-center gap-2"
                   >
                     <Play size={16} className="text-amber-400" />
-                    <span>Chạy Thử Web Demo</span>
+                    <span>Chơi Thử Web Demo</span>
                   </a>
                 )}
               </div>
@@ -268,12 +255,12 @@ export default function BookDetailModal({
                   onClick={(e) => onToggleStack(product, e)}
                   className={`flex-1 px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 border cursor-pointer ${
                     isInStack
-                      ? "bg-emerald-500/20 border-emerald-400 text-emerald-300"
+                      ? "bg-amber-400/20 border-amber-400 text-amber-300"
                       : "bg-white/5 hover:bg-white/10 border-white/10 text-white"
                   }`}
                 >
                   {isInStack ? <Check size={15} /> : <Plus size={15} />}
-                  <span>{isInStack ? "Đã trong ngăn kéo (Bấm để bỏ)" : "Thêm vào ngăn kéo tải trọn bộ miễn phí"}</span>
+                  <span>{isInStack ? "Đã trong bộ sưu tập (Bấm để bỏ)" : "Thêm vào bộ sưu tập game (Your Vault)"}</span>
                 </button>
               </div>
             </div>
@@ -287,9 +274,7 @@ export default function BookDetailModal({
         onClose={() => setIsMissionModalOpen(false)}
         product={product}
         targetFeature={
-          product.category === "games"
-            ? "Hồi sinh 5 mạng & Mở khóa qua màn khó"
-            : product.proUnlockMission?.reward || "Mở khóa toàn bộ tính năng PRO trọn đời"
+          product.proUnlockMission?.reward || "Hồi sinh 5 mạng & Mở khóa qua màn khó"
         }
       />
     </>

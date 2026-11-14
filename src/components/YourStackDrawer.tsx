@@ -5,17 +5,13 @@ import Link from "next/link";
 import {
   Layers,
   ChevronUp,
-  ChevronDown,
   X,
   Download,
   Sparkles,
-  ArrowRight,
-  Key,
-  ShieldCheck,
-  Check,
+  Gamepad2,
   Gift,
 } from "lucide-react";
-import { Product, getProductTheme, formatVnd } from "@/lib/catalog";
+import { Product, getProductTheme } from "@/lib/catalog";
 import AffiliateMissionModal from "./AffiliateMissionModal";
 
 interface YourStackDrawerProps {
@@ -35,7 +31,6 @@ export default function YourStackDrawer({
   const [isMissionModalOpen, setIsMissionModalOpen] = useState(false);
 
   const count = stack.length;
-  const originalTotalValue = stack.reduce((sum, p) => sum + (p.originalPrice || 59000), 0);
 
   return (
     <>
@@ -44,7 +39,7 @@ export default function YourStackDrawer({
         <div
           onClick={() => setIsOpenModal(true)}
           className={`pointer-events-auto cursor-pointer rounded-2xl bg-gradient-to-r from-[#0d263b] via-[#123654] to-[#0d263b] text-white border border-amber-400/50 shadow-2xl backdrop-blur-md p-3 sm:px-5 sm:py-3.5 transition-all duration-300 hover:scale-[1.02] hover:border-amber-300 ${
-            count > 0 ? "ring-2 ring-emerald-400/40" : "opacity-90"
+            count > 0 ? "ring-2 ring-amber-400/40" : "opacity-90"
           }`}
           style={{
             boxShadow: "0 15px 35px -5px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.15)",
@@ -54,19 +49,19 @@ export default function YourStackDrawer({
             {/* Left Tag: Tab Handle */}
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 border border-amber-400/30 flex items-center justify-center font-bold text-xs shrink-0 shadow-inner">
-                <Layers size={16} />
+                <Gamepad2 size={16} />
               </div>
               <div className="text-left">
                 <div className="flex items-center gap-1.5">
                   <span className="text-[10px] sm:text-xs font-mono font-bold tracking-wider uppercase text-amber-300">
-                    YOUR STACK · NGĂN KÉO
+                    YOUR VAULT · BỘ SƯU TẬP
                   </span>
-                  <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">
-                    {count} MÓN
+                  <span className="px-1.5 py-0.2 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-mono font-bold border border-amber-400/30">
+                    {count} GAME
                   </span>
                 </div>
                 <p className="text-[10px] sm:text-[11px] text-neutral-300 hidden sm:block">
-                  {count === 0 ? "Bấm dấu (+) trên các cuốn sách để nhặt vào ngăn kéo" : "100% Miễn phí tải về trọn bộ"}
+                  {count === 0 ? "Bấm dấu (+) trên các hộp game để gom vào bộ sưu tập" : "Sẵn sàng tải trọn bộ cài đặt"}
                 </p>
               </div>
             </div>
@@ -74,7 +69,7 @@ export default function YourStackDrawer({
             {/* Right Meta or Action */}
             {count === 0 ? (
               <span className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition-colors">
-                Xem Ngăn Kéo
+                Xem Bộ Sưu Tập
               </span>
             ) : (
               <div className="flex items-center gap-3">
@@ -100,20 +95,9 @@ export default function YourStackDrawer({
                   )}
                 </div>
 
-                {/* Free Price Label */}
-                <div className="text-right">
-                  <div className="text-xs sm:text-sm font-black font-mono text-emerald-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    0đ · FREE
-                  </div>
-                  <div className="text-[9px] text-neutral-400 line-through">
-                    Trị giá {formatVnd(originalTotalValue)}
-                  </div>
-                </div>
-
                 {/* Open Button */}
                 <span className="px-3 py-1.5 rounded-xl bg-amber-400 text-neutral-950 font-bold text-xs flex items-center gap-1 shrink-0 shadow-md">
-                  <span>Mở Stack</span>
+                  <span>Mở Vault</span>
                   <ChevronUp size={13} />
                 </span>
               </div>
@@ -133,14 +117,14 @@ export default function YourStackDrawer({
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-300 border border-amber-400/30 flex items-center justify-center">
-                  <Layers size={18} />
+                  <Gamepad2 size={18} />
                 </div>
                 <div>
                   <h3 className="text-base sm:text-lg font-bold font-serif uppercase tracking-tight">
-                    Ngăn Kéo Của Bạn ({count} Ứng Dụng)
+                    Bộ Sưu Tập Game Của Bạn ({count} Tựa Game)
                   </h3>
                   <p className="text-xs text-neutral-400">
-                    Kho ứng dụng &amp; game offline 100% miễn phí — Tải về chạy ngay
+                    Kho game offline &amp; Bluetooth đối kháng — Tải về cài đặt chơi ngay
                   </p>
                 </div>
               </div>
@@ -167,12 +151,12 @@ export default function YourStackDrawer({
             <div className="my-4 overflow-y-auto space-y-2 pr-1 flex-1">
               {count === 0 ? (
                 <div className="py-12 text-center space-y-3">
-                  <div className="text-4xl">📚</div>
+                  <div className="text-4xl">🎮</div>
                   <h4 className="text-sm font-bold text-neutral-300">
-                    Ngăn kéo của bạn hiện đang trống
+                    Bộ sưu tập game của bạn đang trống
                   </h4>
                   <p className="text-xs text-neutral-400 max-w-sm mx-auto">
-                    Hãy nhấp vào biểu tượng dấu cộng (+) trên các cuốn sách trên kệ để gom nhiều ứng dụng và tải toàn bộ miễn phí cùng lúc.
+                    Hãy nhấp vào biểu tượng dấu cộng (+) trên các hộp game để chọn và tải trọn gói cùng lúc.
                   </p>
                 </div>
               ) : (
@@ -201,21 +185,19 @@ export default function YourStackDrawer({
                             {p.name}
                           </h4>
                           <span className="text-[10px] text-neutral-400 font-mono">
-                            {p.devicePrefix} · {p.format}
+                            {p.devicePrefix} · {p.gameMode}
                           </span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <span className="font-mono font-bold text-xs sm:text-sm text-emerald-400">
-                            0đ (Free)
-                          </span>
-                        </div>
+                        <span className="text-xs font-mono text-cyan-300">
+                          {p.playerCount}
+                        </span>
                         <button
                           onClick={() => onRemoveFromStack(p.slug)}
                           className="p-1 rounded text-neutral-400 hover:text-red-400 transition-colors"
-                          title="Bỏ khỏi ngăn kéo"
+                          title="Bỏ khỏi bộ sưu tập"
                         >
                           <X size={15} />
                         </button>
@@ -226,34 +208,17 @@ export default function YourStackDrawer({
               )}
             </div>
 
-            {/* Bottom Calculation & Action */}
+            {/* Bottom Action */}
             {count > 0 && (
-              <div className="border-t border-white/10 pt-4 space-y-4">
-                {/* 100% Free Notice */}
-                <div className="bg-black/30 p-3.5 rounded-xl border border-emerald-500/20 space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-neutral-400">Tổng giá trị niêm yết ({count} món):</span>
-                    <span className="font-mono text-neutral-400 line-through">{formatVnd(originalTotalValue)}</span>
-                  </div>
-                  <div className="flex justify-between text-emerald-400 font-bold">
-                    <span>Tài trợ bởi Đối tác &amp; Quảng cáo:</span>
-                    <span className="font-mono">-100% (Miễn phí)</span>
-                  </div>
-                  <div className="flex justify-between text-base font-black text-emerald-400 pt-1 border-t border-white/10">
-                    <span>Tổng thanh toán tải về:</span>
-                    <span className="font-mono">0đ · HOÀN TOÀN MIỄN PHÍ</span>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
+              <div className="border-t border-white/10 pt-4 space-y-3">
                 <div className="flex flex-col sm:flex-row gap-2.5">
                   <a
                     href="/downloads/Zeebee_Master_Bundle_15in1_APK.zip"
                     download
-                    className="flex-1 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-lg"
+                    className="flex-1 px-4 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer"
                   >
                     <Download size={16} />
-                    <span>Tải Gói Nén Master .ZIP ({count} APK Miễn Phí)</span>
+                    <span>Tải Gói Nén Master .ZIP ({count} Game APK)</span>
                   </a>
 
                   <button
@@ -261,10 +226,10 @@ export default function YourStackDrawer({
                       setIsOpenModal(false);
                       setIsMissionModalOpen(true);
                     }}
-                    className="flex-1 px-4 py-3 rounded-xl bg-amber-400 text-neutral-950 hover:bg-amber-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
+                    className="flex-1 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
                   >
-                    <Gift size={16} />
-                    <span>Làm Nhiệm Vụ Nhận Key PRO Trọn Đời</span>
+                    <Gift size={16} className="text-amber-300" />
+                    <span>Nhiệm Vụ Nhận Thêm Mạng &amp; Vật Phẩm</span>
                   </button>
                 </div>
               </div>
@@ -277,7 +242,7 @@ export default function YourStackDrawer({
       <AffiliateMissionModal
         isOpen={isMissionModalOpen}
         onClose={() => setIsMissionModalOpen(false)}
-        targetFeature="Mã Master Unlock kích hoạt vĩnh viễn tính năng PRO cho toàn bộ ứng dụng trong ngăn kéo"
+        targetFeature="Gói quà tặng hồi sinh 10 mạng & mở khóa tất cả bàn cờ VIP"
       />
     </>
   );

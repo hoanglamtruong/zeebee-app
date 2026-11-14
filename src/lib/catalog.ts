@@ -1,15 +1,13 @@
-// Danh mục sản phẩm của app.zeebee.vn — sửa giá/nội dung tại đây.
+// Danh mục trò chơi của app.zeebee.vn
 //
-// PHIÊN BẢN MỚI 2026: TÁI ĐỊNH VỊ 100% CỬA HÀNG SẢN PHẨM SỐ OFFLINE-FIRST:
-//  - 100% Sản phẩm ĐÃ ĐƯỢC ĐÓNG GÓI CHUẨN ANDROID APK (Zstore):
-//    Trả 1 lần, sở hữu vĩnh viễn, không phí thuê bao hàng tháng, bảo mật cục bộ.
-//  - Dữ liệu sản phẩm đồng bộ chính xác từ Google Sheet kế hoạch 100 Mini App Zeebee.
-//  - Khách hàng tải trực tiếp file .APK cài đặt trên điện thoại Android, dùng thử 7 ngày miễn phí
-//    và kích hoạt key bản quyền vĩnh viễn theo mã thiết bị.
+// ĐỊNH HƯỚNG MỚI: CHUYÊN BIỆT KHO GAME OFFLINE & BLUETOOTH ĐỐI KHÁNG ANDROID
+//  - 100% Trò chơi đóng gói file .APK siêu nhẹ (<25KB), chơi độc lập không cần internet
+//  - Chế độ chơi: Đối kháng 2 người qua Bluetooth, Hợp tác Co-op và Trí tuệ cổ điển
+//  - Doanh thu từ vị trí tài trợ & nhiệm vụ đối tác mở khóa màn chơi / hồi sinh lượt chơi
 
 export type ProductStatus = "available" | "coming_soon";
 export type ProductModel = "download";
-export type ProductCategory = "pro-tools" | "business" | "games";
+export type ProductCategory = "bluetooth-pvp" | "coop-arcade" | "puzzle-board";
 
 export interface ProductVisualTheme {
   spineColor: string;
@@ -28,7 +26,7 @@ export interface AffiliateMission {
   badge: string;
   category: string;
   url: string;
-  unlockTypes: string[]; // slugs or ["all"]
+  unlockTypes: string[];
 }
 
 export interface ProUnlockMission {
@@ -45,18 +43,12 @@ export interface Product {
   kind: string;
   category: ProductCategory;
   format: string;
+  gameMode: string;
+  playerCount: string;
   tagline: string;
   description: string;
   features: string[];
-  /** Giá hiện tại: 0đ (100% Miễn phí tải về) */
   price: number;
-  /** Giá trị tham chiếu gốc (VNĐ) */
-  originalPrice: number;
-  /** Cờ miễn phí */
-  isFree?: boolean;
-  /** Nhiệm vụ affiliate mở khóa tính năng PRO hoặc qua màn */
-  proUnlockMission?: ProUnlockMission;
-  /** Sản phẩm tải về: khách nhận gì */
   delivery: string;
   demoUrl: string | null;
   downloadUrl?: string;
@@ -65,6 +57,775 @@ export interface Product {
   status: ProductStatus;
   mockupIdea?: string;
   theme?: ProductVisualTheme;
+  proUnlockMission?: ProUnlockMission;
+}
+
+export interface Bundle {
+  id: string;
+  name: string;
+  tagline: string;
+  products: string[];
+  badge: string;
+}
+
+export const CATEGORY_TABS = [
+  { id: "all", label: "Tất Cả Game" },
+  { id: "bluetooth-pvp", label: "Đối Kháng Bluetooth" },
+  { id: "coop-arcade", label: "Hợp Tác & Arcade" },
+  { id: "puzzle-board", label: "Trí Tuệ & Boardgame" },
+] as const;
+
+export const AFFILIATE_MISSIONS: AffiliateMission[] = [
+  {
+    id: "mission-gaming-gear",
+    partner: "Gaming Store Shopee",
+    title: "Khám Phá Tay Cầm & Phụ Kiện Chơi Game Bluetooth",
+    description: "Xem bộ sưu tập tay cầm và phụ kiện để nhận thêm 5 mạng hồi sinh và qua màn game ngay tức thì.",
+    badge: "NHIỆM VỤ GAME",
+    category: "gaming",
+    url: "https://shopee.vn",
+    unlockTypes: ["all"],
+  },
+  {
+    id: "mission-tech-deal",
+    partner: "Tech & Accessories Hub",
+    title: "Săn Deal Tai Nghe Không Dây Siêu Tiết Kiệm Pin",
+    description: "Ghé thăm gian hàng đối tác trong 5 giây để mở khóa bàn cờ Đại Kiện Tướng và radar quét tàu.",
+    badge: "VẬT PHẨM VIP",
+    category: "tech",
+    url: "https://shopee.vn",
+    unlockTypes: ["all"],
+  },
+  {
+    id: "mission-custom-game",
+    partner: "Zeebee Game Studio",
+    title: "Đặt Hàng Lập Trình Game Theo Ý Tưởng Riêng",
+    description: "Khám phá dịch vụ may đo game offline và mini app theo yêu cầu doanh nghiệp, sự kiện.",
+    badge: "STUDIO GAME",
+    category: "service",
+    url: "/build",
+    unlockTypes: ["all"],
+  },
+];
+
+export const PRODUCTS: Product[] = [
+  // ─── TẦNG 1: GAME ĐỐI KHÁNG BLUETOOTH 2 NGƯỜI (PVP) ───
+  {
+    slug: "game-tic-tac-toe-pro",
+    name: "Cờ Ca Rô Bluetooth (Gomoku Pro)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "bluetooth-pvp",
+    format: "Android Game APK",
+    gameMode: "Bluetooth 2 Người",
+    playerCount: "2 Người (Bluetooth) / Đấu Máy",
+    tagline: "Đấu trí cờ caro 5 quân kinh điển kết nối trực tiếp giữa hai điện thoại qua Bluetooth không cần mạng internet.",
+    description:
+      "Tựa game cờ caro chuẩn luật quốc tế kết nối ngang hàng (P2P) qua Bluetooth. Hai máy tự động tìm và kết nối trong 3 giây. Hỗ trợ bàn cờ 15x15 chuẩn thi đấu, tính thời gian mỗi nước đi, lưu lịch sử ván đấu và âm thanh gõ cờ chân thực.",
+    features: [
+      "Kết nối Bluetooth Classic 2 điện thoại khoảng cách 10m không cần Wi-Fi",
+      "Bàn cờ caro 15x15 chuẩn thi đấu quốc tế, cơ chế tự động cuộn mượt mà",
+      "Đồng hồ đếm ngược từng nước đi và tổng thời gian trận đấu",
+      "Chế độ đấu máy thông minh khi chơi một mình",
+      "Lưu lại ván cờ và thống kê tỷ số thắng - hòa - thua giữa hai người",
+      "Cài đặt dung lượng siêu nhẹ <22KB, mở lên chơi ngay lập tức",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android + Hướng dẫn kết nối Bluetooth",
+    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
+    devicePrefix: "CR",
+    status: "available",
+    mockupIdea: "Hai chiếc điện thoại đặt cạnh nhau trên bàn gỗ hiển thị trận đấu cờ caro kết nối Bluetooth.",
+    proUnlockMission: {
+      taskName: "Xem ưu đãi Phụ kiện Tay cầm & Tai nghe Bluetooth",
+      targetPartner: "Gaming Store",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Nhận 5 lượt hoàn tác nước đi & Mở khóa Bàn cờ Gỗ VIP",
+    },
+  },
+  {
+    slug: "game-battleship-duel",
+    name: "Đấu Tàu Chiến Hải Quân (Battleship Duel)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "bluetooth-pvp",
+    format: "Android Game APK",
+    gameMode: "Chiến Thuật Ẩn Danh",
+    playerCount: "2 Người (Bluetooth) / Đấu AI",
+    tagline: "Bày binh bố trận hạm đội hải quân bí mật và bắn phá hạm đội đối phương qua kết nối Bluetooth.",
+    description:
+      "Trò chơi chiến thuật hải chiến kinh điển: mỗi người bí mật bố trí hạm đội gồm tàu sân bay, thiết giáp hạm, tàu tuần dương và tàu ngầm trên lưới tọa độ 10x10. Từng lượt bắn được truyền qua sóng Bluetooth bảo mật tuyệt đối, chỉ báo trúng hoặc trượt.",
+    features: [
+      "Bảo mật tuyệt đối vị trí tàu: dữ liệu chỉ truyền tọa độ bắn và kết quả Hit/Miss",
+      "Bố trí hạm đội linh hoạt: xoay ngang, dọc và tự động dàn trận ngẫu nhiên",
+      "Hiệu ứng âm thanh đại bác, radar quét và tiếng tàu chìm kịch tính",
+      "Chế độ thi đấu tính lượt bắn và thời gian phản xạ",
+      "Chơi mượt mà không cần mạng ở bất kỳ đâu",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android + Hướng dẫn chơi",
+    demoUrl: "/products/Game_53_TauChien_Bluetooth.html",
+    downloadUrl: "/downloads/TauChien_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/TauChien_Bluetooth_v1.0.zip",
+    devicePrefix: "TC",
+    status: "available",
+    mockupIdea: "Bản đồ radar hải quân màu xanh neon hiển thị lưới tọa độ bắn phá hạm đội giữa 2 máy.",
+    proUnlockMission: {
+      taskName: "Xem gian hàng thiết bị giải trí không dây",
+      targetPartner: "Navy Sponsor",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa 3 lượt Radar do thám quét vị trí tàu địch",
+    },
+  },
+  {
+    slug: "game-rock-paper-scissors",
+    name: "Oẳn Tù Tì Phản Xạ (RPS Arena)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "bluetooth-pvp",
+    format: "Android Game APK",
+    gameMode: "Tốc Độ Phản Xạ",
+    playerCount: "2 Người (Bluetooth)",
+    tagline: "Trận chiến Kéo - Búa - Bao đối kháng thời gian thực, đếm ngược giây và phân định thắng bại tức thì.",
+    description:
+      "Game oẳn tù tì tốc độ cao giữa hai người qua Bluetooth: hai người cùng ra quyết định đồng thời trong vòng 3 giây đếm ngược. Cơ chế khóa lựa chọn mã hóa ngăn chặn nhìn trộm hoặc đổi quyết định, giải quyết nhanh các kèo cá cược vui vẻ.",
+    features: [
+      "Đồng bộ thời gian thực siêu chuẩn không độ trễ qua Bluetooth",
+      "Khóa quyết định bí mật chống gian lận tuyệt đối",
+      "Các chế độ thi đấu: Chạm 3, Chạm 5 hoặc Vòng tròn sinh tồn",
+      "Bảng thống kê tỷ lệ ra Kéo/Búa/Bao để đọc vị đối thủ",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android + Hướng dẫn",
+    demoUrl: "/products/Game_52_Oan_Tu_Ti_Bluetooth.html",
+    downloadUrl: "/downloads/OanTuTi_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/OanTuTi_Bluetooth_v1.0.zip",
+    devicePrefix: "TT",
+    status: "available",
+    mockupIdea: "Biểu tượng Kéo Búa Bao phát sáng rực rỡ với đồng hồ đếm ngược 3 giây kịch tính.",
+    proUnlockMission: {
+      taskName: "Xem ưu đãi phụ kiện Bluetooth tiện ích",
+      targetPartner: "Gaming Store",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Chế độ Đấu Boss Khó & Thêm 5 lượt đấu lại",
+    },
+  },
+  {
+    slug: "game-quiz-duel",
+    name: "Đố Vui Trí Tuệ Đối Kháng (Quiz Duel)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "bluetooth-pvp",
+    format: "Android Game APK",
+    gameMode: "Đấu Trí Trả Lời Nhanh",
+    playerCount: "2 Người (Bluetooth) / Solo",
+    tagline: "Kho 1.000+ câu hỏi bách khoa toàn thư thi đấu tính điểm trả lời nhanh giữa hai người bạn.",
+    description:
+      "Game show đấu trí ngay trong túi quần: hai máy cùng nhận một bộ câu hỏi trắc nghiệm đồng bộ qua Bluetooth. Ai bấm chuông và chọn đáp án chính xác nhanh hơn sẽ giành điểm số. Đa dạng chủ đề: Lịch sử, Khoa học, Thể thao, Điện ảnh và Văn hóa Việt Nam.",
+    features: [
+      "Kho 1.000+ câu hỏi trắc nghiệm chọn lọc có đáp án giải thích chi tiết",
+      "Đồng bộ bộ câu hỏi giữa 2 máy trong tích tắc",
+      "Cơ chế bấm chuông giành quyền trả lời thời gian thực",
+      "Thang điểm thưởng tốc độ trả lời càng nhanh điểm càng cao",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android + Gói câu hỏi",
+    demoUrl: "/products/Game_60_Do_Vui_Bluetooth.html",
+    downloadUrl: "/downloads/DoVui_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/DoVui_Bluetooth_v1.0.zip",
+    devicePrefix: "DV",
+    status: "available",
+    mockupIdea: "Màn hình đấu trí câu hỏi kiến thức với đồng hồ bấm giờ và thanh điểm hai bên cân não.",
+    proUnlockMission: {
+      taskName: "Khám phá tủ sách tri thức & phát triển bản thân",
+      targetPartner: "Tri Thức Mall",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa trọn bộ 1.000 câu hỏi nâng cao & Quyền trợ giúp 50/50",
+    },
+  },
+  {
+    slug: "game-bluetooth-party-pack",
+    name: "Party Pack Game Tiệc (Bluetooth Party Pack)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "bluetooth-pvp",
+    format: "Android Game APK",
+    gameMode: "Nhóm Bạn & Bàn Tiệc",
+    playerCount: "2 - 4 Người Kết Nối",
+    tagline: "Bộ sưu tập trò chơi nhóm: Thử Thách Vòng Quay, Rút Thẻ May Mắn và Ai Là Gián Điệp kết nối đa máy.",
+    description:
+      "Gói giải trí không thể thiếu trong các buổi họp mặt, dã ngoại hay tiệc tùng: một máy làm phòng chủ (Host) và các máy xung quanh tham gia qua Bluetooth. Bao gồm các minigame: Vòng quay thử thách, Thẻ bài nói thật, Đếm số loại trừ và Ai là Gián điệp.",
+    features: [
+      "Kết nối nhóm từ 2 đến 4 máy Android qua Bluetooth mượt mà",
+      "Tích hợp 5 minigame bàn tiệc khuấy động không khí",
+      "Tự động gán lượt chơi và thông báo kết quả tức thì trên từng màn hình",
+      "Tùy biến bộ câu hỏi và hình phạt theo nhóm bạn riêng",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android + Gói game tiệc",
+    demoUrl: "/products/Game_70_Party_Pack_Bluetooth.html",
+    downloadUrl: "/downloads/PartyPack_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/PartyPack_Bluetooth_v1.0.zip",
+    devicePrefix: "PP",
+    status: "available",
+    mockupIdea: "Nhóm bạn trẻ ngồi quanh bàn cafe cầm điện thoại kết nối Bluetooth tham gia vòng quay.",
+    proUnlockMission: {
+      taskName: "Xem ưu đãi quà tặng & phụ kiện tiệc tùng",
+      targetPartner: "Party Store",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Phòng chơi 8 người & 200 thẻ thử thách cao cấp",
+    },
+  },
+
+  // ─── TẦNG 2: HỢP TÁC CHIẾN THUẬT & ARCADE CO-OP ───
+  {
+    slug: "game-pong-bluetooth",
+    name: "Bóng Bàn Pong Đối Kháng (Pong Retro Duel)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "coop-arcade",
+    format: "Android Game APK",
+    gameMode: "Arcade Phản Xạ Realtime",
+    playerCount: "2 Người (Bluetooth)",
+    tagline: "Tái hiện huyền thoại bóng bàn Pong cổ điển: vuốt vợt đón bóng và dứt điểm qua sóng Bluetooth.",
+    description:
+      "Tựa game arcade retro huyền thoại được hồi sinh với cơ chế kết nối Bluetooth: mỗi người điều khiển thanh vợt trên điện thoại của mình. Quả bóng bay từ màn hình máy này xuyên qua màn hình máy đối phương theo thời gian thực.",
+    features: [
+      "Vật lý va chạm quả bóng chân thực với góc nảy theo điểm chạm vợt",
+      "Độ trễ truyền gói tin thấp, bóng bay mượt mà giữa hai màn hình",
+      "Tăng tốc độ bóng theo từng lượt chạm tạo kịch tính dồn dập",
+      "Tùy chọn skin vợt Neon phát sáng và quả bóng lửa",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
+    devicePrefix: "PG",
+    status: "available",
+    mockupIdea: "Bàn đấu Pong màu đen với 2 thanh trượt neon màu xanh ngọc và cam phát sáng.",
+    proUnlockMission: {
+      taskName: "Xem thiết bị tai nghe gaming chống ồn",
+      targetPartner: "Shopee Tech",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Vợt Neon Lửa & 5 lượt Hồi sinh bóng",
+    },
+  },
+  {
+    slug: "game-coop-escape",
+    name: "Giải Mã Mê Cung (Co-op Escape Grid)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "coop-arcade",
+    format: "Android Game APK",
+    gameMode: "Hợp Tác Vượt Ải",
+    playerCount: "2 Người Hợp Lực",
+    tagline: "Hai người cùng bước vào mê cung bí ẩn: một người giữ công tắc, một người mở đường thoát hiểm.",
+    description:
+      "Trò chơi giải đố co-op phối hợp đồng đội: bản đồ mê cung chia thành hai khu vực tương tác chéo. Người chơi A phải dẫm lên công tắc để mở cửa cho người chơi B đi qua lấy chìa khóa, cùng nhau tìm đường tới cửa thoát trước khi hết giờ.",
+    features: [
+      "Đồng bộ vị trí nhân vật và trạng thái công tắc/cửa theo thời gian thực",
+      "Hơn 30 màn chơi mê cung từ dễ đến cực khó",
+      "Đòi hỏi sự giao tiếp và phối hợp chiến thuật ăn ý giữa hai người",
+      "Lưu lại tiến độ các màn chơi đã vượt qua",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android + Màn chơi",
+    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
+    devicePrefix: "EG",
+    status: "available",
+    mockupIdea: "Bản đồ mê cung pixel với hai nhân vật tí hon phối hợp mở các cánh cổng ánh sáng.",
+    proUnlockMission: {
+      taskName: "Khám phá đồ chơi trí tuệ & boardgame",
+      targetPartner: "Puzzle Store",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa 10 Màn chơi Bí Ẩn & Bản đồ Radar hướng dẫn",
+    },
+  },
+  {
+    slug: "game-tower-defense-duo",
+    name: "Thủ Thành Duo (Mini Tower Defense)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "coop-arcade",
+    format: "Android Game APK",
+    gameMode: "Chiến Thuật Phối Hợp",
+    playerCount: "2 Người Co-op",
+    tagline: "Hợp lực xây dựng hệ thống tháp pháo phòng thủ và chặn đứng các đợt quái vật xâm chiếm cứ điểm.",
+    description:
+      "Hai người cùng bảo vệ một cứ điểm chung trên bản đồ: chia sẻ tài nguyên vàng, phối hợp đặt các loại tháp pháo băng làm chậm, tháp pháo laser dồn sát thương và súng cối diện rộng để chặn đứng 20 đợt quái vật hung hãn.",
+    features: [
+      "Đồng bộ bản đồ quái vật và các vị trí tháp canh giữa hai máy",
+      "Hệ thống 6 loại tháp pháo nâng cấp tối đa 3 cấp độ",
+      "Cơ chế chia sẻ tài nguyên hoặc chuyển vàng cho đồng đội khi cần kíp",
+      "Độ khó tăng dần theo từng đợt Boss khổng lồ",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_53_TauChien_Bluetooth.html",
+    downloadUrl: "/downloads/TauChien_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/TauChien_Bluetooth_v1.0.zip",
+    devicePrefix: "TD",
+    status: "available",
+    mockupIdea: "Bản đồ thủ thành với các tháp pháo laser bắn tia sáng tiêu diệt quái vật bảo vệ thành cổ.",
+    proUnlockMission: {
+      taskName: "Xem các dòng máy tính bảng & điện thoại chơi game",
+      targetPartner: "Gaming Mall",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Nhận 1.000 Vàng khởi đầu & Tháp Pháo Plasma Thần Thánh",
+    },
+  },
+  {
+    slug: "game-bomber-grid",
+    name: "Đặt Bom Chiến Thuật (Bomber Grid Lite)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "coop-arcade",
+    format: "Android Game APK",
+    gameMode: "Chiến Đấu Sinh Tồn",
+    playerCount: "2 Người Đối Đầu",
+    tagline: "Di chuyển trên mê cung gạch đá, đặt bom phá chướng ngại vật và dồn ép đối thủ vào chân tường.",
+    description:
+      "Lối chơi đặt bom huyền thoại: di chuyển trên lưới ô vuông, đặt bom hẹn giờ phá các khối gạch để thu thập vật phẩm tăng độ dài tia lửa, tăng số lượng bom và giày chạy nhanh, tìm cơ hội gài bẫy hạ gục đối thủ.",
+    features: [
+      "Vật lý nổ bom lan tỏa theo hàng ngang dọc chuẩn xác",
+      "Hệ thống vật phẩm ngẫu nhiên: Bom thêm, Lửa dài, Giày tốc độ, Đá bom",
+      "Vòng bo thu hẹp sàn đấu sau 2 phút để phân định thắng bại dứt khoát",
+      "Điều khiển cảm ứng mượt mà nhạy bén",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_52_Oan_Tu_Ti_Bluetooth.html",
+    downloadUrl: "/downloads/OanTuTi_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/OanTuTi_Bluetooth_v1.0.zip",
+    devicePrefix: "BM",
+    status: "available",
+    mockupIdea: "Mê cung gạch đá với quả bom tròn cổ điển đang bốc khói hẹn giờ nổ.",
+    proUnlockMission: {
+      taskName: "Xem phụ kiện game & nút bấm cơ học",
+      targetPartner: "Arcade Hub",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Khiên Bất Tử 5 giây & Tăng 2 mạng hồi sinh",
+    },
+  },
+  {
+    slug: "game-asteroid-coop",
+    name: "Bắn Thiên Thạch Không Gian (Asteroid Co-op)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "coop-arcade",
+    format: "Android Game APK",
+    gameMode: "Bắn Tàu Bay Co-op",
+    playerCount: "2 Người Hợp Lực",
+    tagline: "Hai phi thuyền sát cánh giữa dải ngân hà, bắn vỡ các tảng thiên thạch và cùng sinh tồn.",
+    description:
+      "Tựa game bắn tàu arcade 2D cổ điển: hai phi thuyền di chuyển tự do trong không gian không trọng lực, bắn vỡ các thiên thạch lớn thành những mảnh nhỏ hơn, cùng thu thập khiên năng lượng và bảo vệ tàu của bạn bè.",
+    features: [
+      "Mô phỏng lực đẩy phản lực không gian và quán tính trôi dạt",
+      "Bắn vỡ thiên thạch đa tầng kích thước sinh động",
+      "Cơ chế hồi sinh đồng đội khi một tàu bị va chạm",
+      "Điểm số kỷ lục chung giữa hai phi hành gia",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_53_TauChien_Bluetooth.html",
+    downloadUrl: "/downloads/TauChien_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/TauChien_Bluetooth_v1.0.zip",
+    devicePrefix: "AS",
+    status: "available",
+    mockupIdea: "Không gian vũ trụ sâu thẳm với hai phi thuyền phát tia laser bắn vỡ thiên thạch.",
+    proUnlockMission: {
+      taskName: "Xem kính thực tế ảo & phụ kiện điện tử",
+      targetPartner: "Space Hub",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Pháo Tia Chớp Laser & Vệ tinh hộ tống",
+    },
+  },
+
+  // ─── TẦNG 3: TRÍ TUỆ & BOARDGAME CỔ ĐIỂN ───
+  {
+    slug: "game-ludo-lite",
+    name: "Cờ Cá Ngựa (Bluetooth Ludo Lite)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "puzzle-board",
+    format: "Android Game APK",
+    gameMode: "Boardgame Đổ Xúc Xắc",
+    playerCount: "2 - 4 Người Chơi",
+    tagline: "Đổ xúc xắc xúc xắc, xuất chuồng và đưa đủ 4 chú ngựa về chuồng an toàn trong tiếng cười giòn giã.",
+    description:
+      "Trò chơi cờ cá ngựa truyền thống gắn liền với tuổi thơ người Việt: đổ xúc xắc nhận điểm 6 để xuất quân, chạy vòng quanh bàn cờ, đá ngựa đối phương về chuồng và đưa đội quân của mình về đích an toàn.",
+    features: [
+      "Bàn cờ 4 màu Đỏ, Xanh Lá, Xanh Dương, Vàng sống động",
+      "Xúc xắc 3D lăn ngẫu nhiên chống gian lận",
+      "Chế độ chơi 2 người đối kháng hoặc 4 người luân phiên",
+      "Âm thanh tiếng ngựa phi và hiệu ứng đá quân vui nhộn",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
+    devicePrefix: "LD",
+    status: "available",
+    mockupIdea: "Bàn cờ cá ngựa 4 góc 4 màu sắc nét với quân xúc xắc 3D đang lơ lửng.",
+    proUnlockMission: {
+      taskName: "Xem ưu đãi đồ chơi gia đình & trẻ em",
+      targetPartner: "Family Deals",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Xúc Xắc May Mắn (tăng tỷ lệ đổ 6 khi xuất chuồng)",
+    },
+  },
+  {
+    slug: "game-block-puzzle",
+    name: "Xếp Hình Gỗ (Block Puzzle Classic)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "puzzle-board",
+    format: "Android Game APK",
+    gameMode: "Xếp Gạch Thư Giãn",
+    playerCount: "Chơi Đơn / So Điểm",
+    tagline: "Kéo thả các khối gỗ xếp đầy hàng ngang hoặc hàng dọc để ghi điểm combo và rèn luyện tư duy không gian.",
+    description:
+      "Tựa game giải đố xếp hình gỗ nhẹ nhàng nhưng gây nghiện cao: kéo các khối hình dạng khác nhau vào lưới 8x8 hoặc 10x10. Khi lấp đầy một hàng hoặc một cột, các khối sẽ biến mất và phát ra âm thanh gõ gỗ êm dịu.",
+    features: [
+      "Chất liệu giao diện khối gỗ óc chó cổ điển sang trọng và thư thái",
+      "Không giới hạn thời gian, không áp lực tốc độ, chơi bất cứ lúc nào",
+      "Cơ chế Combo dọn nhiều hàng cùng lúc thưởng điểm số bùng nổ",
+      "Lưu lại điểm số cao nhất mọi thời đại",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
+    devicePrefix: "BP",
+    status: "available",
+    mockupIdea: "Bàn cờ gỗ 8x8 với các khối gỗ vuông vức được kéo thả tạo thành đường combo sáng lóa.",
+    proUnlockMission: {
+      taskName: "Xem đồ decor bàn làm việc & gỗ mỹ nghệ",
+      targetPartner: "Wood Craft",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Búa Đập Gạch (phá 1 khối kẹt) & Đổi bộ hình mới",
+    },
+  },
+  {
+    slug: "game-animal-connect",
+    name: "Nối Thú Onet Cổ Điển (Animal Connect Offline)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "puzzle-board",
+    format: "Android Game APK",
+    gameMode: "Nhanh Mắt Nhanh Tay",
+    playerCount: "1 - 2 Người Đua Điểm",
+    tagline: "Tìm và nối hai chú thú cưng giống nhau bằng tối đa 3 đoạn gấp khúc trước khi đồng hồ đếm hết giờ.",
+    description:
+      "Tựa game nối thú kinh điển trên máy tính nay đã có mặt trên Android: hàng trăm hình vẽ động vật dễ thương được xếp ngẫu nhiên. Nhiệm vụ của bạn là nối các cặp thú giống nhau mà đường nối không bị cản trở bởi các quân cờ khác.",
+    features: [
+      "Hơn 50 bộ màn chơi với đủ hướng xô lệch: trên xuống, dưới lên, dồn vào tâm",
+      "Đồ họa các loài vật ngộ nghĩnh, biểu cảm dễ thương",
+      "Bộ nút hỗ trợ: Gợi ý cặp hình và Xáo trộn lại toàn bảng",
+      "Hoạt động mượt mà không tốn pin điện thoại",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_52_Oan_Tu_Ti_Bluetooth.html",
+    downloadUrl: "/downloads/OanTuTi_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/OanTuTi_Bluetooth_v1.0.zip",
+    devicePrefix: "AC",
+    status: "available",
+    mockupIdea: "Màn hình tràn ngập các con thú hoạt hình ngộ nghĩnh nối nhau bằng đường kẻ vàng lấp lánh.",
+    proUnlockMission: {
+      taskName: "Xem ưu đãi thú cưng & phụ kiện gia đình",
+      targetPartner: "Pet Store",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa 10 lượt Gợi Ý Nhanh & 5 Lượt Xáo Bảng Tự Động",
+    },
+  },
+  {
+    slug: "game-backgammon",
+    name: "Cờ Tào Cáo (Mini Backgammon)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "puzzle-board",
+    format: "Android Game APK",
+    gameMode: "Boardgame Chiến Thuật",
+    playerCount: "2 Người (Bluetooth) / Solo",
+    tagline: "Bộ môn cờ bàn cổ xưa nhất nhân loại: tính toán xác suất xúc xắc và di chuyển quân cờ về đích an toàn.",
+    description:
+      "Trò chơi cờ Backgammon kết hợp hoàn hảo giữa kỹ năng tính toán và vận may xúc xắc: hai người chơi di chuyển 15 quân cờ của mình theo hai chiều ngược nhau trên 24 điểm tam giác. Bắt quân đối phương và đưa toàn bộ quân về đích trước.",
+    features: [
+      "Bàn cờ da cổ điển với các tam giác đỏ đen tương phản sang trọng",
+      "Luật chơi chuẩn quốc tế kèm hướng dẫn từng bước cho người mới",
+      "Đấu 2 người qua Bluetooth hoặc luyện tập với máy ở 3 cấp độ",
+      "Lưu lại thế trận ván đấu khi có cuộc gọi đến",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
+    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
+    devicePrefix: "BG",
+    status: "available",
+    mockupIdea: "Bàn cờ Backgammon bằng da nâu sang trọng với các quân cờ tròn ngà và đen bóng.",
+    proUnlockMission: {
+      taskName: "Khám phá các bộ cờ vua & cờ tướng cao cấp",
+      targetPartner: "Boardgame Store",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Bàn Cờ Cẩm Thạch & Gợi ý nước đi tối ưu AI",
+    },
+  },
+  {
+    slug: "game-memory-match",
+    name: "Lật Hình Trí Nhớ (Memory Match Duel)",
+    model: "download",
+    kind: "Android Game APK",
+    category: "puzzle-board",
+    format: "Android Game APK",
+    gameMode: "Rèn Luyện Trí Não",
+    playerCount: "2 Người Thi Đấu / Solo",
+    tagline: "Lật mở từng cặp thẻ bài úp để kiểm tra trí nhớ siêu phàm và thi thố điểm số cùng bạn bè.",
+    description:
+      "Trò chơi rèn luyện phản xạ và trí nhớ hình ảnh: các cặp thẻ bài úp mặt trên bàn cờ. Mỗi lượt, người chơi lật mở 2 lá bài; nếu trùng khớp sẽ giữ lại lá bài và được đi tiếp, nếu sai sẽ úp lại và chuyển lượt cho đối thủ.",
+    features: [
+      "Các bộ chủ đề thẻ bài: Động vật, Cờ các quốc gia, Xe cộ và Biểu tượng số học",
+      "Chế độ thi đấu 2 người luân phiên giật điểm kịch tính",
+      "Nhiều kích cỡ bàn cờ: 4x4 (16 thẻ), 5x6 (30 thẻ) và 6x6 (36 thẻ)",
+      "Bài tập tuyệt vời cho trí não người lớn và trẻ nhỏ mỗi ngày",
+    ],
+    price: 0,
+    delivery: "File cài đặt APK Android",
+    demoUrl: "/products/Game_60_Do_Vui_Bluetooth.html",
+    downloadUrl: "/downloads/DoVui_Bluetooth_v1.0.apk",
+    zipUrl: "/downloads/DoVui_Bluetooth_v1.0.zip",
+    devicePrefix: "MM",
+    status: "available",
+    mockupIdea: "Các quân bài lật mở hiệu ứng 3D hiển thị hình vẽ động vật sắc nét sống động.",
+    proUnlockMission: {
+      taskName: "Khám phá trò chơi phát triển trí thông minh",
+      targetPartner: "Edu Toys",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Bộ Thẻ Bài Vũ Trụ & 3 lượt Xem Nhanh toàn bảng",
+    },
+  },
+];
+
+export const BUNDLES: Bundle[] = [
+  {
+    id: "bundle-master-game-15in1",
+    name: "Bộ Sưu Tập Master Game Pack (15 Game Android)",
+    tagline: "Trọn bộ 15 tựa game đối kháng Bluetooth, hợp tác Co-op và trí tuệ cổ điển trong 1 file nén ZIP.",
+    products: [
+      "game-tic-tac-toe-pro",
+      "game-battleship-duel",
+      "game-rock-paper-scissors",
+      "game-quiz-duel",
+      "game-bluetooth-party-pack",
+      "game-pong-bluetooth",
+      "game-coop-escape",
+      "game-tower-defense-duo",
+      "game-bomber-grid",
+      "game-asteroid-coop",
+      "game-ludo-lite",
+      "game-block-puzzle",
+      "game-animal-connect",
+      "game-backgammon",
+      "game-memory-match"
+    ],
+    badge: "Trọn Bộ 15 Game",
+  },
+  {
+    id: "bundle-bluetooth-pvp",
+    name: "Bộ 5 Game Đối Kháng Bluetooth 2 Người",
+    tagline: "Cờ Ca Rô + Đấu Tàu Chiến + Oẳn Tù Tì + Đố Vui Trí Tuệ + Party Pack kết nối ngang hàng 2 máy.",
+    products: [
+      "game-tic-tac-toe-pro",
+      "game-battleship-duel",
+      "game-rock-paper-scissors",
+      "game-quiz-duel",
+      "game-bluetooth-party-pack"
+    ],
+    badge: "5 Game Bluetooth",
+  },
+  {
+    id: "bundle-coop-arcade",
+    name: "Bộ 5 Game Hợp Tác & Thử Thách Co-op",
+    tagline: "Bóng Bàn Pong + Giải Mã Mê Cung + Thủ Thành Duo + Đặt Bom + Bắn Thiên Thạch.",
+    products: [
+      "game-pong-bluetooth",
+      "game-coop-escape",
+      "game-tower-defense-duo",
+      "game-bomber-grid",
+      "game-asteroid-coop"
+    ],
+    badge: "5 Game Co-op",
+  },
+  {
+    id: "bundle-puzzle-classic",
+    name: "Bộ 5 Game Trí Tuệ & Boardgame Cổ Điển",
+    tagline: "Cờ Cá Ngựa + Xếp Hình Gỗ + Nối Thú Onet + Cờ Tào Cáo + Lật Hình Trí Nhớ.",
+    products: [
+      "game-ludo-lite",
+      "game-block-puzzle",
+      "game-animal-connect",
+      "game-backgammon",
+      "game-memory-match"
+    ],
+    badge: "5 Game Boardgame",
+  },
+];
+
+export function getProduct(slug: string): Product | undefined {
+  return PRODUCTS.find((p) => p.slug === slug);
+}
+
+export function formatVnd(n: number): string {
+  return `${n.toLocaleString("vi-VN")}đ`;
+}
+
+export function priceLabel(p: Product): string {
+  return p.gameMode || "Mini Game";
+}
+
+export const PRODUCT_THEMES: Record<string, ProductVisualTheme> = {
+  "game-tic-tac-toe-pro": {
+    spineColor: "#78350f",
+    textColor: "#fffbeb",
+    accentColor: "#fcd34d",
+    pattern: "grid",
+    symbol: "⚔️",
+    serialTag: "PVP. 01 · CARO",
+  },
+  "game-battleship-duel": {
+    spineColor: "#082f49",
+    textColor: "#f0fdfa",
+    accentColor: "#34d399",
+    pattern: "geometric",
+    symbol: "⚓",
+    serialTag: "PVP. 02 · NAVY",
+  },
+  "game-rock-paper-scissors": {
+    spineColor: "#7f1d1d",
+    textColor: "#fffbeb",
+    accentColor: "#fbbf24",
+    pattern: "circles",
+    symbol: "✊",
+    serialTag: "PVP. 03 · RPS",
+  },
+  "game-quiz-duel": {
+    spineColor: "#4c1d95",
+    textColor: "#fbfbfe",
+    accentColor: "#c4b5fd",
+    pattern: "diamonds",
+    symbol: "🧠",
+    serialTag: "PVP. 04 · QUIZ",
+  },
+  "game-bluetooth-party-pack": {
+    spineColor: "#831843",
+    textColor: "#ecfeff",
+    accentColor: "#22d3ee",
+    pattern: "vintage",
+    symbol: "🎉",
+    serialTag: "PVP. 05 · PARTY",
+  },
+  "game-pong-bluetooth": {
+    spineColor: "#1e1b4b",
+    textColor: "#f5f3ff",
+    accentColor: "#a78bfa",
+    pattern: "grid",
+    symbol: "🏓",
+    serialTag: "COOP. 01 · PONG",
+  },
+  "game-coop-escape": {
+    spineColor: "#14532d",
+    textColor: "#f0fdf4",
+    accentColor: "#4ade80",
+    pattern: "stripes",
+    symbol: "🗝️",
+    serialTag: "COOP. 02 · MAZE",
+  },
+  "game-tower-defense-duo": {
+    spineColor: "#701a75",
+    textColor: "#fdf4ff",
+    accentColor: "#f472b6",
+    pattern: "geometric",
+    symbol: "🏰",
+    serialTag: "COOP. 03 · TOWER",
+  },
+  "game-bomber-grid": {
+    spineColor: "#854d0e",
+    textColor: "#fefce8",
+    accentColor: "#facc15",
+    pattern: "grid",
+    symbol: "💣",
+    serialTag: "COOP. 04 · BOMB",
+  },
+  "game-asteroid-coop": {
+    spineColor: "#0f172a",
+    textColor: "#f8fafc",
+    accentColor: "#38bdf8",
+    pattern: "diamonds",
+    symbol: "🚀",
+    serialTag: "COOP. 05 · SPACE",
+  },
+  "game-ludo-lite": {
+    spineColor: "#991b1b",
+    textColor: "#fef2f2",
+    accentColor: "#f87171",
+    pattern: "circles",
+    symbol: "🎲",
+    serialTag: "BOARD. 01 · LUDO",
+  },
+  "game-block-puzzle": {
+    spineColor: "#581c87",
+    textColor: "#faf5ff",
+    accentColor: "#d8b4fe",
+    pattern: "grid",
+    symbol: "🧱",
+    serialTag: "BOARD. 02 · BLOCK",
+  },
+  "game-animal-connect": {
+    spineColor: "#065f46",
+    textColor: "#ecfdf5",
+    accentColor: "#34d399",
+    pattern: "diamonds",
+    symbol: "🐼",
+    serialTag: "BOARD. 03 · ONET",
+  },
+  "game-backgammon": {
+    spineColor: "#3b0764",
+    textColor: "#fdf4ff",
+    accentColor: "#e879f9",
+    pattern: "stripes",
+    symbol: "♟️",
+    serialTag: "BOARD. 04 · GAMMON",
+  },
+  "game-memory-match": {
+    spineColor: "#155e75",
+    textColor: "#ecfeff",
+    accentColor: "#67e8f9",
+    pattern: "vintage",
+    symbol: "🃏",
+    serialTag: "BOARD. 05 · MATCH",
+  },
+};
+
+export function getProductTheme(p: Product): ProductVisualTheme {
+  return (
+    p.theme ||
+    PRODUCT_THEMES[p.slug] || {
+      spineColor: "#1e293b",
+      textColor: "#ffffff",
+      accentColor: "#eabd17",
+      pattern: "geometric",
+      symbol: "🎮",
+      serialTag: "GAME. 2026",
+    }
+  );
 }
 
 export interface CaseStudy {
@@ -75,725 +836,8 @@ export interface CaseStudy {
   description: string;
   features: string[];
   demoUrl: string | null;
-  downloadUrl?: string;
-  devicePrefix?: string;
 }
 
-export interface Bundle {
-  id: string;
-  name: string;
-  tagline: string;
-  discountPercent: number;
-  originalPrice: number;
-  bundlePrice: number;
-  products: string[];
-  badge: string;
-}
-
-export const CATEGORY_TABS = [
-  { id: "all", label: "Tất cả Mini App APK" },
-  { id: "pro-tools", label: "Công cụ Kỹ thuật & Xây dựng" },
-  { id: "business", label: "Quản lý Bán hàng & Dịch vụ" },
-  { id: "games", label: "Game Đối Kháng Bluetooth" },
-] as const;
-
-export const AFFILIATE_MISSIONS: AffiliateMission[] = [
-  {
-    id: "shopee-tools",
-    partner: "Shopee Mall Tools",
-    title: "Săn Deal Dụng Cụ Kỹ Thuật & Thiết Bị Đo Kiểm Giảm 50%",
-    description: "Ghé thăm gian hàng Shopee trong 5 giây để nhận ngay License Key PRO vĩnh viễn.",
-    badge: "HOT DEAL",
-    category: "pro-tools",
-    url: "https://shopee.vn",
-    unlockTypes: [
-      "concrete-volume-estimator",
-      "3d-print-cost-calculator",
-      "electrical-calculator",
-      "paint-tile-calculator",
-      "unit-converter-pro",
-    ],
-  },
-  {
-    id: "techcombank-mb",
-    partner: "Techcombank / MBBank",
-    title: "Mở Tài Khoản Số Miễn Phí — Tặng 100K Cho Chủ Shop & Freelancer",
-    description: "Ghé thăm trang đối tác ngân hàng 5 giây để kích hoạt tính năng Quản Lý Bán Hàng & Hóa Đơn.",
-    badge: "TÀI TRỢ VIP",
-    category: "business",
-    url: "https://techcombank.com.vn",
-    unlockTypes: [
-      "mini-inventory-offline",
-      "quotation-invoice-maker",
-      "pricing-profit-margin-pro",
-      "tailor-measurement-book",
-      "freelancer-rate-calculator",
-    ],
-  },
-  {
-    id: "shopee-gaming",
-    partner: "Gaming Gear Shopee",
-    title: "Ưu Đãi Phụ Kiện Game, Tay Cầm & Tai Nghe Bluetooth 0 Đồng",
-    description: "Ghé thăm gian hàng game 5 giây để hồi sinh 5 mạng, qua màn khó và mở bàn cờ VIP.",
-    badge: "GAME REWARD",
-    category: "games",
-    url: "https://shopee.vn",
-    unlockTypes: [
-      "game-tic-tac-toe-pro",
-      "game-battleship-duel",
-      "game-rock-paper-scissors",
-      "game-quiz-duel",
-      "game-bluetooth-party-pack",
-    ],
-  },
-  {
-    id: "zeebee-build",
-    partner: "Zeebee Software On-Demand",
-    title: "Ghé Thăm Dịch Vụ May Đo Phần Mềm & Mini Tool Doanh Nghiệp",
-    description: "Khám phá dịch vụ build app theo yêu cầu để nhận mã Master Unlock mở khóa toàn bộ 15 App.",
-    badge: "MASTER PRO",
-    category: "all",
-    url: "/build",
-    unlockTypes: ["all"],
-  },
-];
-
-export const PRODUCTS: Product[] = [
-  // ─── 01. Concrete Volume & Material Estimator (Sheet ID 1) ───
-  {
-    slug: "concrete-volume-estimator",
-    name: "Bê Tông Pro (Concrete Volume Estimator)",
-    model: "download",
-    kind: "Android APK",
-    category: "pro-tools",
-    format: "Android APK",
-    tagline: "Tính chính xác thể tích m³ bê tông mọi hình khối và tự động bóc tách khối lượng xi măng, cát, đá theo Mác công trình. Xuất báo cáo PDF.",
-    description:
-      "Công cụ bỏ túi thiết yếu cho kỹ sư công trường, nhà thầu xây dựng và cai thầu: nhập thông số hình học (móng đơn, móng băng, dầm giằng, cột tròn, cột vuông, sàn, cọc khoan nhồi) để tính chính xác thể tích m³ bê tông. Ứng dụng tự động bóc tách định mức cấp phối vật liệu (xi măng bao/tấn, cát vàng m³, đá dăm m³, nước lít) theo Mác bê tông tiêu chuẩn 150, 200, 250, 300 và cho phép xuất báo cáo PDF.",
-    features: [
-      "Tính toán nhanh thể tích các cấu kiện: móng, đài cọc, cột, dầm, sàn sàn, lanh tô",
-      "Tự động tra cấp phối định mức vật tư theo Mác bê tông tiêu chuẩn Việt Nam",
-      "Bóc tách khối lượng chi tiết: số bao xi măng, số khối cát, số khối đá, lượng nước",
-      "Cấu hình hệ số hao hụt đổ bê tông thực tế tại công trường (3% - 5%)",
-      "Xuất phiếu dự toán vật tư định dạng PDF gửi trực tiếp qua Zalo cho thợ hoặc chủ nhà",
-      "Hoạt động 100% offline tại chân công trình không phụ thuộc sóng di động",
-    ],
-    price: 0,
-    originalPrice: 59000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Ghé thăm gian hàng Dụng cụ & Vật tư xây dựng Shopee",
-      targetPartner: "Shopee Tools",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa xuất Báo cáo PDF & Dự toán vật tư không giới hạn",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_01_BeTong_Pro_Offline.html",
-    downloadUrl: "/downloads/BeTong_Pro_v1.0.apk",
-    zipUrl: "/downloads/BeTong_Pro_v1.0.zip",
-    devicePrefix: "BT",
-    status: "available",
-    mockupIdea: "Thợ xây dựng cầm điện thoại ngoài công trường với bảng khối lượng vật liệu và bản vẽ 3D khối bê tông.",
-  },
-
-  // ─── 02. 3D Print Cost Calculator (Sheet ID 2) ───
-  {
-    slug: "3d-print-cost-calculator",
-    name: "In 3D Pro (3D Print Cost Calculator)",
-    model: "download",
-    kind: "Android APK",
-    category: "pro-tools",
-    format: "Android APK",
-    tagline: "Tính giá thành in 3D từ số gram nhựa, thời gian chạy máy, tiền điện và khấu hao để xuất báo giá cho khách hàng.",
-    description:
-      "Ứng dụng tính giá thành và báo giá in 3D chuyên dụng cho các xưởng in dịch vụ, Maker và người dùng máy in FDM/SLA: nhập đơn giá cuộn nhựa filament (PLA, PETG, ABS, TPU, Resin), khối lượng in (gram), thời gian in máy, công suất tiêu thụ điện (Watt) và chi phí nhân công để tự động tính chính xác giá vốn (COGS) và gợi ý giá bán theo tỷ lệ Markup, xuất báo giá gửi khách qua Zalo tức thì.",
-    features: [
-      "Tính chi phí nhựa filament/resin kèm tỷ lệ hao hụt in hỏng (3% - 10%)",
-      "Tính tiền điện thực tế theo công suất máy in (Watt) và số giờ in liên tục",
-      "Tính chi phí khấu hao hao mòn máy in và chi phí công kỹ thuật hậu kỳ",
-      "Tự động tính giá vốn sản xuất (COGS) và giá bán đề xuất theo tỷ lệ Markup mong muốn",
-      "Lưu lịch sử báo giá các đơn in khách hàng cục bộ không sợ mất dữ liệu",
-      "Sao chép mẫu báo giá chuyên nghiệp 1 chạm gửi cho khách hàng",
-    ],
-    price: 0,
-    originalPrice: 39000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Khám phá deal Nhựa in 3D Filament & Máy in Resin",
-      targetPartner: "Shopee 3D Maker",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa xuất Hóa đơn báo giá in 3D chuyên nghiệp",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_02_In3D_Cost_Pro.html",
-    downloadUrl: "/downloads/In3D_Pro_v1.0.apk",
-    zipUrl: "/downloads/In3D_Pro_v1.0.zip",
-    devicePrefix: "3D",
-    status: "available",
-    mockupIdea: "Cuộn nhựa in 3D filament đặt cạnh mô hình in kèm bảng chi phí chi tiết trên điện thoại.",
-  },
-
-  // ─── 03. Electrical Engineering Calculator (Sheet ID 5) ───
-  {
-    slug: "electrical-calculator",
-    name: "Kỹ Thuật Điện Pro (Electrical Calculator)",
-    model: "download",
-    kind: "Android APK",
-    category: "pro-tools",
-    format: "Android APK",
-    tagline: "Tính toán định luật Ohm, công suất điện 1 pha/3 pha, chọn tiết diện dây dẫn đồng nhôm và quy đổi đơn vị điện.",
-    description:
-      "Sổ tay kỹ thuật số bỏ túi cho thợ điện, sinh viên ngành điện và kỹ thuật viên bảo trì cơ điện (M&E): hỗ trợ giải nhanh định luật Ohm (U, I, R, P) chỉ với 2 thông số đầu vào bất kỳ; tính toán dòng điện định mức cho hệ thống điện 1 pha 220V và 3 pha 380V; tính chọn tiết diện ruột dây cáp điện đồng/nhôm theo mật độ dòng điện kinh tế (J) và khuyến nghị Aptomat (CB) bảo vệ phù hợp.",
-    features: [
-      "Giải nhanh định luật Ohm: nhập 2 đại lượng bất kỳ để tự động suy ra 2 đại lượng còn lại",
-      "Tính toán công suất & dòng điện định mức hệ thống 1 pha dân dụng và 3 pha công nghiệp",
-      "Tính chọn tiết diện ruột dây dẫn đồng (J=6A/mm²) và nhôm (J=4A/mm²) chuẩn Việt Nam",
-      "Khuyến nghị định mức dòng cắt Aptomat (CB/MCB) bảo vệ dự phòng theo tải",
-      "Bảng quy đổi đơn vị điện năng: kW sang Mã lực (HP), BTU/h điều hòa, kVA, kWh",
-      "Hoạt động 100% offline tại hiện trường, nhà xưởng hoặc công trình hầm sâu",
-    ],
-    price: 0,
-    originalPrice: 39000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Xem gian hàng Thiết bị đo kiểm & Dụng cụ thợ điện",
-      targetPartner: "Shopee Electric",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa bảng tra Tiết diện dây dẫn và lịch sử phép tính",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_05_Dien_Pro.html",
-    downloadUrl: "/downloads/Dien_Pro_v1.0.apk",
-    zipUrl: "/downloads/Dien_Pro_v1.0.zip",
-    devicePrefix: "EE",
-    status: "available",
-    mockupIdea: "Sơ đồ mạch điện tử với các đồng hồ đo Vôn, Ampe, Watt hiển thị trực quan.",
-  },
-
-  // ─── 04. Product Pricing & Profit Margin Pro (Sheet ID 4) ───
-  {
-    slug: "pricing-profit-margin-pro",
-    name: "Định Giá & Lợi Nhuận (Pricing & Profit Margin Pro)",
-    model: "download",
-    kind: "Android APK",
-    category: "business",
-    format: "Android APK",
-    tagline: "Nhập giá vốn, trừ phí sàn Shopee/TikTok/Lazada, phí ship để tính giá bán chuẩn và phân biệt Margin vs Markup.",
-    description:
-      "Ứng dụng định giá bán và bảo vệ biên lợi nhuận chuyên dụng cho người kinh doanh online: tự động trừ chính xác các khoản phí sàn (phí cố định, phí thanh toán, phí dịch vụ Freeship Extra, Voucher Extra của Shopee, TikTok Shop, Lazada), chi phí đóng gói, tỷ lệ hoàn hàng và phí quảng cáo để đưa ra giá niêm yết chuẩn xác, giúp người bán không bao giờ bị 'bán đắt khách chê — bán rẻ lỗ vốn'.",
-    features: [
-      "Tự động cập nhật biểu phí sàn thương mại điện tử Shopee, TikTok Shop, Lazada mới nhất",
-      "Phân biệt rõ ràng và tính toán song song giữa Biên lợi nhuận (Margin %) và Tỷ lệ đội giá (Markup %)",
-      "Tính toán chi phí hoàn đơn và rủi ro hàng hỏng phân bổ vào từng đơn hàng",
-      "Mô phỏng 3 mức giá bán: Giá bán lẻ chuẩn, Giá chạy Flash Sale, Giá bán buôn/sỉ",
-      "Tính toán chi phí quảng cáo tối đa (Break-even ROAS) trước khi bị lỗ vốn",
-      "Lưu lại danh sách công thức giá theo từng nhóm hàng để tra cứu tức thì",
-    ],
-    price: 0,
-    originalPrice: 39000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Xem công cụ tối ưu phí sàn Shopee / TikTok Shop",
-      targetPartner: "E-com Affiliate",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa Phân tích tỷ suất ROI & Điểm hòa vốn chi tiết",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_04_DinhGia_LoiNhuan_Pro.html",
-    downloadUrl: "/downloads/DinhGia_Cost_Pro_v1.0.apk",
-    zipUrl: "/downloads/DinhGia_Cost_Pro_v1.0.zip",
-    devicePrefix: "DG",
-    status: "available",
-    mockupIdea: "Giao diện điện thoại so sánh 2 cột: 'Giá bán đề xuất' và 'Lợi nhuận ròng thực nhận'.",
-  },
-
-  // ─── 05. Quotation & Invoice Maker Offline (Sheet ID 7 & 8) ───
-  {
-    slug: "quotation-invoice-maker",
-    name: "Hóa Đơn Mini Offline (Quotation & Invoice Maker)",
-    model: "download",
-    kind: "Android APK",
-    category: "business",
-    format: "Android APK",
-    tagline: "Tạo báo giá dịch vụ trong 30 giây và chuyển 1 chạm thành chứng từ thanh toán/hóa đơn bán lẻ xuất PDF có logo riêng của bạn.",
-    description:
-      "Ứng dụng làm báo giá và xuất hóa đơn bán lẻ độc lập trên điện thoại di động: tạo bảng báo giá chi tiết gồm danh mục dịch vụ, đơn giá, chiết khấu và thuế VAT chỉ trong 30 giây. Khi khách hàng đồng ý chốt đơn, chỉ cần chạm 1 nút để chuyển đổi ngay thành hóa đơn thanh toán PDF chuyên nghiệp có đính kèm logo công ty và mã VietQR nhận tiền chính xác.",
-    features: [
-      "Tạo mẫu báo giá dịch vụ thẩm mỹ cao, sắc nét chỉ trong 30 giây",
-      "Chuyển đổi 1 chạm từ Báo giá thành Hóa đơn bán lẻ / Biên nhận thanh toán",
-      "Tích hợp tự động mã VietQR nhận tiền gắn sẵn số tiền đơn hàng để khách quét trả ngay",
-      "Chèn logo doanh nghiệp, thông tin liên hệ, chữ ký điện tử và điều khoản thanh toán",
-      "Xuất file PDF chuẩn A4/A5 để gửi trực tiếp qua Zalo hoặc in bằng máy in nhiệt/Wi-Fi",
-      "Hoạt động offline hoàn toàn, lưu trữ toàn bộ lịch sử báo giá an toàn trên máy",
-    ],
-    price: 0,
-    originalPrice: 79000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Khám phá giải pháp Hóa đơn điện tử & Kế toán đối tác",
-      targetPartner: "Zeebee Partner",
-      affiliateUrl: "https://zeebee.vn",
-      reward: "Mở khóa Chèn Logo thương hiệu riêng lên Báo giá PDF",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_07_HoaDon_Mini_Offline.html",
-    downloadUrl: "/downloads/HoaDon_Mini_v1.0.apk",
-    zipUrl: "/downloads/HoaDon_Mini_v1.0.zip",
-    devicePrefix: "HD",
-    status: "available",
-    mockupIdea: "Mẫu phiếu báo giá PDF sắc nét in logo doanh nghiệp xuất ra từ điện thoại.",
-  },
-
-  // ─── 06. Mini Inventory Offline Pro (Sheet ID 11) ───
-  {
-    slug: "mini-inventory-offline",
-    name: "Sổ Kho Mini Offline (Mini Inventory Pro)",
-    model: "download",
-    kind: "Android APK",
-    category: "business",
-    format: "Android APK",
-    tagline: "Quản lý nhập - xuất - tồn kho mini theo mã SKU ngay trên điện thoại, cảnh báo hàng sắp hết, sao lưu file Excel.",
-    description:
-      "Ứng dụng quản trị kho hàng mini gọn nhẹ, hoạt động hoàn toàn offline: theo dõi biến động nhập kho và xuất kho theo từng mã sản phẩm SKU, thiết lập ngưỡng tồn kho an toàn để nhận cảnh báo màu vàng/đỏ khi sắp cạn hàng, tự động tính tổng giá trị kho hàng theo giá vốn, đồng thời hỗ trợ trích xuất toàn bộ dữ liệu ra tệp bảng tính Excel (CSV) để đối soát.",
-    features: [
-      "Quản lý danh mục hàng hóa theo SKU, tên sản phẩm, giá vốn và giá bán niêm yết",
-      "Tạo phiếu Nhập kho (+) và phiếu Xuất bán (-) siêu tốc chỉ với 2 chạm",
-      "Cảnh báo trực quan màu sắc khi số lượng sản phẩm chạm ngưỡng tồn tối thiểu",
-      "Dashboard thống kê tổng giá trị tiền hàng tồn kho và số lượng mặt hàng đang quản lý",
-      "Xuất toàn bộ cơ sở dữ liệu kho hàng ra file Excel (.csv) lưu trữ trên thiết bị",
-      "100% không cần Internet, dữ liệu bảo mật tuyệt đối trên thiết bị của bạn",
-    ],
-    price: 0,
-    originalPrice: 99000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Đăng ký mở tài khoản ngân hàng số doanh nghiệp 0 phí",
-      targetPartner: "Techcombank / MB",
-      affiliateUrl: "https://techcombank.com.vn",
-      reward: "Mở khóa Quét mã vạch Barcode camera và Xuất file Excel kho",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_11_SoKho_Mini.html",
-    downloadUrl: "/downloads/SoKho_Mini_v1.0.apk",
-    zipUrl: "/downloads/SoKho_Mini_v1.0.zip",
-    devicePrefix: "MK",
-    status: "available",
-    mockupIdea: "Giao diện quản lý danh mục tồn kho hiển thị trực quan các cảnh báo màu vàng/đỏ.",
-  },
-
-  // ─── 07. Tailor Measurement Book (Sheet ID 6) ───
-  {
-    slug: "tailor-measurement-book",
-    name: "Sổ Đo Tiệm May (Tailor Measurement Book)",
-    model: "download",
-    kind: "Android APK",
-    category: "business",
-    format: "Android APK",
-    tagline: "Sổ lưu số đo khách hàng điện tử cho tiệm may, lưu ghi chú kiểu dáng, mẫu vải và tìm kiếm khách theo tên/SĐT tức thì.",
-    description:
-      "Trợ lý số đo thông minh dành riêng cho tiệm may đo thời trang, nhà may áo dài, veston, đầm dạ hội và thợ may gia đình: lưu trữ đầy đủ bộ thông số đo chi tiết (cổ, ngực, hạ ngực, cách ngực, eo, hạ eo, mông, vai, dài tay, bắp tay, dài áo, dài quần/váy), ghi chú yêu cầu kiểu dáng vải và ngày hẹn lấy đồ, tìm kiếm hồ sơ khách hàng chỉ trong 1 giây.",
-    features: [
-      "Bảng số đo chuẩn hóa cho may đo Việt Nam: Áo dài, Váy đầm, Sơ mi, Quần tây, Veston",
-      "Tìm kiếm khách hàng siêu tốc theo tên hoặc số điện thoại",
-      "Quản lý tiến độ may: Chờ cắt may, Đang may / Thử đồ, Đã hoàn thành, Đã giao khách",
-      "Lưu ghi chú chi tiết kiểu cổ áo, tay áo, tà xẻ, màu sắc và yêu cầu riêng của từng khách",
-      "Sao chép nhanh bảng thông số số đo sang định dạng tin nhắn gửi qua Zalo",
-      "Xuất danh sách và số đo toàn bộ khách hàng ra tệp Excel CSV để lưu trữ",
-    ],
-    price: 0,
-    originalPrice: 59000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Khám phá gian hàng Vải & Phụ liệu may mặc sỉ",
-      targetPartner: "Chợ Phụ Liệu",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa Lưu 1.000+ hồ sơ khách hàng & thông số số đo",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_06_SoDo_TiemMay.html",
-    downloadUrl: "/downloads/SoDo_TiemMay_v1.0.apk",
-    zipUrl: "/downloads/SoDo_TiemMay_v1.0.zip",
-    devicePrefix: "TM",
-    status: "available",
-    mockupIdea: "Cuộn thước dây may mặc đặt cạnh giao diện sổ ghi số đo khách hàng trên điện thoại.",
-  },
-
-  // ─── 08. Local Tic-Tac-Toe Pro & Bluetooth (Sheet ID 51) ───
-  {
-    slug: "game-tic-tac-toe-pro",
-    name: "Cờ Ca Rô Offline & Bluetooth 2 Người (Local Tic-Tac-Toe Pro)",
-    model: "download",
-    kind: "Android APK",
-    category: "games",
-    format: "Android APK",
-    tagline: "Bàn cờ caro 5 quân đối kháng trực tiếp qua Bluetooth hoặc 2 người cùng chơi trên 1 màn hình, hoàn toàn không cần Internet.",
-    description:
-      "Tựa game cờ caro kinh điển dành cho 2 người chơi: kết nối đối kháng cục bộ siêu tốc giữa 2 điện thoại qua sóng Bluetooth mà không cần kết nối Wi-Fi hay 4G/5G, hoặc chế độ 2 người chơi luân phiên trên cùng một màn hình điện thoại/máy tính bảng. Bàn cờ vô tận, âm thanh cờ gỗ chân thực và lưu lại lịch sử đối đầu chi tiết.",
-    features: [
-      "Đối kháng 2 người qua kết nối Bluetooth siêu tốc, không tốn 1 byte dữ liệu mạng",
-      "Chế độ Pass & Play chơi chung trên 1 thiết bị cho bạn bè, đồng nghiệp giải lao",
-      "Chế độ đấu với máy AI Offline nhiều cấp độ (Dễ, Trung bình, Cao thủ)",
-      "Bàn cờ mở rộng không giới hạn với luật chặn 2 đầu chuẩn thi đấu",
-      "Giao diện gỗ sang trọng, hiệu ứng âm thanh lách cách đặt quân thư giãn",
-      "Sở hữu vĩnh viễn, không quảng cáo chen ngang, không thu phí duy trì",
-    ],
-    price: 0,
-    originalPrice: 29000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Nhấp link đối tác Gaming Gear để nhận quà",
-      targetPartner: "Shopee Gaming",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Qua màn khó / Nhận 5 lượt Hoàn tác (Undo) & Bàn cờ VIP",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
-    downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
-    zipUrl: "/downloads/CoCaro_Bluetooth_v1.0.zip",
-    devicePrefix: "CR",
-    status: "available",
-    mockupIdea: "Hai chiếc điện thoại đặt cạnh nhau đang kết nối thi đấu cờ caro với bàn cờ bằng gỗ.",
-  },
-
-  // ─── 09. Bluetooth Battleship Duel (Sheet ID 53) ───
-  {
-    slug: "game-battleship-duel",
-    name: "Đấu Tàu Chiến Hải Quân (Battleship Duel Offline)",
-    model: "download",
-    kind: "Android APK",
-    category: "games",
-    format: "Android APK",
-    tagline: "Game chiến hạm hải quân đối kháng 2 người: dàn trận giấu tàu bí mật và nã pháo đánh chìm hạm đội địch offline.",
-    description:
-      "Tựa game hải chiến kinh điển dành cho 2 người chơi hoặc đấu với máy AI: bố trí hạm đội gồm 4 lớp chiến hạm (Tàu sân bay, Tàu khu trục, Tàu ngầm, Tàu tuần tra) trên lưới radar hải quân 8x8. Lần lượt khai hỏa nã pháo vào tọa độ ẩn của đối phương, phát hiện vị trí tàu và đánh chìm toàn bộ hạm đội địch để giành chiến thắng vinh quang.",
-    features: [
-      "Chế độ Đấu Máy AI Offline thông minh tự động quét radar phản pháo",
-      "Chế độ Pass & Play 2 người chơi luân phiên trên 1 điện thoại với màn hình giấu tàu",
-      "Lưới hải quân 8x8 trực quan với hiệu ứng nổ pháo và tàu chìm sinh động",
-      "Bảng thống kê tỷ số thắng thua đối đầu chi tiết giữa 2 thuyền trưởng",
-      "100% chạy mượt mà không cần mạng Internet hay 4G",
-      "Sở hữu vĩnh viễn, không quảng cáo làm gián đoạn trận hải chiến",
-    ],
-    price: 0,
-    originalPrice: 39000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Ghé thăm đối tác tài trợ phòng game",
-      targetPartner: "Navy Sponsor",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa Radar quét tàu địch 3 lượt miễn phí",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/Game_53_TauChien_Bluetooth.html",
-    downloadUrl: "/downloads/TauChien_Bluetooth_v1.0.apk",
-    zipUrl: "/downloads/TauChien_Bluetooth_v1.0.zip",
-    devicePrefix: "BS",
-    status: "available",
-    mockupIdea: "Bản đồ radar hải quân với các chiến hạm đang khai hỏa nã pháo trên biển.",
-  },
-
-  // ─── 10. Freelancer Rate Calculator (Sheet ID 3) ───
-  {
-    slug: "freelancer-rate-calculator",
-    name: "Định Giá Giờ Công Freelancer Pro (Freelancer Rate)",
-    model: "download",
-    kind: "Android APK",
-    category: "business",
-    format: "Android APK",
-    tagline: "Định giá thù lao giờ công chuẩn xác, tính giá hòa vốn và xuất báo giá hợp đồng dự án trong 30 giây.",
-    description:
-      "Công cụ tài chính bỏ túi dành riêng cho Freelancer, Designer, Coder, Copywriter và người làm nghề tự do: nhập mức thu nhập mục tiêu, chi phí cố định (máy tính, phần mềm, cafe, điện nước), số ngày làm việc thực tế và tỷ lệ giờ tính phí để tính ra chính xác thù lao giờ công tối thiểu (hòa vốn) và mức giá đề xuất chào khách. Tích hợp tính giá trọn gói dự án và xuất báo giá tóm tắt gửi Zalo/Email.",
-    features: [
-      "Tính toán mức thù lao theo giờ (Hourly Rate) và giá theo ngày (Daily Rate)",
-      "Phân bổ chi phí cố định, thuế và quỹ dự phòng tài chính rủi ro",
-      "Tính toán tỷ lệ thời gian tính phí thực tế (Billable Hours) khoa học",
-      "Bảng dự toán báo giá dự án nhanh theo độ phức tạp và chi phí tài nguyên",
-      "Xuất tóm tắt báo giá chuyên nghiệp để gửi trực tiếp cho khách hàng",
-      "100% Offline, lưu trữ và bảo mật dữ liệu thù lao tuyệt đối trên máy",
-    ],
-    price: 0,
-    originalPrice: 29000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Đăng ký Thẻ thanh toán quốc tế Visa/Mastercard 0 phí nhận thù lao",
-      targetPartner: "VPBank / Cake",
-      affiliateUrl: "https://vpbank.com.vn",
-      reward: "Mở khóa Bấm giờ đa dự án và Xuất Timesheet gửi khách hàng",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_03_Freelancer_Rate.html",
-    downloadUrl: "/downloads/Freelancer_Rate_v1.0.apk",
-    zipUrl: "/downloads/Freelancer_Rate_v1.0.zip",
-    devicePrefix: "FR",
-    status: "available",
-    mockupIdea: "Giao diện tính toán thù lao giờ công với biểu đồ phân bổ chi phí và bảng giá đề xuất.",
-  },
-
-  // ─── 11. Room Paint & Tile Calculator (Sheet ID 38 & 39 - Thay thế ID 9) ───
-  {
-    slug: "paint-tile-calculator",
-    name: "Tính Sơn Tường & Gạch Lát Nền Pro (Paint & Tile Pro)",
-    model: "download",
-    kind: "Android APK",
-    category: "pro-tools",
-    format: "Android APK",
-    tagline: "Đo diện tích phòng để tính chính xác số thùng sơn tường và số hộp gạch lát sàn kèm tỷ lệ hao hụt thi công.",
-    description:
-      "Ứng dụng tính toán khối lượng vật tư hoàn thiện công trình nhà ở: nhập kích thước dài, rộng, cao của căn phòng, trừ diện tích cửa sổ, cửa đi để bóc tách chính xác số lít sơn lót kháng kiềm, số thùng sơn phủ 18L và lon 5L. Đồng thời tính toán chuẩn xác diện tích lát sàn, quy đổi ra số viên gạch theo các kích thước phổ biến (30x30, 40x40, 50x50, 60x60, 80x80, 60x120cm), số hộp gạch đóng gói và bao keo dán gạch cần mua.",
-    features: [
-      "Bóc tách diện tích tường và trần nhà, tự động trừ diện tích hệ thống cửa",
-      "Tính toán số lít sơn phủ (1-3 lớp) và sơn lót kèm tỷ lệ hao hụt 5-15%",
-      "Quy đổi khối lượng sơn ra thùng 18L và lon 5L thực tế tại đại lý sơn",
-      "Tính gạch lát sàn & ốp tường theo nhiều kích thước chuẩn và tính năng cắt viền",
-      "Ước tính số bao keo dán gạch và tổng chi phí tiền gạch công trình",
-      "Hoạt động offline 100% ngoài công trường xây dựng không cần mạng",
-    ],
-    price: 0,
-    originalPrice: 39000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Xem bảng màu sơn & gạch ốp lát xu hướng 2026",
-      targetPartner: "Vật Liệu Số",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa bóc tách khối lượng sơn lót + sơn phủ chi tiết",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_38_Son_Gach_Pro.html",
-    downloadUrl: "/downloads/Son_Gach_Pro_v1.0.apk",
-    zipUrl: "/downloads/Son_Gach_Pro_v1.0.zip",
-    devicePrefix: "PG",
-    status: "available",
-    mockupIdea: "Căn phòng 3D với các mảng tường màu sơn và sàn gạch cùng số lượng vật tư cần mua.",
-  },
-
-  // ─── 12. Unit Converter Pro (Sheet ID 10) ───
-  {
-    slug: "unit-converter-pro",
-    name: "Đổi Đơn Vị Kỹ Thuật Pro (Unit Converter Pro)",
-    model: "download",
-    kind: "Android APK",
-    category: "pro-tools",
-    format: "Android APK",
-    tagline: "Bảng quy đổi tức thì 6 nhóm đơn vị đo lường kỹ thuật: Chiều dài, khối lượng, áp suất, thể tích, công suất & nhiệt độ.",
-    description:
-      "Công cụ chuyển đổi đơn vị đo lường kỹ thuật thực địa chuẩn xác: chỉ cần gõ 1 con số, toàn bộ các đơn vị tương đương trong nhóm (Mét, Inch, Feet, Bar, PSI, MPa, Kilôgam, Pound, Lít, Gallon, Mã lực HP, kW, Độ C, Độ F) sẽ được quy đổi đồng thời ngay lập tức trên cùng một màn hình. Chạm vào bất kỳ kết quả nào để sao chép nhanh vào bộ nhớ tạm.",
-    features: [
-      "6 nhóm đại lượng kỹ thuật chuyên dụng: Chiều dài, Khối lượng, Áp suất, Thể tích, Công suất, Nhiệt độ",
-      "Chuyển đổi tức thì đa đơn vị đồng thời trên 1 màn hình duy nhất",
-      "Hỗ trợ các đơn vị kỹ thuật quốc tế: Bar, PSI, MPa, ATM, HP, BTU/h, kW, lb, oz",
-      "Chạm 1 chạm để sao chép kết quả chính xác vào bộ nhớ tạm",
-      "Giao diện tối ưu thao tác 1 tay, tốc độ phản hồi 0ms không độ trễ",
-      "100% Offline, không có quảng cáo gây phiền toái",
-    ],
-    price: 0,
-    originalPrice: 19000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Ghé thăm gian hàng Sách kỹ thuật & Thiết bị công nghệ",
-      targetPartner: "Shopee Mall",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa 200+ đơn vị đo lường chuyên sâu quốc tế",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/App_10_Doi_Don_Vi_Pro.html",
-    downloadUrl: "/downloads/DoiDonVi_Pro_v1.0.apk",
-    zipUrl: "/downloads/DoiDonVi_Pro_v1.0.zip",
-    devicePrefix: "UC",
-    status: "available",
-    mockupIdea: "Giao diện đổi đơn vị kỹ thuật hiển thị các thước đo áp suất bar, PSI và công suất kW.",
-  },
-
-  // ─── 13. Bluetooth Rock Paper Scissors (Sheet ID 52) ───
-  {
-    slug: "game-rock-paper-scissors",
-    name: "Oẳn Tù Tì Bluetooth 2 Người (Rock Paper Scissors Duel)",
-    model: "download",
-    kind: "Android APK",
-    category: "games",
-    format: "Android APK",
-    tagline: "Game oẳn tù tì đối kháng kịch tính qua Bluetooth hoặc 2 người chơi cùng màn hình, tích hợp AI tâm lý học.",
-    description:
-      "Tựa game dân gian quen thuộc được nâng tầm với chế độ thi đấu đối kháng công bằng: chế độ 2 người chơi qua sóng Bluetooth hoặc chơi chung trên 1 thiết bị với cơ chế khóa nước đi bí mật (Blind Pick) để tránh nhìn lén. Tích hợp AI máy tính phân tích chu kỳ nước đi của đối thủ, hiệu ứng âm thanh sống động và bảng ghi nhận chuỗi thắng kịch tính.",
-    features: [
-      "Đối kháng 2 người qua Bluetooth hoặc 2 người chơi luân phiên cùng 1 máy",
-      "Chế độ đấu với AI Máy tính có khả năng phân tích tâm lý nước đi",
-      "Hiệu ứng âm thanh chân thực được tạo bằng công nghệ Web Audio Offline",
-      "Bảng ghi nhận điểm số và chuỗi trận thắng liên tiếp (Streak)",
-      "Dung lượng siêu nhẹ (<25KB), cài đặt ngay và chơi mượt mà mọi dòng máy Android",
-      "Mua 1 lần dùng trọn đời, không quảng cáo, không tốn dung lượng 4G",
-    ],
-    price: 0,
-    originalPrice: 9000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Xem ưu đãi Phụ kiện Bluetooth & Loa mini",
-      targetPartner: "Bluetooth Hub",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa Chế độ Đấu Boss Khó & 5 Lượt Hồi Sinh",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/Game_52_Oan_Tu_Ti_Bluetooth.html",
-    downloadUrl: "/downloads/OanTuTi_Bluetooth_v1.0.apk",
-    zipUrl: "/downloads/OanTuTi_Bluetooth_v1.0.zip",
-    devicePrefix: "OT",
-    status: "available",
-    mockupIdea: "Biểu tượng Búa - Kéo - Bao đối đầu phát sáng với bảng điểm số kịch tính.",
-  },
-
-  // ─── 14. Bluetooth Quiz Duel (Sheet ID 60) ───
-  {
-    slug: "game-quiz-duel",
-    name: "Đấu Trí Đố Vui Bluetooth (Quiz Duel 2 Players)",
-    model: "download",
-    kind: "Android APK",
-    category: "games",
-    format: "Android APK",
-    tagline: "Đấu trí đố vui 2 người đối kháng trực tiếp: đồng hồ đếm ngược 10 giây kịch tính, kho câu hỏi offline đa dạng.",
-    description:
-      "Game show đấu trí hỏi đáp đối kháng hấp dẫn dành cho bạn bè và người thân: tích hợp sẵn kho câu hỏi trắc nghiệm phong phú thuộc các chủ đề Khoa học, Địa lý - Lịch sử Việt Nam, Công nghệ và Đố mẹo dân gian. Mỗi câu hỏi có đồng hồ đếm ngược 10 giây nghẹt thở; người trả lời nhanh và chính xác hơn sẽ giành được điểm số thưởng tối đa.",
-    features: [
-      "Chế độ Solo thi đấu với AI thông thái hoặc đối đầu bạn bè qua Bluetooth",
-      "Đồng hồ đếm ngược 10 giây/câu tạo áp lực thi đấu gay cấn",
-      "Kho câu hỏi trắc nghiệm 4 đáp án chọn lọc chất lượng cao hoạt động offline 100%",
-      "Hiệu ứng chuông âm thanh đúng/sai sinh động không cần kết nối mạng",
-      "Hệ thống tính điểm thông minh cộng thưởng theo tốc độ phản xạ của người chơi",
-      "Trọn đời không quảng cáo, không cần đăng nhập tài khoản phức tạp",
-    ],
-    price: 0,
-    originalPrice: 39000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Khám phá kho Sách Trí Tuệ & Bách Khoa Tri Thức",
-      targetPartner: "Tri Thức Mall",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa 1.000+ câu hỏi chuyên sâu & Gợi ý 50/50",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/Game_60_Do_Vui_Bluetooth.html",
-    downloadUrl: "/downloads/DoVui_Bluetooth_v1.0.apk",
-    zipUrl: "/downloads/DoVui_Bluetooth_v1.0.zip",
-    devicePrefix: "QD",
-    status: "available",
-    mockupIdea: "Màn hình đấu trí trắc nghiệm với đồng hồ đếm ngược phát sáng và bảng điểm đối đầu.",
-  },
-
-  // ─── 15. Bluetooth Party Pack (Sheet ID 70) ───
-  {
-    slug: "game-bluetooth-party-pack",
-    name: "Party Game Bluetooth 2 Người (Party Pack 3-in-1)",
-    model: "download",
-    kind: "Android APK",
-    category: "games",
-    format: "Android APK",
-    tagline: "Bộ 3 trò chơi tiệc tùng đối kháng siêu vui: Phản Xạ Bấm Nhanh, Đấu Xúc Xắc 50 Điểm & Đoán Số Bí Mật.",
-    description:
-      "Gói giải trí đối kháng tiệc tùng all-in-one không thể thiếu trong các buổi tụ họp bạn bè, cắm trại, đi tàu xe: bao gồm 3 tựa game tương tác cực nhanh: (1) Phản Xạ Chạm Nhanh thử thách tốc độ phản ứng mili-giây, (2) Đấu Xúc Xắc May Mắn tranh đua chạm mốc 50 điểm, và (3) Đoán Số Bí Mật thử tài suy luận logic. Tất cả đều chơi mượt mà không cần mạng Internet.",
-    features: [
-      "Gói tổng hợp 3 mini game đối kháng 2 người kinh điển trong 1 ứng dụng duy nhất",
-      "Chơi 2 người chia đôi màn hình hoặc kết nối Bluetooth không cần Wi-Fi/4G",
-      "Mini game Phản xạ tốc độ cao tính thời gian phản ứng chính xác từng mili-giây",
-      "Mini game Đấu xúc xắc kịch tính tranh tài may mắn và chiến thuật",
-      "Mini game Đoán số bí mật thử tài logic phá án",
-      "Sở hữu trọn bộ vĩnh viễn, không quảng cáo, không chi phí phát sinh",
-    ],
-    price: 0,
-    originalPrice: 59000,
-    isFree: true,
-    proUnlockMission: {
-      taskName: "Xem ưu đãi Bộ trò chơi Boardgame & Party Phụ kiện",
-      targetPartner: "Party Store",
-      affiliateUrl: "https://shopee.vn",
-      reward: "Mở khóa trọn bộ 5 mini game tiệc & phòng chơi 8 người",
-    },
-    delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
-    demoUrl: "/products/Game_70_Party_Pack_Bluetooth.html",
-    downloadUrl: "/downloads/PartyPack_Bluetooth_v1.0.apk",
-    zipUrl: "/downloads/PartyPack_Bluetooth_v1.0.zip",
-    devicePrefix: "PP",
-    status: "available",
-    mockupIdea: "Các biểu tượng xúc xắc, tia chớp phản xạ và câu đố số học phát sáng đa màu sắc.",
-  },
-];
-
-// ───────────── COMBO / BUNDLE TIẾT KIỆM 35% - 40% (100% APK ĐÃ ĐÓNG GÓI) ─────────────
-export const BUNDLES: Bundle[] = [
-  {
-    id: "bundle-master-apk-15in1",
-    name: "Combo Master 15-in-1 Trọn Bộ Kho APK Zeebee",
-    tagline: "Sở hữu toàn bộ 15 ứng dụng Android APK & Game Bluetooth: Bê Tông, In 3D, Điện, Định Giá, Hóa Đơn, Sổ Kho, Sổ Đo, Sơn Gạch, Đổi Đơn Vị, Freelancer Rate, Cờ Caro, Tàu Chiến, Oẳn Tù Tì, Đố Vui & Party Pack.",
-    discountPercent: 40,
-    originalPrice: 598000,
-    bundlePrice: 0,
-    products: [
-      "concrete-volume-estimator",
-      "3d-print-cost-calculator",
-      "electrical-calculator",
-      "pricing-profit-margin-pro",
-      "quotation-invoice-maker",
-      "mini-inventory-offline",
-      "tailor-measurement-book",
-      "freelancer-rate-calculator",
-      "paint-tile-calculator",
-      "unit-converter-pro",
-      "game-tic-tac-toe-pro",
-      "game-battleship-duel",
-      "game-rock-paper-scissors",
-      "game-quiz-duel",
-      "game-bluetooth-party-pack"
-    ],
-    badge: "Tiết kiệm 40%",
-  },
-  {
-    id: "bundle-pro-tools-kỹ-thuật",
-    name: "Combo Kỹ Thuật & Xây Dựng 5-in-1 APK",
-    tagline: "Trọn bộ 5 công cụ kỹ thuật thực địa: Bê Tông Pro + In 3D Cost + Kỹ Thuật Điện + Sơn Gạch Pro + Đổi Đơn Vị Pro.",
-    discountPercent: 35,
-    originalPrice: 195000,
-    bundlePrice: 0,
-    products: [
-      "concrete-volume-estimator",
-      "3d-print-cost-calculator",
-      "electrical-calculator",
-      "paint-tile-calculator",
-      "unit-converter-pro"
-    ],
-    badge: "Tiết kiệm 35%",
-  },
-  {
-    id: "bundle-quan-ly-kinh-doanh",
-    name: "Combo Quản Lý Bán Hàng & Dịch Vụ 5-in-1 APK",
-    tagline: "Trọn bộ 5 ứng dụng kinh doanh bỏ túi: Định Giá Lợi Nhuận + Hóa Đơn Mini + Sổ Kho Mini + Sổ Đo Tiệm May + Định Giá Freelancer Rate.",
-    discountPercent: 35,
-    originalPrice: 305000,
-    bundlePrice: 0,
-    products: [
-      "pricing-profit-margin-pro",
-      "quotation-invoice-maker",
-      "mini-inventory-offline",
-      "tailor-measurement-book",
-      "freelancer-rate-calculator"
-    ],
-    badge: "Tiết kiệm 35%",
-  },
-  {
-    id: "bundle-game-bluetooth-doi-khang",
-    name: "Combo 5 Game Đối Kháng Bluetooth Không Cần Mạng",
-    tagline: "Trọn bộ 5 tựa game giải trí đối kháng cùng bạn bè: Cờ Ca Rô + Đấu Tàu Chiến + Oẳn Tù Tì + Đố Vui + Party Pack.",
-    discountPercent: 30,
-    originalPrice: 175000,
-    bundlePrice: 0,
-    products: [
-      "game-tic-tac-toe-pro",
-      "game-battleship-duel",
-      "game-rock-paper-scissors",
-      "game-quiz-duel",
-      "game-bluetooth-party-pack"
-    ],
-    badge: "Tiết kiệm 30%",
-  },
-];
-
-// ───────────── CASE STUDIES: NĂNG LỰC CÔNG NGHỆ (MỤC BUILD THEO YÊU CẦU) ─────────────
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "mobo-so-thu-chi",
@@ -846,155 +890,3 @@ export const CASE_STUDIES: CaseStudy[] = [
     demoUrl: "https://zlink.zeebee.io.vn",
   },
 ];
-
-export function getProduct(slug: string): Product | undefined {
-  return PRODUCTS.find((p) => p.slug === slug);
-}
-
-export function formatVnd(n: number): string {
-  if (n === 0) return "0đ · MIỄN PHÍ";
-  return `${n.toLocaleString("vi-VN")}đ`;
-}
-
-/** Nhãn giá: "79.000đ" */
-export function priceLabel(p: Product): string {
-  if (p.price === 0) return "0đ · MIỄN PHÍ";
-  return formatVnd(p.price);
-}
-
-export const PRODUCT_THEMES: Record<string, ProductVisualTheme> = {
-  "concrete-volume-estimator": {
-    spineColor: "#8b3a2b",
-    textColor: "#fff8f0",
-    accentColor: "#f3c77c",
-    pattern: "geometric",
-    symbol: "🏗️",
-    serialTag: "VOL. 01 · CONST",
-  },
-  "3d-print-cost-calculator": {
-    spineColor: "#18202f",
-    textColor: "#f0f9ff",
-    accentColor: "#38bdf8",
-    pattern: "grid",
-    symbol: "🖨️",
-    serialTag: "VOL. 02 · 3D FAB",
-  },
-  "electrical-calculator": {
-    spineColor: "#172554",
-    textColor: "#fefce8",
-    accentColor: "#fbbf24",
-    pattern: "stripes",
-    symbol: "⚡",
-    serialTag: "VOL. 03 · ELEC",
-  },
-  "paint-tile-calculator": {
-    spineColor: "#064e3b",
-    textColor: "#f0fdf4",
-    accentColor: "#6ee7b7",
-    pattern: "grid",
-    symbol: "🎨",
-    serialTag: "VOL. 04 · DECOR",
-  },
-  "unit-converter-pro": {
-    spineColor: "#312e81",
-    textColor: "#f5f3ff",
-    accentColor: "#a5b4fc",
-    pattern: "diamonds",
-    symbol: "📐",
-    serialTag: "VOL. 05 · METRIC",
-  },
-  "pricing-profit-margin-pro": {
-    spineColor: "#065f46",
-    textColor: "#fefce8",
-    accentColor: "#fde047",
-    pattern: "geometric",
-    symbol: "📈",
-    serialTag: "VOL. 06 · MARGIN",
-  },
-  "quotation-invoice-maker": {
-    spineColor: "#1e3a8a",
-    textColor: "#fef2f2",
-    accentColor: "#f87171",
-    pattern: "stripes",
-    symbol: "📝",
-    serialTag: "VOL. 07 · INVOICE",
-  },
-  "mini-inventory-offline": {
-    spineColor: "#701a75",
-    textColor: "#fdf4ff",
-    accentColor: "#fcd34d",
-    pattern: "diamonds",
-    symbol: "📦",
-    serialTag: "VOL. 08 · STOCK",
-  },
-  "tailor-measurement-book": {
-    spineColor: "#881337",
-    textColor: "#fff1f2",
-    accentColor: "#fde047",
-    pattern: "vintage",
-    symbol: "✂️",
-    serialTag: "VOL. 09 · TAILOR",
-  },
-  "freelancer-rate-calculator": {
-    spineColor: "#0f766e",
-    textColor: "#ecfeff",
-    accentColor: "#67e8f9",
-    pattern: "circles",
-    symbol: "💼",
-    serialTag: "VOL. 10 · RATE",
-  },
-  "game-tic-tac-toe-pro": {
-    spineColor: "#78350f",
-    textColor: "#fffbeb",
-    accentColor: "#fcd34d",
-    pattern: "grid",
-    symbol: "⚔️",
-    serialTag: "GAME. 01 · CARO",
-  },
-  "game-battleship-duel": {
-    spineColor: "#082f49",
-    textColor: "#f0fdfa",
-    accentColor: "#34d399",
-    pattern: "geometric",
-    symbol: "⚓",
-    serialTag: "GAME. 02 · NAVY",
-  },
-  "game-rock-paper-scissors": {
-    spineColor: "#7f1d1d",
-    textColor: "#fffbeb",
-    accentColor: "#fbbf24",
-    pattern: "circles",
-    symbol: "✊",
-    serialTag: "GAME. 03 · RPS",
-  },
-  "game-quiz-duel": {
-    spineColor: "#4c1d95",
-    textColor: "#fbfbfe",
-    accentColor: "#c4b5fd",
-    pattern: "diamonds",
-    symbol: "🧠",
-    serialTag: "GAME. 04 · QUIZ",
-  },
-  "game-bluetooth-party-pack": {
-    spineColor: "#831843",
-    textColor: "#ecfeff",
-    accentColor: "#22d3ee",
-    pattern: "vintage",
-    symbol: "🎉",
-    serialTag: "GAME. 05 · PARTY",
-  },
-};
-
-export function getProductTheme(p: Product): ProductVisualTheme {
-  return (
-    p.theme ||
-    PRODUCT_THEMES[p.slug] || {
-      spineColor: "#1e293b",
-      textColor: "#ffffff",
-      accentColor: "#eabd17",
-      pattern: "geometric",
-      symbol: "📱",
-      serialTag: "APP. 2026",
-    }
-  );
-}

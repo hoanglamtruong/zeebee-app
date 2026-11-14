@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Zee Bee App — App & game nhỏ, build theo yêu cầu",
+  title: "Zeebee Game Vault — Kho Game Offline & Bluetooth Đối Kháng",
   description:
-    "Mini app và game dùng được ngay, dùng thử miễn phí trước khi mua. Build website, tool, app theo yêu cầu — báo giá theo nhu cầu cụ thể.",
+    "Kho game Retro & Bluetooth 2 người chơi offline không cần mạng, dung lượng siêu nhẹ dưới 25KB. Dịch vụ lập trình mini game và tool theo yêu cầu.",
 };
 
 export default function RootLayout({

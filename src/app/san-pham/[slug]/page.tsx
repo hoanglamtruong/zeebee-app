@@ -30,7 +30,7 @@ export async function generateMetadata({
   const product = getProduct((await params).slug);
   return product
     ? {
-        title: `${product.name} — Dùng thử 7 ngày & Mua Key Trọn Đời | app.zeebee.vn`,
+        title: `${product.name} — Game Android APK Offline | app.zeebee.vn`,
         description: product.tagline,
       }
     : {};
@@ -85,15 +85,9 @@ export default async function ProductPage({
                   </div>
                 </div>
 
-                {soon ? (
-                  <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
-                    <Sparkles size={13} /> Sắp ra mắt · Ưu đãi 50%
-                  </span>
-) : (
-                  <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    <Check size={13} /> 100% Miễn Phí Tải Về
-                  </span>
-                )}
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
+                  <Gamepad2 size={13} /> {product.gameMode}
+                </span>
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-3">

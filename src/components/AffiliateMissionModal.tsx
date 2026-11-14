@@ -22,7 +22,7 @@ interface AffiliateMissionModalProps {
   isOpen: boolean;
   onClose: () => void;
   product?: Product | null;
-  targetFeature?: string; // e.g. "Qua màn game" | "Xuất PDF PRO" | "Nhận License Key vĩnh viễn"
+  targetFeature?: string;
   onMissionCompleted?: (rewardKey: string) => void;
 }
 
@@ -39,43 +39,30 @@ export default function AffiliateMissionModal({
   const [generatedKey, setGeneratedKey] = useState("");
   const [copied, setCopied] = useState(false);
 
-  // Set default mission based on product if available
   useEffect(() => {
     if (isOpen) {
       setStep("list");
       setCountdown(5);
       setCopied(false);
-      if (product) {
-        // find relevant mission or default to first
-        const matched = AFFILIATE_MISSIONS.find((m) =>
-          m.unlockTypes.includes(product.slug) || m.unlockTypes.includes("all")
-        );
-        setSelectedMission(matched || AFFILIATE_MISSIONS[0]);
-      } else {
-        setSelectedMission(AFFILIATE_MISSIONS[0]);
-      }
+      setSelectedMission(AFFILIATE_MISSIONS[0]);
     }
   }, [isOpen, product]);
 
-  // Handle countdown during verifying step
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (step === "verifying") {
       if (countdown > 0) {
         timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
       } else {
-        // Verification complete
-        const prefix = product ? product.devicePrefix : "VIP";
+        const prefix = product?.devicePrefix || "GAME";
         const randomCode = Math.floor(100000 + Math.random() * 900000);
-        const newKey = `ZB-PRO-${prefix}-${randomCode}`;
+        const newKey = `ZB-PASS-${prefix}-${randomCode}`;
         setGeneratedKey(newKey);
         setStep("success");
 
-        // Save unlock locally
         if (typeof window !== "undefined") {
           const unlockedKey = product ? `zb_unlocked_${product.slug}` : "zb_unlocked_all";
           localStorage.setItem(unlockedKey, "true");
-          localStorage.setItem(`zb_key_${product?.slug || "general"}`, newKey);
         }
 
         if (onMissionCompleted) {
@@ -90,9 +77,7 @@ export default function AffiliateMissionModal({
 
   const handleStartMission = (mission: AffiliateMission) => {
     setSelectedMission(mission);
-    // Open affiliate link in new tab
     window.open(mission.url, "_blank", "noopener,noreferrer");
-    // Switch to verifying state
     setCountdown(5);
     setStep("verifying");
   };
@@ -105,8 +90,6 @@ export default function AffiliateMissionModal({
     }
   };
 
-  const isGame = product?.category === "games";
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
       <div className="relative w-full max-w-xl bg-gradient-to-b from-[#0e273c] to-[#071624] border border-amber-400/40 rounded-2xl shadow-2xl overflow-hidden text-neutral-100 flex flex-col max-h-[90vh]">
@@ -118,12 +101,10 @@ export default function AffiliateMissionModal({
             </div>
             <div>
               <h3 className="text-base font-black text-amber-300 font-serif">
-                {isGame
-                  ? "Nhiệm Vụ Tài Trợ: Hồi Sinh & Qua Màn Game"
-                  : "Nhiệm Vụ Mở Khóa Tính Năng PRO Trọn Đời"}
+                Nhiệm Vụ Đối Tác: Nhận Thêm Mạng &amp; Qua Màn
               </h3>
               <p className="text-[11px] text-neutral-400">
-                100% Miễn Phí · Không Cần Mua · Nhấp 1 Link Đối Tác Để Nhận Quà
+                Ghé thăm nhà tài trợ 5 giây để nhận quà tặng trực tiếp vào game
               </p>
             </div>
           </div>
@@ -139,21 +120,18 @@ export default function AffiliateMissionModal({
         <div className="p-5 overflow-y-auto space-y-4">
           {/* Target Reward Banner */}
           <div className="p-3.5 rounded-xl bg-amber-400/10 border border-amber-400/25 flex items-start gap-3">
-            <div className="text-xl shrink-0 mt-0.5">
-              {isGame ? "🎮" : "⭐"}
-            </div>
+            <div className="text-xl shrink-0 mt-0.5">🎮</div>
             <div className="text-xs space-y-1">
               <p className="font-bold text-amber-200">
                 Phần thưởng khi hoàn thành:{" "}
                 <span className="text-white underline">
                   {targetFeature ||
                     product?.proUnlockMission?.reward ||
-                    "Mở khóa toàn bộ tính năng PRO vĩnh viễn (0 đồng)"}
+                    "Hồi sinh 5 mạng & Mở khóa màn chơi tiếp theo"}
                 </span>
               </p>
               <p className="text-neutral-300 opacity-90 leading-relaxed">
-                Ứng dụng: <strong>{product ? product.name : "Tất cả Mini App trên Kệ"}</strong>.
-                Hệ thống tự động cấp License Key ngay sau khi bạn ghé thăm nhà tài trợ 5 giây!
+                Tựa game: <strong>{product ? product.name : "Tất cả Game trong bộ sưu tập"}</strong>.
               </p>
             </div>
           </div>
@@ -163,7 +141,7 @@ export default function AffiliateMissionModal({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
-                  Chọn 1 nhiệm vụ bên dưới để kích hoạt:
+                  Chọn 1 nhiệm vụ bên dưới:
                 </span>
                 <span className="text-[10px] text-amber-300/80 font-mono">
                   Thời gian: ~5 giây
@@ -172,18 +150,10 @@ export default function AffiliateMissionModal({
 
               <div className="space-y-2.5">
                 {AFFILIATE_MISSIONS.map((m) => {
-                  const isRecommended =
-                    product &&
-                    (m.unlockTypes.includes(product.slug) ||
-                      m.category.toLowerCase().includes(product.category));
                   return (
                     <div
                       key={m.id}
-                      className={`p-3.5 rounded-xl border transition-all ${
-                        isRecommended
-                          ? "bg-gradient-to-r from-amber-500/15 via-[#13304b] to-transparent border-amber-400/50 shadow-md ring-1 ring-amber-400/20"
-                          : "bg-white/5 border-white/10 hover:border-amber-400/30"
-                      }`}
+                      className="p-3.5 rounded-xl border bg-white/5 border-white/10 hover:border-amber-400/30 transition-all"
                     >
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="flex items-center gap-2">
@@ -194,11 +164,6 @@ export default function AffiliateMissionModal({
                             Đối tác: <strong className="text-white">{m.partner}</strong>
                           </span>
                         </div>
-                        {isRecommended && (
-                          <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1">
-                            <Flame size={12} /> Đề xuất cao
-                          </span>
-                        )}
                       </div>
 
                       <h4 className="text-sm font-bold text-white mb-1">
@@ -210,9 +175,9 @@ export default function AffiliateMissionModal({
 
                       <button
                         onClick={() => handleStartMission(m)}
-                        className="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-neutral-950 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                        className="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-amber-400 hover:bg-amber-300 text-neutral-950 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
                       >
-                        <span>Nhấp Link Đối Tác Để Nhận Key ({m.partner})</span>
+                        <span>Ghé Thăm Nhận Quà ({m.partner})</span>
                         <ExternalLink size={14} />
                       </button>
                     </div>
@@ -234,11 +199,11 @@ export default function AffiliateMissionModal({
 
               <div className="space-y-1">
                 <h4 className="text-lg font-bold text-white">
-                  Đang ghi nhận tương tác với đối tác...
+                  Đang xác nhận tương tác với nhà tài trợ...
                 </h4>
                 <p className="text-xs text-neutral-300 max-w-sm mx-auto leading-relaxed">
                   Trang đối tác <strong>{selectedMission.partner}</strong> đang mở trong tab mới.
-                  Vui lòng chờ trong giây lát để hệ thống tạo License Key PRO cho bạn!
+                  Vui lòng chờ trong giây lát để hệ thống gửi quà vào game!
                 </p>
               </div>
 
@@ -251,36 +216,34 @@ export default function AffiliateMissionModal({
               </div>
 
               <p className="text-[11px] text-neutral-400 italic">
-                Cảm ơn bạn đã ủng hộ nhà tài trợ để giữ các công cụ Zeebee 100% miễn phí!
+                Cảm ơn bạn đã ủng hộ các nhà tài trợ trên hệ sinh thái game Zeebee!
               </p>
             </div>
           )}
 
-          {/* STEP 3: Success & Reveal License Key */}
+          {/* STEP 3: Success & Reveal Pass */}
           {step === "success" && (
             <div className="py-4 text-center space-y-5 animate-fadeIn">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 text-emerald-300 mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <div className="w-16 h-16 rounded-full bg-amber-400/20 border-2 border-amber-400 text-amber-300 mx-auto flex items-center justify-center shadow-lg shadow-amber-400/20">
                 <CheckCircle2 size={36} />
               </div>
 
               <div className="space-y-1">
                 <h4 className="text-xl font-black text-white font-serif">
-                  🎉 Hoàn Thành Nhiệm Vụ Thành Công!
+                  🎉 Nhận Quà Thành Công!
                 </h4>
-                <p className="text-xs text-emerald-300 font-medium">
-                  {isGame
-                    ? "Bạn đã được cộng 5 lượt chơi / Đã mở khóa qua màn game!"
-                    : "Tính năng PRO đã được kích hoạt vĩnh viễn trên thiết bị này."}
+                <p className="text-xs text-amber-300 font-medium">
+                  {targetFeature || "Bạn đã được cộng 5 lượt chơi và mở khóa màn chơi tiếp theo!"}
                 </p>
               </div>
 
               {/* The Key Box */}
-              <div className="p-4 rounded-xl bg-neutral-900/90 border border-emerald-400/40 text-left space-y-2">
+              <div className="p-4 rounded-xl bg-neutral-900/90 border border-amber-400/40 text-left space-y-2">
                 <div className="flex items-center justify-between text-xs text-neutral-400">
                   <span className="flex items-center gap-1 font-bold text-amber-300">
-                    <Key size={13} /> MÃ KÍCH HOẠT PRO TRỌN ĐỜI:
+                    <Key size={13} /> MÃ PASS MỞ KHÓA VÀO GAME:
                   </span>
-                  <span className="text-[10px] text-emerald-400 font-mono">100% OFFLINE</span>
+                  <span className="text-[10px] text-cyan-400 font-mono">OFFLINE</span>
                 </div>
 
                 <div className="flex items-center justify-between gap-2 bg-black/60 p-2.5 rounded-lg border border-white/10 font-mono text-sm sm:text-base font-black text-amber-300 tracking-wider">
@@ -295,7 +258,7 @@ export default function AffiliateMissionModal({
                 </div>
 
                 <p className="text-[11px] text-neutral-400 leading-relaxed">
-                  👉 Sao chép mã này và dán vào mục <strong>Kích Hoạt Bản Quyền</strong> trong app, hoặc chạy bản Web Demo để trải nghiệm ngay.
+                  👉 Nhập mã này tại màn hình game hoặc chơi trực tiếp trên bản Web Demo.
                 </p>
               </div>
 
@@ -306,7 +269,7 @@ export default function AffiliateMissionModal({
                     download
                     className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-amber-400 text-neutral-950 hover:bg-amber-300 transition-all flex items-center justify-center gap-2 shadow"
                   >
-                    <span>Tải File .APK Cài Đặt Ngay</span>
+                    <span>Tải Game Cài Đặt Ngay</span>
                   </a>
                 )}
                 {product?.demoUrl && (
@@ -316,7 +279,7 @@ export default function AffiliateMissionModal({
                     rel="noopener noreferrer"
                     className="flex-1 py-3 px-4 rounded-xl font-bold text-xs bg-white/10 hover:bg-white/15 text-white border border-white/20 transition-all flex items-center justify-center gap-2"
                   >
-                    <span>Mở Web App &amp; Chơi Ngay</span>
+                    <span>Chơi Ngay Trên Web</span>
                   </a>
                 )}
                 <button
@@ -330,14 +293,14 @@ export default function AffiliateMissionModal({
           )}
         </div>
 
-        {/* Modal Footer Guarantee */}
+        {/* Modal Footer */}
         <div className="px-5 py-3 border-t border-white/10 bg-neutral-950/80 text-[11px] text-neutral-400 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-neutral-300">
-            <ShieldCheck size={14} className="text-emerald-400" />
-            100% An toàn, không thu phí, không phát sinh chi phí ngầm
+            <Gamepad2 size={14} className="text-amber-400" />
+            Hệ sinh thái game kết nối Bluetooth P2P &amp; Offline
           </span>
           <span className="text-[10px] text-neutral-500 hidden sm:inline">
-            Tài trợ bởi các đối tác E-commerce &amp; Ngân hàng số
+            Tài trợ bởi các đối tác Gaming &amp; Công nghệ
           </span>
         </div>
       </div>

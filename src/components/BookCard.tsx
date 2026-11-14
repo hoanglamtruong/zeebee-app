@@ -2,8 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { Plus, Check, Download, Play, Eye } from "lucide-react";
-import { Product, getProductTheme, formatVnd } from "@/lib/catalog";
+import { Plus, Check, Eye } from "lucide-react";
+import { Product, getProductTheme } from "@/lib/catalog";
 
 interface BookCardProps {
   product: Product;
@@ -22,7 +22,7 @@ export default function BookCard({
 
   return (
     <div className="group relative flex flex-col items-center">
-      {/* 3D Standing Book / Software Box */}
+      {/* 3D Standing Book / Game Box */}
       <div
         onClick={() => onOpenQuickView(product)}
         className="relative w-[140px] sm:w-[160px] md:w-[170px] h-[210px] sm:h-[240px] md:h-[255px] cursor-pointer rounded-r-md transition-all duration-300 ease-out transform group-hover:-translate-y-2.5 group-hover:rotate-[-1.5deg] select-none"
@@ -107,7 +107,7 @@ export default function BookCard({
                 color: theme.accentColor,
               }}
             >
-              100% FREE APK
+              APK · OFFLINE
             </span>
             <span className="text-[9px] font-mono opacity-70" style={{ color: theme.textColor }}>
               {product.devicePrefix}
@@ -122,13 +122,13 @@ export default function BookCard({
           </div>
         </div>
 
-        {/* The Iconic Floating Round Action Button (+) exactly like Leafbound */}
+        {/* The Iconic Floating Round Action Button (+) */}
         <button
           onClick={(e) => onToggleStack(product, e)}
-          title={isInStack ? "Đã có trong ngăn kéo (Bấm để bỏ)" : "Thêm vào ngăn kéo tải trọn bộ (Your Stack)"}
+          title={isInStack ? "Đã có trong bộ sưu tập (Bấm để bỏ)" : "Thêm vào bộ sưu tập (Your Vault)"}
           className={`absolute -bottom-2 -right-2 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 cursor-pointer ${
             isInStack
-              ? "bg-emerald-500 text-white scale-105 ring-2 ring-emerald-300"
+              ? "bg-amber-400 text-neutral-950 scale-105 ring-2 ring-amber-300"
               : "bg-white text-neutral-900 hover:scale-115 hover:bg-amber-300 shadow-md"
           }`}
         >
@@ -141,14 +141,13 @@ export default function BookCard({
         className="w-[125px] sm:w-[145px] h-3 rounded-[100%] bg-black/60 blur-[3px] mt-1 transition-all duration-300 group-hover:scale-90 group-hover:opacity-40"
       />
 
-      {/* Price Engraving Stamped on the Shelf Rim */}
-      <div className="mt-1 text-center select-none flex flex-col items-center gap-0.5">
-        <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-emerald-400 group-hover:text-emerald-300 transition-colors flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          MIỄN PHÍ 0đ
+      {/* Game Mode Stamped on the Shelf Rim */}
+      <div className="mt-1 text-center select-none flex flex-col items-center">
+        <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-amber-300 group-hover:text-amber-200 transition-colors">
+          {product.gameMode}
         </span>
-        <span className="text-[9px] text-amber-300/80 font-mono hidden sm:inline">
-          {product.category === "games" ? "⭐ Qua màn tài trợ" : "⭐ Mở PRO qua NV"}
+        <span className="text-[9px] text-neutral-400 font-mono hidden sm:inline opacity-80">
+          {product.playerCount}
         </span>
       </div>
     </div>

@@ -110,7 +110,7 @@ export default function CustomRequestForm() {
         {submitting ? "Đang gửi..." : "Gửi yêu cầu — nhận báo giá"}
       </button>
       <p className="text-xs text-center" style={{ color: "var(--zb-muted)" }}>
-        Miễn phí. Seller sẽ gọi hoặc nhắn Zalo để hỏi thêm và báo giá cụ thể.
+        Đội ngũ kỹ thuật sẽ liên hệ qua Zalo hoặc điện thoại để trao đổi chi tiết và báo giá cụ thể.
       </p>
     </form>
   );
