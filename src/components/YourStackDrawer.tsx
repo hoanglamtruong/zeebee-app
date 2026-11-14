@@ -191,15 +191,9 @@ export default function YourStackDrawer({
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <a
-                          href={p.downloadUrl || `/downloads/${p.slug}.apk`}
-                          download
-                          className="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
-                          title={`Tải file cài đặt .APK cho ${p.name}`}
-                        >
-                          <Download size={13} />
-                          <span>Tải APK</span>
-                        </a>
+                        <span className="px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 font-mono text-[10px] font-bold">
+                          Sắp Ra Mắt
+                        </span>
                         <button
                           onClick={() => onRemoveFromStack(p.slug)}
                           className="p-1 rounded text-neutral-400 hover:text-red-400 transition-colors ml-1"

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Download, Key, CheckCircle2, ShieldCheck, Sparkles, ArrowRight, HelpCircle, Gift, Gamepad2, Users, Radio } from "lucide-react";
+import { Download, Key, CheckCircle2, ShieldCheck, Sparkles, ArrowRight, HelpCircle, Gift, Gamepad2, Users, Radio, Clock } from "lucide-react";
 import type { Product } from "@/lib/catalog";
 import AdBanner from "./AdBanner";
 import AffiliateMissionModal from "./AffiliateMissionModal";
@@ -66,49 +66,27 @@ export default function ProductPurchaseBox({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Hành động 1: Tải về APK */}
-      <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-amber-950/30 to-orange-950/30 border border-amber-400/30 shadow-lg">
+      {/* Trạng thái game: Placeholder / Đang build lại */}
+      <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-amber-950/30 to-neutral-900 border border-amber-400/30 shadow-lg">
         <div className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-wide">
-          <Sparkles size={15} /> Bước 1: Tải cài đặt (File APK)
+          <Sparkles size={15} /> Trạng Thái Game (Placeholder)
+        </div>
+
+        <div className="p-3.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-xs text-neutral-300 space-y-2">
+          <p className="font-bold text-amber-300 text-sm flex items-center gap-1.5">
+            <Clock size={16} /> Sắp Ra Mắt — Đang Trong Lộ Trình Build Lại
+          </p>
+          <p className="text-[11px] leading-relaxed">
+            Phiên bản game đang được hoàn thiện và đóng gói lại bản cài đặt APK hoàn chỉnh. Quý khách vui lòng quay lại sau hoặc tham gia bảng nhiệm vụ bên dưới để nhận thông báo và vật phẩm khi ra mắt!
+          </p>
         </div>
 
         <button
-          onClick={handleDownloadTrial}
-          disabled={downloading}
-          className="w-full py-3.5 px-4 rounded-xl font-black text-sm bg-amber-400 hover:bg-amber-300 text-neutral-950 shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer hover:scale-[1.02]"
+          disabled
+          className="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-neutral-800 text-neutral-400 border border-neutral-700 flex items-center justify-center gap-2 cursor-not-allowed opacity-80"
         >
-          {downloading ? (
-            "Đang chuẩn bị file tải..."
-          ) : (
-            <>
-              <Download size={18} /> Tải Cài Đặt Game .APK
-            </>
-          )}
+          <Gamepad2 size={18} /> Đang Build Lại Bản APK...
         </button>
-
-        <div className="flex items-center justify-between text-[11px] text-neutral-400 pt-1">
-          <span>* File cài đặt .APK chuẩn Android (&lt;25KB)</span>
-          {product.zipUrl && (
-            <a
-              href={product.zipUrl}
-              download
-              className="text-amber-300 hover:underline flex items-center gap-1 font-medium"
-            >
-              <Download size={12} /> Tải file nén .ZIP
-            </a>
-          )}
-        </div>
-
-        {downloadSuccess && (
-          <div className="p-3 rounded-xl bg-amber-400/20 border border-amber-400/40 text-xs text-amber-200 space-y-1.5 animate-fadeIn">
-            <p className="font-bold flex items-center gap-1.5 text-amber-300">
-              <CheckCircle2 size={15} /> Đã kích hoạt tải file cài đặt .APK!
-            </p>
-            <p className="text-[11px] leading-relaxed">
-              Mở file .apk vừa tải về trên điện thoại Android để cài đặt ngay.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Hành động 2: Nhận thêm mạng / Mở khóa màn */}

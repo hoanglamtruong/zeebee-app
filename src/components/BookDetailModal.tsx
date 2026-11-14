@@ -181,32 +181,22 @@ export default function BookDetailModal({
                 </span>
               </button>
 
-              <div className="flex flex-col sm:flex-row gap-2.5">
-                {/* Direct APK Download */}
-                {product.downloadUrl && (
-                  <a
-                    href={product.downloadUrl}
-                    download
-                    className="flex-1 px-4 py-3 rounded-xl font-bold text-sm bg-amber-400 text-neutral-950 hover:bg-amber-300 transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
-                  >
-                    <Download size={17} />
-                    <span>Tải Cài Đặt Game .APK</span>
-                  </a>
+                {/* Placeholder Notice when game is not ready / rebuilding */}
+                {!product.downloadUrl && !product.demoUrl && (
+                  <div className="w-full p-3.5 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
+                      <Gamepad2 size={16} />
+                    </div>
+                    <div className="space-y-1 text-left">
+                      <h4 className="text-xs sm:text-sm font-bold text-amber-300">
+                        Sắp Ra Mắt (Placeholder) · Đang Trong Lộ Trình Build
+                      </h4>
+                      <p className="text-[11px] text-neutral-300 leading-relaxed">
+                        Tựa game đang được hoàn thiện và đóng gói lại bản cài đặt APK độc lập. Bạn có thể thêm vào bộ sưu tập để theo dõi ngày phát hành.
+                      </p>
+                    </div>
+                  </div>
                 )}
-
-                {/* Web Demo Runner */}
-                {product.demoUrl && (
-                  <a
-                    href={product.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 px-4 py-3 rounded-xl font-bold text-sm bg-white/10 hover:bg-white/15 border border-white/15 text-white transition-all flex items-center justify-center gap-2"
-                  >
-                    <Play size={16} className="text-amber-400" />
-                    <span>Chơi Thử Web Demo</span>
-                  </a>
-                )}
-              </div>
 
               <div className="flex flex-col sm:flex-row gap-2.5">
                 {/* Toggle Stack Button */}

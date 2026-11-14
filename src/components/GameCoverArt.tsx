@@ -21,12 +21,8 @@ export default function GameCoverArt({ product, className = "" }: GameCoverArtPr
             ZEEBEE · ARCADE
           </span>
         </div>
-        <span className="text-[7px] font-bold font-mono px-1.5 py-0.2 rounded bg-amber-400 text-neutral-950 uppercase tracking-tight">
-          {product.category === "bluetooth-pvp"
-            ? "BT 2P"
-            : product.category === "coop-arcade"
-            ? "CO-OP"
-            : "BOARD"}
+        <span className="text-[7px] font-black font-mono px-1.5 py-0.5 rounded bg-amber-400 text-neutral-950 uppercase tracking-tight">
+          SẮP RA MẮT
         </span>
       </div>
 
@@ -47,8 +43,8 @@ export default function GameCoverArt({ product, className = "" }: GameCoverArtPr
           <span className="text-amber-300 font-bold uppercase tracking-wider">
             {product.devicePrefix || "APK"}
           </span>
-          <span className="text-white/70 tracking-tight">
-            &lt; 25KB · OFFLINE
+          <span className="text-amber-300/90 font-mono text-[8px] uppercase tracking-wider font-bold">
+            PLACEHOLDER
           </span>
         </div>
       </div>
