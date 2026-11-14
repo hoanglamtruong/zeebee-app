@@ -27,12 +27,7 @@ export function SiteHeader() {
             <Gift size={14} className="text-amber-300" />
             <span>Nhiệm Vụ Nhận Quà</span>
           </Link>
-          <Link
-            href="/#combo"
-            className="hidden lg:inline-flex items-center gap-1.5 hover:text-[var(--zb-gold)] transition-colors text-neutral-300"
-          >
-            <Gamepad2 size={14} className="text-[var(--zb-gold)]" /> Gói Game Master
-          </Link>
+
           <Link
             href="/build"
             className="hidden sm:inline-flex items-center gap-1.5 hover:text-[var(--zb-gold)] transition-colors text-neutral-300"

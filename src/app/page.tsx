@@ -22,7 +22,6 @@ import {
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
 import BookshelfSection from "@/components/BookshelfSection";
 import AdBanner from "@/components/AdBanner";
-import { BUNDLES } from "@/lib/catalog";
 
 const TRUST_BADGES = [
   {
@@ -153,54 +152,7 @@ export default function Home() {
       {/* Bookshelf Section (#san-pham) */}
       <BookshelfSection />
 
-      {/* Gói Game Chuyên Đề (#combo) */}
-      <section id="combo" className="max-w-6xl mx-auto px-4 sm:px-6 py-12 scroll-mt-20">
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <span className="text-xs font-bold text-amber-300 uppercase tracking-wider">
-            Gói Tải Trọn Bộ
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
-            Bộ Sưu Tập Gói Game Chuyên Đề
-          </h2>
-          <p className="text-xs sm:text-sm text-[var(--zb-muted)] mt-1">
-            Tải trọn bộ tựa game cho từng thể loại chỉ với 1 file nén ZIP cài đặt.
-          </p>
-        </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {BUNDLES.slice(1).map((b) => (
-            <div
-              key={b.id}
-              className="zb-card p-6 flex flex-col justify-between border border-[rgba(234,189,23,0.25)] relative overflow-hidden bg-gradient-to-b from-[#133e63] to-[#0a273f] hover:border-[var(--zb-gold)] transition-all"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                    {b.badge}
-                  </span>
-                  <span className="text-xs text-[var(--zb-muted)]">5 tựa game</span>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-1">{b.name}</h3>
-                  <p className="text-xs text-[var(--zb-muted)] leading-relaxed">{b.tagline}</p>
-                </div>
-              </div>
-
-              <div className="pt-5 mt-4 border-t border-[rgba(255,255,255,0.08)]">
-                <a
-                  href="/downloads/Zeebee_Master_Bundle_15in1_APK.zip"
-                  download
-                  className="zb-btn-primary w-full py-2.5 text-xs font-bold justify-center shadow-md flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Download size={14} />
-                  <span>Tải Gói Game .ZIP</span>
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* 4 Bước Quy Trình */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">

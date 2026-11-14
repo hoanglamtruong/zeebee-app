@@ -190,13 +190,19 @@ export default function YourStackDrawer({
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-mono text-cyan-300">
-                          {p.playerCount}
-                        </span>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={p.downloadUrl || `/downloads/${p.slug}.apk`}
+                          download
+                          className="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                          title={`Tải file cài đặt .APK cho ${p.name}`}
+                        >
+                          <Download size={13} />
+                          <span>Tải APK</span>
+                        </a>
                         <button
                           onClick={() => onRemoveFromStack(p.slug)}
-                          className="p-1 rounded text-neutral-400 hover:text-red-400 transition-colors"
+                          className="p-1 rounded text-neutral-400 hover:text-red-400 transition-colors ml-1"
                           title="Bỏ khỏi bộ sưu tập"
                         >
                           <X size={15} />
@@ -212,24 +218,23 @@ export default function YourStackDrawer({
             {count > 0 && (
               <div className="border-t border-white/10 pt-4 space-y-3">
                 <div className="flex flex-col sm:flex-row gap-2.5">
-                  <a
-                    href="/downloads/Zeebee_Master_Bundle_15in1_APK.zip"
-                    download
-                    className="flex-1 px-4 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-lg cursor-pointer"
-                  >
-                    <Download size={16} />
-                    <span>Tải Gói Nén Master .ZIP ({count} Game APK)</span>
-                  </a>
-
                   <button
                     onClick={() => {
                       setIsOpenModal(false);
                       setIsMissionModalOpen(true);
                     }}
-                    className="flex-1 px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
+                    className="flex-1 px-4 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
                   >
-                    <Gift size={16} className="text-amber-300" />
+                    <Gift size={16} />
                     <span>Nhiệm Vụ Nhận Thêm Mạng &amp; Vật Phẩm</span>
+                  </button>
+
+                  <button
+                    onClick={() => setIsOpenModal(false)}
+                    className="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
+                  >
+                    <Gamepad2 size={16} className="text-amber-300" />
+                    <span>Chọn Thêm Game Trên Kệ</span>
                   </button>
                 </div>
               </div>

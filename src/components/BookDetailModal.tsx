@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Product, getProductTheme } from "@/lib/catalog";
 import AdBanner from "@/components/AdBanner";
+import GameCoverArt from "./GameCoverArt";
 import AffiliateMissionModal from "@/components/AffiliateMissionModal";
 
 interface BookDetailModalProps {
@@ -68,65 +69,23 @@ export default function BookDetailModal({
 
           {/* Left Side: 3D Product Cover & Technical Specs */}
           <div className="w-full md:w-80 p-6 sm:p-8 bg-neutral-950/60 border-b md:border-b-0 md:border-r border-white/10 flex flex-col items-center justify-between gap-6 shrink-0">
-            {/* 3D Book Display */}
+            {/* 3D Game Box Display */}
             <div className="pt-2">
               <div
-                className="relative w-[150px] sm:w-[170px] h-[225px] sm:h-[255px] rounded-r-md overflow-hidden flex flex-col justify-between p-4 text-left border-t border-r border-b shadow-2xl transition-transform duration-500 hover:scale-105"
+                className="relative w-[150px] sm:w-[170px] h-[225px] sm:h-[255px] rounded-r-lg overflow-hidden flex flex-col justify-between text-left border-t border-r border-b shadow-2xl transition-transform duration-500 hover:scale-105"
                 style={{
-                  backgroundColor: theme.spineColor,
-                  borderColor: "rgba(255,255,255,0.2)",
+                  background: theme.coverGradient || theme.spineColor,
+                  borderColor: "rgba(255,255,255,0.25)",
                   boxShadow: `
                     inset 5px 0 10px rgba(0, 0, 0, 0.5),
                     inset 9px 0 5px rgba(255, 255, 255, 0.1),
                     inset -3px 0 8px rgba(0, 0, 0, 0.35),
-                    0 20px 25px -5px rgba(0, 0, 0, 0.7)
+                    0 20px 25px -5px rgba(0, 0, 0, 0.7),
+                    0 0 25px ${theme.glowColor || 'transparent'}
                   `,
                 }}
               >
-                {/* Book Spine Crease */}
-                <div className="absolute left-0 top-0 bottom-0 w-3.5 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
-                <div className="absolute left-3.5 top-0 bottom-0 w-[1px] bg-white/15 pointer-events-none" />
-
-                {/* Top Serial */}
-                <div className="relative z-10 flex items-center justify-between border-b pb-1.5" style={{ borderColor: `${theme.accentColor}33` }}>
-                  <span className="text-[10px] font-mono tracking-widest uppercase font-bold" style={{ color: theme.accentColor }}>
-                    {theme.serialTag}
-                  </span>
-                  <span className="text-sm">{theme.symbol}</span>
-                </div>
-
-                {/* Center Emblem */}
-                <div className="relative z-10 my-auto text-center space-y-2">
-                  <div
-                    className="w-12 h-12 mx-auto rounded-full flex items-center justify-center border shadow-lg"
-                    style={{
-                      borderColor: `${theme.accentColor}66`,
-                      backgroundColor: "rgba(0,0,0,0.3)",
-                      boxShadow: `0 0 16px ${theme.accentColor}25`,
-                    }}
-                  >
-                    <span className="text-xl">{theme.symbol}</span>
-                  </div>
-                  <h3 className="text-sm font-black leading-snug px-1 line-clamp-3 font-serif" style={{ color: theme.textColor }}>
-                    {product.name.replace(/\([^)]*\)/g, "").trim()}
-                  </h3>
-                </div>
-
-                {/* Bottom Label */}
-                <div className="relative z-10 pt-1.5 border-t flex items-center justify-between" style={{ borderColor: `${theme.accentColor}33` }}>
-                  <span
-                    className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded"
-                    style={{
-                      backgroundColor: "rgba(0,0,0,0.3)",
-                      color: theme.accentColor,
-                    }}
-                  >
-                    APK · OFFLINE
-                  </span>
-                  <span className="text-[10px] font-mono opacity-80" style={{ color: theme.textColor }}>
-                    {product.devicePrefix}
-                  </span>
-                </div>
+                <GameCoverArt product={product} />
               </div>
             </div>
 
