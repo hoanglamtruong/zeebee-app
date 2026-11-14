@@ -2,28 +2,26 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Download, Key, CheckCircle2, ShieldCheck, Sparkles, ArrowRight, HelpCircle } from "lucide-react";
+import { Download, Key, CheckCircle2, ShieldCheck, Sparkles, ArrowRight, HelpCircle, Gift } from "lucide-react";
 import type { Product } from "@/lib/catalog";
 import { formatVnd } from "@/lib/catalog";
-import OrderForm from "./OrderForm";
+import AdBanner from "./AdBanner";
+import AffiliateMissionModal from "./AffiliateMissionModal";
 
 export default function ProductPurchaseBox({ product }: { product: Product }) {
   const [downloading, setDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
-
-  const soon = product.status === "coming_soon";
+  const [isMissionOpen, setIsMissionOpen] = useState(false);
 
   async function handleDownloadTrial() {
     setDownloading(true);
     try {
-      // 1. Ghi nhận hệ thống SQLite âm thầm (KHÔNG gửi Telegram)
       fetch("/api/trials", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug: product.slug }),
       }).catch(() => {});
 
-      // 2. Kích hoạt tải file trực tiếp về thiết bị khách
       const downloadFileUrl = product.downloadUrl || product.demoUrl || `/downloads/${product.slug}.zip`;
       const link = document.createElement("a");
       link.href = downloadFileUrl;
@@ -41,64 +39,40 @@ export default function ProductPurchaseBox({ product }: { product: Product }) {
     }
   }
 
-  if (soon) {
-    return (
-      <div className="space-y-4">
-        <div className="zb-card p-5 space-y-3 bg-[#0d3452]">
-          <div className="flex items-baseline justify-between">
-            <span className="text-xs font-medium text-[var(--zb-muted)]">
-              Giá niêm yết khi ra mắt:
-            </span>
-            <span className="text-2xl font-black text-[var(--zb-gold)]">
-              {formatVnd(product.price)}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded bg-amber-400/10 border border-amber-400/30 text-amber-200">
-            <span>Giá ưu đãi đặt trước (-50%):</span>
-            <strong className="text-sm font-bold text-[var(--zb-gold-light)]">
-              {formatVnd(Math.round(product.price * 0.5))}
-            </strong>
-          </div>
-        </div>
-
-        <OrderForm
-          productSlug={product.slug}
-          comingSoon={true}
-          priceLabel={formatVnd(product.price)}
-        />
-      </div>
-    );
-  }
+  const isGame = product.category === "games";
 
   return (
     <div className="space-y-4">
       {/* Box Giá & Quyền lợi */}
-      <div className="zb-card p-5 space-y-3 bg-[#0d3452] border border-[rgba(234,189,23,0.3)]">
+      <div className="zb-card p-5 space-y-3 bg-[#0d3452] border border-emerald-500/30">
         <div className="flex items-baseline justify-between">
           <span className="text-xs font-medium text-[var(--zb-muted)]">
-            Giá bản quyền vĩnh viễn:
+            Giá cài đặt &amp; sử dụng:
           </span>
-          <span className="text-2xl font-black text-[var(--zb-gold)]">
-            {formatVnd(product.price)}
+          <span className="text-2xl font-black text-emerald-400">
+            0đ · MIỄN PHÍ
           </span>
         </div>
 
         <div className="text-xs space-y-1.5 text-[var(--zb-off-white)] pt-1 border-t border-white/10">
+          <div className="flex items-center justify-between text-neutral-400">
+            <span>Giá trị niêm yết:</span>
+            <span className="line-through">{formatVnd(product.originalPrice || 59000)}</span>
+          </div>
           <p className="flex items-center gap-1.5 text-emerald-300 font-semibold">
-            <CheckCircle2 size={14} /> Dùng thử 7 ngày miễn phí đầy đủ tính năng
+            <CheckCircle2 size={14} /> Hoạt động 100% offline vĩnh viễn không thu phí
           </p>
           <p className="flex items-center gap-1.5 text-[var(--zb-muted)]">
             <ShieldCheck size={14} className="text-cyan-400" />
-            <span>Mở khóa trọn đời · Không cần internet</span>
+            <span>Dữ liệu lưu cục bộ trên máy · Không quảng cáo phiền toái</span>
           </p>
         </div>
       </div>
 
-      {/* Hành động 1: Tải về dùng thử 7 ngày */}
+      {/* Hành động 1: Tải về APK Miễn Phí */}
       <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-emerald-950/30 to-teal-950/30 border border-emerald-500/30 shadow-lg">
         <div className="flex items-center gap-2 text-xs font-bold text-emerald-300 uppercase tracking-wide">
-          <Sparkles size={15} /> Bước 1: Trải nghiệm thực tế (File APK Android)
+          <Sparkles size={15} /> Bước 1: Cài đặt và sử dụng (File APK)
         </div>
 
         <button
@@ -110,63 +84,74 @@ export default function ProductPurchaseBox({ product }: { product: Product }) {
             "Đang chuẩn bị file tải..."
           ) : (
             <>
-              <Download size={18} /> Cài Đặt APK Dùng Thử 7 Ngày (Miễn Phí)
+              <Download size={18} /> Cài Đặt APK Miễn Phí (0đ)
             </>
           )}
         </button>
 
         <div className="flex items-center justify-between text-[11px] text-[var(--zb-muted)] pt-1">
-          <span>* File cài đặt .APK chuẩn Android</span>
+          <span>* File cài đặt .APK chuẩn Android (&lt;25KB)</span>
           {product.zipUrl && (
             <a
               href={product.zipUrl}
               download
               className="text-cyan-400 hover:underline flex items-center gap-1 font-medium"
             >
-              <Download size={12} /> Tải file nén .ZIP (.apk + HDSD)
+              <Download size={12} /> Tải file nén .ZIP
             </a>
           )}
         </div>
 
         {downloadSuccess && (
-          <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-xs text-emerald-200 space-y-1.5 animate-in fade-in">
+          <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-xs text-emerald-200 space-y-1.5 animate-fadeIn">
             <p className="font-bold flex items-center gap-1.5 text-emerald-300">
               <CheckCircle2 size={15} /> Đã kích hoạt tải file cài đặt .APK!
             </p>
             <p className="text-[11px] leading-relaxed">
-              Nhấp vào file .apk vừa tải về trên điện thoại Android để cài đặt (cho phép cài đặt từ nguồn này nếu máy hỏi). Bạn có <strong>7 ngày trải nghiệm không giới hạn</strong>. Sau 7 ngày, mở ứng dụng lấy <strong>Mã Thiết Bị</strong> để mua key mở khóa vĩnh viễn.
+              Mở file .apk vừa tải về trên điện thoại Android để cài đặt ngay.
             </p>
           </div>
         )}
       </div>
 
-      {/* Hành động 2: Mua Key Mở Khóa */}
-      <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-[#12406a] to-[#0a273f] border border-[rgba(234,189,23,0.3)] shadow-lg">
+      {/* Hành động 2: Mở khóa PRO hoặc Qua màn game bằng Nhiệm Vụ */}
+      <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-[#12406a] to-[#0a273f] border border-amber-400/40 shadow-lg">
         <div className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-wide">
-          <Key size={15} /> Bước 2: Kích hoạt vĩnh viễn
+          <Gift size={15} /> Bước 2: {isGame ? "Hồi sinh & Qua màn game" : "Mở khóa tính năng PRO vĩnh viễn"}
         </div>
         <p className="text-xs text-[var(--zb-off-white)] opacity-90 leading-relaxed">
-          Đã có mã thiết bị từ ứng dụng đã tải? Mua key bản quyền để mở khóa trọn đời ngay lập tức:
+          {isGame
+            ? "Hết mạng hoặc gặp màn khó? Làm nhiệm vụ đối tác 5 giây để nhận thêm 5 lượt và qua màn tức thì:"
+            : "Cần xuất báo cáo PDF có logo hoặc sao lưu nâng cao? Nhấp 1 link tài trợ đối tác để nhận key PRO:"}
         </p>
 
-        <Link
-          href={`/mua-key?app=${encodeURIComponent(product.slug)}`}
-          className="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[var(--zb-gold)] to-[var(--zb-orange)] text-[var(--zb-navy-dark)] hover:brightness-110 shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
+        <button
+          onClick={() => setIsMissionOpen(true)}
+          className="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-400 to-amber-500 text-neutral-950 hover:brightness-110 shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
         >
-          <Key size={16} /> Mua Key Mở Khóa — {formatVnd(product.price)} <ArrowRight size={15} />
-        </Link>
+          <Gift size={16} />
+          <span>
+            {isGame
+              ? "🎁 Làm Nhiệm Vụ: Qua Màn / Hồi Sinh Ngay"
+              : "🎁 Làm Nhiệm Vụ: Nhận Mã PRO Key (0đ)"}
+          </span>
+        </button>
       </div>
 
-      <div className="text-center pt-1">
-        <a
-          href="https://zalo.me/0976094453"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs text-[var(--zb-gold)] hover:underline"
-        >
-          <HelpCircle size={14} /> Cần tư vấn cài đặt hoặc kích hoạt? Chat Zalo ngay
-        </a>
-      </div>
+      {/* Sponsored Ad Banner */}
+      <AdBanner variant="modal" />
+
+      {/* Affiliate Mission Modal */}
+      <AffiliateMissionModal
+        isOpen={isMissionOpen}
+        onClose={() => setIsMissionOpen(false)}
+        product={product}
+        targetFeature={
+          isGame
+            ? "Hồi sinh 5 mạng & Mở khóa qua màn khó"
+            : product.proUnlockMission?.reward || "Mở khóa toàn bộ tính năng PRO trọn đời"
+        }
+      />
     </div>
   );
 }

@@ -107,7 +107,7 @@ export default function BookCard({
                 color: theme.accentColor,
               }}
             >
-              APK · OFFLINE
+              100% FREE APK
             </span>
             <span className="text-[9px] font-mono opacity-70" style={{ color: theme.textColor }}>
               {product.devicePrefix}
@@ -125,7 +125,7 @@ export default function BookCard({
         {/* The Iconic Floating Round Action Button (+) exactly like Leafbound */}
         <button
           onClick={(e) => onToggleStack(product, e)}
-          title={isInStack ? "Đã có trong ngăn kéo (Bấm để bỏ)" : "Thêm vào ngăn kéo combo (Your Stack)"}
+          title={isInStack ? "Đã có trong ngăn kéo (Bấm để bỏ)" : "Thêm vào ngăn kéo tải trọn bộ (Your Stack)"}
           className={`absolute -bottom-2 -right-2 z-30 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 cursor-pointer ${
             isInStack
               ? "bg-emerald-500 text-white scale-105 ring-2 ring-emerald-300"
@@ -142,9 +142,13 @@ export default function BookCard({
       />
 
       {/* Price Engraving Stamped on the Shelf Rim */}
-      <div className="mt-1 text-center select-none">
-        <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-[#eabd17] opacity-90 group-hover:opacity-100 group-hover:text-amber-300 transition-colors">
-          {formatVnd(product.price)}
+      <div className="mt-1 text-center select-none flex flex-col items-center gap-0.5">
+        <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-emerald-400 group-hover:text-emerald-300 transition-colors flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          MIỄN PHÍ 0đ
+        </span>
+        <span className="text-[9px] text-amber-300/80 font-mono hidden sm:inline">
+          {product.category === "games" ? "⭐ Qua màn tài trợ" : "⭐ Mở PRO qua NV"}
         </span>
       </div>
     </div>

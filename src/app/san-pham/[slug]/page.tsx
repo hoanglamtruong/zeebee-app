@@ -91,7 +91,7 @@ export default async function ProductPage({
                   </span>
 ) : (
                   <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    <Check size={13} /> Dùng Thử 7 Ngày Miễn Phí
+                    <Check size={13} /> 100% Miễn Phí Tải Về
                   </span>
                 )}
               </div>

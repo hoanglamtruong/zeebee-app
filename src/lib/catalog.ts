@@ -20,6 +20,24 @@ export interface ProductVisualTheme {
   serialTag: string;
 }
 
+export interface AffiliateMission {
+  id: string;
+  partner: string;
+  title: string;
+  description: string;
+  badge: string;
+  category: string;
+  url: string;
+  unlockTypes: string[]; // slugs or ["all"]
+}
+
+export interface ProUnlockMission {
+  taskName: string;
+  targetPartner: string;
+  affiliateUrl: string;
+  reward: string;
+}
+
 export interface Product {
   slug: string;
   name: string;
@@ -30,8 +48,14 @@ export interface Product {
   tagline: string;
   description: string;
   features: string[];
-  /** Giá niêm yết (VNĐ) trả một lần dùng trọn đời */
+  /** Giá hiện tại: 0đ (100% Miễn phí tải về) */
   price: number;
+  /** Giá trị tham chiếu gốc (VNĐ) */
+  originalPrice: number;
+  /** Cờ miễn phí */
+  isFree?: boolean;
+  /** Nhiệm vụ affiliate mở khóa tính năng PRO hoặc qua màn */
+  proUnlockMission?: ProUnlockMission;
   /** Sản phẩm tải về: khách nhận gì */
   delivery: string;
   demoUrl: string | null;
@@ -73,6 +97,67 @@ export const CATEGORY_TABS = [
   { id: "games", label: "Game Đối Kháng Bluetooth" },
 ] as const;
 
+export const AFFILIATE_MISSIONS: AffiliateMission[] = [
+  {
+    id: "shopee-tools",
+    partner: "Shopee Mall Tools",
+    title: "Săn Deal Dụng Cụ Kỹ Thuật & Thiết Bị Đo Kiểm Giảm 50%",
+    description: "Ghé thăm gian hàng Shopee trong 5 giây để nhận ngay License Key PRO vĩnh viễn.",
+    badge: "HOT DEAL",
+    category: "pro-tools",
+    url: "https://shopee.vn",
+    unlockTypes: [
+      "concrete-volume-estimator",
+      "3d-print-cost-calculator",
+      "electrical-calculator",
+      "paint-tile-calculator",
+      "unit-converter-pro",
+    ],
+  },
+  {
+    id: "techcombank-mb",
+    partner: "Techcombank / MBBank",
+    title: "Mở Tài Khoản Số Miễn Phí — Tặng 100K Cho Chủ Shop & Freelancer",
+    description: "Ghé thăm trang đối tác ngân hàng 5 giây để kích hoạt tính năng Quản Lý Bán Hàng & Hóa Đơn.",
+    badge: "TÀI TRỢ VIP",
+    category: "business",
+    url: "https://techcombank.com.vn",
+    unlockTypes: [
+      "mini-inventory-offline",
+      "quotation-invoice-maker",
+      "pricing-profit-margin-pro",
+      "tailor-measurement-book",
+      "freelancer-rate-calculator",
+    ],
+  },
+  {
+    id: "shopee-gaming",
+    partner: "Gaming Gear Shopee",
+    title: "Ưu Đãi Phụ Kiện Game, Tay Cầm & Tai Nghe Bluetooth 0 Đồng",
+    description: "Ghé thăm gian hàng game 5 giây để hồi sinh 5 mạng, qua màn khó và mở bàn cờ VIP.",
+    badge: "GAME REWARD",
+    category: "games",
+    url: "https://shopee.vn",
+    unlockTypes: [
+      "game-tic-tac-toe-pro",
+      "game-battleship-duel",
+      "game-rock-paper-scissors",
+      "game-quiz-duel",
+      "game-bluetooth-party-pack",
+    ],
+  },
+  {
+    id: "zeebee-build",
+    partner: "Zeebee Software On-Demand",
+    title: "Ghé Thăm Dịch Vụ May Đo Phần Mềm & Mini Tool Doanh Nghiệp",
+    description: "Khám phá dịch vụ build app theo yêu cầu để nhận mã Master Unlock mở khóa toàn bộ 15 App.",
+    badge: "MASTER PRO",
+    category: "all",
+    url: "/build",
+    unlockTypes: ["all"],
+  },
+];
+
 export const PRODUCTS: Product[] = [
   // ─── 01. Concrete Volume & Material Estimator (Sheet ID 1) ───
   {
@@ -93,7 +178,15 @@ export const PRODUCTS: Product[] = [
       "Xuất phiếu dự toán vật tư định dạng PDF gửi trực tiếp qua Zalo cho thợ hoặc chủ nhà",
       "Hoạt động 100% offline tại chân công trình không phụ thuộc sóng di động",
     ],
-    price: 59000,
+    price: 0,
+    originalPrice: 59000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Ghé thăm gian hàng Dụng cụ & Vật tư xây dựng Shopee",
+      targetPartner: "Shopee Tools",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa xuất Báo cáo PDF & Dự toán vật tư không giới hạn",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_01_BeTong_Pro_Offline.html",
     downloadUrl: "/downloads/BeTong_Pro_v1.0.apk",
@@ -122,7 +215,15 @@ export const PRODUCTS: Product[] = [
       "Lưu lịch sử báo giá các đơn in khách hàng cục bộ không sợ mất dữ liệu",
       "Sao chép mẫu báo giá chuyên nghiệp 1 chạm gửi cho khách hàng",
     ],
-    price: 39000,
+    price: 0,
+    originalPrice: 39000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Khám phá deal Nhựa in 3D Filament & Máy in Resin",
+      targetPartner: "Shopee 3D Maker",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa xuất Hóa đơn báo giá in 3D chuyên nghiệp",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_02_In3D_Cost_Pro.html",
     downloadUrl: "/downloads/In3D_Pro_v1.0.apk",
@@ -151,7 +252,15 @@ export const PRODUCTS: Product[] = [
       "Bảng quy đổi đơn vị điện năng: kW sang Mã lực (HP), BTU/h điều hòa, kVA, kWh",
       "Hoạt động 100% offline tại hiện trường, nhà xưởng hoặc công trình hầm sâu",
     ],
-    price: 39000,
+    price: 0,
+    originalPrice: 39000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Xem gian hàng Thiết bị đo kiểm & Dụng cụ thợ điện",
+      targetPartner: "Shopee Electric",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa bảng tra Tiết diện dây dẫn và lịch sử phép tính",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_05_Dien_Pro.html",
     downloadUrl: "/downloads/Dien_Pro_v1.0.apk",
@@ -180,7 +289,15 @@ export const PRODUCTS: Product[] = [
       "Tính toán chi phí quảng cáo tối đa (Break-even ROAS) trước khi bị lỗ vốn",
       "Lưu lại danh sách công thức giá theo từng nhóm hàng để tra cứu tức thì",
     ],
-    price: 39000,
+    price: 0,
+    originalPrice: 39000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Xem công cụ tối ưu phí sàn Shopee / TikTok Shop",
+      targetPartner: "E-com Affiliate",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Phân tích tỷ suất ROI & Điểm hòa vốn chi tiết",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_04_DinhGia_LoiNhuan_Pro.html",
     downloadUrl: "/downloads/DinhGia_Cost_Pro_v1.0.apk",
@@ -209,7 +326,15 @@ export const PRODUCTS: Product[] = [
       "Xuất file PDF chuẩn A4/A5 để gửi trực tiếp qua Zalo hoặc in bằng máy in nhiệt/Wi-Fi",
       "Hoạt động offline hoàn toàn, lưu trữ toàn bộ lịch sử báo giá an toàn trên máy",
     ],
-    price: 79000,
+    price: 0,
+    originalPrice: 79000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Khám phá giải pháp Hóa đơn điện tử & Kế toán đối tác",
+      targetPartner: "Zeebee Partner",
+      affiliateUrl: "https://zeebee.vn",
+      reward: "Mở khóa Chèn Logo thương hiệu riêng lên Báo giá PDF",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_07_HoaDon_Mini_Offline.html",
     downloadUrl: "/downloads/HoaDon_Mini_v1.0.apk",
@@ -238,7 +363,15 @@ export const PRODUCTS: Product[] = [
       "Xuất toàn bộ cơ sở dữ liệu kho hàng ra file Excel (.csv) lưu trữ trên thiết bị",
       "100% không cần Internet, dữ liệu bảo mật tuyệt đối trên thiết bị của bạn",
     ],
-    price: 99000,
+    price: 0,
+    originalPrice: 99000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Đăng ký mở tài khoản ngân hàng số doanh nghiệp 0 phí",
+      targetPartner: "Techcombank / MB",
+      affiliateUrl: "https://techcombank.com.vn",
+      reward: "Mở khóa Quét mã vạch Barcode camera và Xuất file Excel kho",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_11_SoKho_Mini.html",
     downloadUrl: "/downloads/SoKho_Mini_v1.0.apk",
@@ -267,7 +400,15 @@ export const PRODUCTS: Product[] = [
       "Sao chép nhanh bảng thông số số đo sang định dạng tin nhắn gửi qua Zalo",
       "Xuất danh sách và số đo toàn bộ khách hàng ra tệp Excel CSV để lưu trữ",
     ],
-    price: 59000,
+    price: 0,
+    originalPrice: 59000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Khám phá gian hàng Vải & Phụ liệu may mặc sỉ",
+      targetPartner: "Chợ Phụ Liệu",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Lưu 1.000+ hồ sơ khách hàng & thông số số đo",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_06_SoDo_TiemMay.html",
     downloadUrl: "/downloads/SoDo_TiemMay_v1.0.apk",
@@ -296,7 +437,15 @@ export const PRODUCTS: Product[] = [
       "Giao diện gỗ sang trọng, hiệu ứng âm thanh lách cách đặt quân thư giãn",
       "Sở hữu vĩnh viễn, không quảng cáo chen ngang, không thu phí duy trì",
     ],
-    price: 29000,
+    price: 0,
+    originalPrice: 29000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Nhấp link đối tác Gaming Gear để nhận quà",
+      targetPartner: "Shopee Gaming",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Qua màn khó / Nhận 5 lượt Hoàn tác (Undo) & Bàn cờ VIP",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/Game_39_CoCaro_Bluetooth_Offline.html",
     downloadUrl: "/downloads/CoCaro_Bluetooth_v1.0.apk",
@@ -325,7 +474,15 @@ export const PRODUCTS: Product[] = [
       "100% chạy mượt mà không cần mạng Internet hay 4G",
       "Sở hữu vĩnh viễn, không quảng cáo làm gián đoạn trận hải chiến",
     ],
-    price: 39000,
+    price: 0,
+    originalPrice: 39000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Ghé thăm đối tác tài trợ phòng game",
+      targetPartner: "Navy Sponsor",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Radar quét tàu địch 3 lượt miễn phí",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/Game_53_TauChien_Bluetooth.html",
     downloadUrl: "/downloads/TauChien_Bluetooth_v1.0.apk",
@@ -354,7 +511,15 @@ export const PRODUCTS: Product[] = [
       "Xuất tóm tắt báo giá chuyên nghiệp để gửi trực tiếp cho khách hàng",
       "100% Offline, lưu trữ và bảo mật dữ liệu thù lao tuyệt đối trên máy",
     ],
-    price: 29000,
+    price: 0,
+    originalPrice: 29000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Đăng ký Thẻ thanh toán quốc tế Visa/Mastercard 0 phí nhận thù lao",
+      targetPartner: "VPBank / Cake",
+      affiliateUrl: "https://vpbank.com.vn",
+      reward: "Mở khóa Bấm giờ đa dự án và Xuất Timesheet gửi khách hàng",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_03_Freelancer_Rate.html",
     downloadUrl: "/downloads/Freelancer_Rate_v1.0.apk",
@@ -383,7 +548,15 @@ export const PRODUCTS: Product[] = [
       "Ước tính số bao keo dán gạch và tổng chi phí tiền gạch công trình",
       "Hoạt động offline 100% ngoài công trường xây dựng không cần mạng",
     ],
-    price: 39000,
+    price: 0,
+    originalPrice: 39000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Xem bảng màu sơn & gạch ốp lát xu hướng 2026",
+      targetPartner: "Vật Liệu Số",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa bóc tách khối lượng sơn lót + sơn phủ chi tiết",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_38_Son_Gach_Pro.html",
     downloadUrl: "/downloads/Son_Gach_Pro_v1.0.apk",
@@ -412,7 +585,15 @@ export const PRODUCTS: Product[] = [
       "Giao diện tối ưu thao tác 1 tay, tốc độ phản hồi 0ms không độ trễ",
       "100% Offline, không có quảng cáo gây phiền toái",
     ],
-    price: 19000,
+    price: 0,
+    originalPrice: 19000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Ghé thăm gian hàng Sách kỹ thuật & Thiết bị công nghệ",
+      targetPartner: "Shopee Mall",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa 200+ đơn vị đo lường chuyên sâu quốc tế",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/App_10_Doi_Don_Vi_Pro.html",
     downloadUrl: "/downloads/DoiDonVi_Pro_v1.0.apk",
@@ -441,7 +622,15 @@ export const PRODUCTS: Product[] = [
       "Dung lượng siêu nhẹ (<25KB), cài đặt ngay và chơi mượt mà mọi dòng máy Android",
       "Mua 1 lần dùng trọn đời, không quảng cáo, không tốn dung lượng 4G",
     ],
-    price: 9000,
+    price: 0,
+    originalPrice: 9000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Xem ưu đãi Phụ kiện Bluetooth & Loa mini",
+      targetPartner: "Bluetooth Hub",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa Chế độ Đấu Boss Khó & 5 Lượt Hồi Sinh",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/Game_52_Oan_Tu_Ti_Bluetooth.html",
     downloadUrl: "/downloads/OanTuTi_Bluetooth_v1.0.apk",
@@ -470,7 +659,15 @@ export const PRODUCTS: Product[] = [
       "Hệ thống tính điểm thông minh cộng thưởng theo tốc độ phản xạ của người chơi",
       "Trọn đời không quảng cáo, không cần đăng nhập tài khoản phức tạp",
     ],
-    price: 39000,
+    price: 0,
+    originalPrice: 39000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Khám phá kho Sách Trí Tuệ & Bách Khoa Tri Thức",
+      targetPartner: "Tri Thức Mall",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa 1.000+ câu hỏi chuyên sâu & Gợi ý 50/50",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/Game_60_Do_Vui_Bluetooth.html",
     downloadUrl: "/downloads/DoVui_Bluetooth_v1.0.apk",
@@ -499,7 +696,15 @@ export const PRODUCTS: Product[] = [
       "Mini game Đoán số bí mật thử tài logic phá án",
       "Sở hữu trọn bộ vĩnh viễn, không quảng cáo, không chi phí phát sinh",
     ],
-    price: 59000,
+    price: 0,
+    originalPrice: 59000,
+    isFree: true,
+    proUnlockMission: {
+      taskName: "Xem ưu đãi Bộ trò chơi Boardgame & Party Phụ kiện",
+      targetPartner: "Party Store",
+      affiliateUrl: "https://shopee.vn",
+      reward: "Mở khóa trọn bộ 5 mini game tiệc & phòng chơi 8 người",
+    },
     delivery: "File cài đặt APK Android + Hướng dẫn cài đặt & sử dụng",
     demoUrl: "/products/Game_70_Party_Pack_Bluetooth.html",
     downloadUrl: "/downloads/PartyPack_Bluetooth_v1.0.apk",
@@ -518,7 +723,7 @@ export const BUNDLES: Bundle[] = [
     tagline: "Sở hữu toàn bộ 15 ứng dụng Android APK & Game Bluetooth: Bê Tông, In 3D, Điện, Định Giá, Hóa Đơn, Sổ Kho, Sổ Đo, Sơn Gạch, Đổi Đơn Vị, Freelancer Rate, Cờ Caro, Tàu Chiến, Oẳn Tù Tì, Đố Vui & Party Pack.",
     discountPercent: 40,
     originalPrice: 598000,
-    bundlePrice: 359000,
+    bundlePrice: 0,
     products: [
       "concrete-volume-estimator",
       "3d-print-cost-calculator",
@@ -544,7 +749,7 @@ export const BUNDLES: Bundle[] = [
     tagline: "Trọn bộ 5 công cụ kỹ thuật thực địa: Bê Tông Pro + In 3D Cost + Kỹ Thuật Điện + Sơn Gạch Pro + Đổi Đơn Vị Pro.",
     discountPercent: 35,
     originalPrice: 195000,
-    bundlePrice: 129000,
+    bundlePrice: 0,
     products: [
       "concrete-volume-estimator",
       "3d-print-cost-calculator",
@@ -560,7 +765,7 @@ export const BUNDLES: Bundle[] = [
     tagline: "Trọn bộ 5 ứng dụng kinh doanh bỏ túi: Định Giá Lợi Nhuận + Hóa Đơn Mini + Sổ Kho Mini + Sổ Đo Tiệm May + Định Giá Freelancer Rate.",
     discountPercent: 35,
     originalPrice: 305000,
-    bundlePrice: 199000,
+    bundlePrice: 0,
     products: [
       "pricing-profit-margin-pro",
       "quotation-invoice-maker",
@@ -576,7 +781,7 @@ export const BUNDLES: Bundle[] = [
     tagline: "Trọn bộ 5 tựa game giải trí đối kháng cùng bạn bè: Cờ Ca Rô + Đấu Tàu Chiến + Oẳn Tù Tì + Đố Vui + Party Pack.",
     discountPercent: 30,
     originalPrice: 175000,
-    bundlePrice: 119000,
+    bundlePrice: 0,
     products: [
       "game-tic-tac-toe-pro",
       "game-battleship-duel",
@@ -647,11 +852,13 @@ export function getProduct(slug: string): Product | undefined {
 }
 
 export function formatVnd(n: number): string {
+  if (n === 0) return "0đ · MIỄN PHÍ";
   return `${n.toLocaleString("vi-VN")}đ`;
 }
 
 /** Nhãn giá: "79.000đ" */
 export function priceLabel(p: Product): string {
+  if (p.price === 0) return "0đ · MIỄN PHÍ";
   return formatVnd(p.price);
 }
 

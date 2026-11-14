@@ -11,11 +11,14 @@ import {
   Briefcase,
   Gamepad2,
   Info,
+  Gift,
 } from "lucide-react";
 import { PRODUCTS, Product, CATEGORY_TABS, formatVnd } from "@/lib/catalog";
 import BookCard from "./BookCard";
 import BookDetailModal from "./BookDetailModal";
 import YourStackDrawer from "./YourStackDrawer";
+import AdBanner from "./AdBanner";
+import AffiliateMissionModal from "./AffiliateMissionModal";
 
 interface ShelfTier {
   id: string;
@@ -30,7 +33,7 @@ const SHELF_TIERS: ShelfTier[] = [
   {
     id: "pro-tools",
     category: "pro-tools",
-    title: "Kỹ Thuật & Xây Dựng",
+    title: "Kỹ Thuật & Xây Dựng Thực Chiến",
     subtitle: "Công cụ tính toán công trường, bóc tách bê tông, in 3D, điện & hoàn thiện",
     icon: "📐",
     badge: "5 Ứng Dụng",
@@ -58,6 +61,7 @@ export default function BookshelfSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedBook, setSelectedBook] = useState<Product | null>(null);
   const [stack, setStack] = useState<Product[]>([]);
+  const [isOfferwallOpen, setIsOfferwallOpen] = useState(false);
 
   // Toggle in stack
   const handleToggleStack = (p: Product, e: React.MouseEvent) => {
@@ -101,9 +105,9 @@ export default function BookshelfSection() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Section Heading & Search Control Bar (Leafbound Inspired) */}
         <div className="mb-10 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-xs font-mono font-bold text-amber-300">
-            <Bookmark size={13} />
-            <span>KỆ PHẦN MỀM CỤC BỘ · OFFLINE-FIRST VAULT 2026</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-mono font-bold text-emerald-300">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>KHO ỨNG DỤNG OFFLINE · 100% MIỄN PHÍ TẢI VỀ 2026</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-serif uppercase">
@@ -111,11 +115,22 @@ export default function BookshelfSection() {
           </h2>
 
           <p className="text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto opacity-90 leading-relaxed font-sans">
-            Mỗi sản phẩm là một bản quyền vĩnh viễn độc lập — Tải về chạy trực tiếp 100% offline — Không phụ thuộc máy chủ, không thu phí thuê bao.
+            Tải về cài đặt và sử dụng miễn phí trọn đời — 100% Hoạt động Offline không cần mạng — Mở khóa thêm tính năng VIP hoặc qua màn game thông qua nhiệm vụ tài trợ đối tác.
           </p>
 
+          {/* Quick Mission Trigger Button */}
+          <div className="pt-1">
+            <button
+              onClick={() => setIsOfferwallOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-400/20 via-amber-300/20 to-orange-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold hover:bg-amber-400/30 transition-all shadow cursor-pointer"
+            >
+              <Gift size={15} />
+              <span>🎁 Bảng Nhiệm Vụ Đối Tác: Mở Khóa License Key PRO Trọn Đời (0đ)</span>
+            </button>
+          </div>
+
           {/* Boutique Search & Filter Bar */}
-          <div className="max-w-2xl mx-auto pt-4 flex flex-col sm:flex-row items-center gap-3">
+          <div className="max-w-2xl mx-auto pt-2 flex flex-col sm:flex-row items-center gap-3">
             <div className="relative w-full">
               <Search
                 size={18}
@@ -148,7 +163,7 @@ export default function BookshelfSection() {
                     onClick={() => setSelectedCategory(tab.id)}
                     className={`px-3.5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                       isActive
-                        ? "bg-[var(--zb-gold)] text-[var(--zb-navy-dark)] shadow-md shadow-amber-500/20"
+                        ? "bg-amber-400 text-neutral-950 shadow-md shadow-amber-500/20"
                         : "bg-white/5 text-neutral-300 hover:bg-white/10 border border-white/10"
                     }`}
                   >
@@ -161,8 +176,8 @@ export default function BookshelfSection() {
         </div>
 
         {/* The Bookshelf Presentation (Từng Tầng Kệ Sách) */}
-        <div className="space-y-16">
-          {SHELF_TIERS.map((tier) => {
+        <div className="space-y-14">
+          {SHELF_TIERS.map((tier, index) => {
             const tierProducts = filteredProducts.filter(
               (p) => p.category === tier.category
             );
@@ -170,85 +185,98 @@ export default function BookshelfSection() {
             if (tierProducts.length === 0) return null;
 
             return (
-              <div key={tier.id} className="relative">
-                {/* Elegant Centered Brass / Wood Plaque (Shelf Header) */}
-                <div className="flex justify-center mb-6">
-                  <div className="relative inline-flex flex-col items-center px-6 py-2 rounded-xl bg-gradient-to-b from-[#1a3854] to-[#0c2032] border border-amber-400/40 shadow-lg">
-                    {/* Corner Brass Screws Simulation */}
-                    <div className="absolute top-1 left-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
-                    <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
-                    <div className="absolute bottom-1 left-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
-                    <div className="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
+              <React.Fragment key={tier.id}>
+                <div className="relative">
+                  {/* Elegant Centered Brass / Wood Plaque (Shelf Header) */}
+                  <div className="flex justify-center mb-6">
+                    <div className="relative inline-flex flex-col items-center px-6 py-2 rounded-xl bg-gradient-to-b from-[#1a3854] to-[#0c2032] border border-amber-400/40 shadow-lg">
+                      {/* Corner Brass Screws Simulation */}
+                      <div className="absolute top-1 left-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
+                      <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
+                      <div className="absolute bottom-1 left-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
+                      <div className="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-300/40" />
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">{tier.icon}</span>
-                      <h3 className="text-sm sm:text-base font-black font-serif uppercase tracking-wider text-amber-300">
-                        {tier.title}
-                      </h3>
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/30">
-                        {tierProducts.length} SP
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{tier.icon}</span>
+                        <h3 className="text-sm sm:text-base font-black font-serif uppercase tracking-wider text-amber-300">
+                          {tier.title}
+                        </h3>
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          {tierProducts.length} SP · 0Đ
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-neutral-400 hidden sm:block">
+                        {tier.subtitle}
                       </span>
                     </div>
-                    <span className="text-[10px] text-neutral-400 hidden sm:block">
-                      {tier.subtitle}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Shelf Bay: The Books Standing Side-by-Side */}
-                <div className="relative px-2 sm:px-6">
-                  {/* Standing Books Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-4 gap-x-3 sm:gap-x-4 md:gap-x-6 justify-items-center items-end pb-1">
-                    {tierProducts.map((product) => {
-                      const isInStack = stack.some((s) => s.slug === product.slug);
-                      return (
-                        <BookCard
-                          key={product.slug}
-                          product={product}
-                          isInStack={isInStack}
-                          onToggleStack={handleToggleStack}
-                          onOpenQuickView={(p) => setSelectedBook(p)}
-                        />
-                      );
-                    })}
                   </div>
 
-                  {/* 3D Physical Wooden Shelf Plank */}
-                  <div className="relative w-full mt-0">
-                    {/* Top Surface of the Shelf Plank (Highlight & Surface Depth) */}
-                    <div
-                      className="w-full h-3 rounded-t-sm"
-                      style={{
-                        background:
-                          "linear-gradient(to bottom, #7c4d29 0%, #523117 100%)",
-                        boxShadow:
-                          "inset 0 1px 1px rgba(255,255,255,0.35), 0 -2px 4px rgba(0,0,0,0.5)",
-                      }}
-                    />
-
-                    {/* Front Beveled Lip of the Shelf (With Wood Grain & Brass Trim) */}
-                    <div
-                      className="w-full h-6 sm:h-7 rounded-b-sm flex items-center justify-between px-4 border-t border-amber-500/20"
-                      style={{
-                        background:
-                          "linear-gradient(to bottom, #42250f 0%, #2a1608 100%)",
-                        boxShadow:
-                          "0 15px 25px -5px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.15)",
-                      }}
-                    >
-                      <div className="text-[9px] font-mono text-amber-400/40 tracking-widest hidden sm:block">
-                        ZEEBEE SHELF REF. {tier.id.toUpperCase()}
-                      </div>
-                      <div className="text-[9px] font-mono text-amber-400/40 tracking-widest hidden sm:block">
-                        OFFLINE-FIRST 2026
-                      </div>
+                  {/* Shelf Bay: The Books Standing Side-by-Side */}
+                  <div className="relative px-2 sm:px-6">
+                    {/* Standing Books Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-4 gap-x-3 sm:gap-x-4 md:gap-x-6 justify-items-center items-end pb-1">
+                      {tierProducts.map((product) => {
+                        const isInStack = stack.some((s) => s.slug === product.slug);
+                        return (
+                          <BookCard
+                            key={product.slug}
+                            product={product}
+                            isInStack={isInStack}
+                            onToggleStack={handleToggleStack}
+                            onOpenQuickView={(p) => setSelectedBook(p)}
+                          />
+                        );
+                      })}
                     </div>
 
-                    {/* Deep Shelf Under-Shadow casting onto the wall behind */}
-                    <div className="w-full h-8 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none" />
+                    {/* 3D Physical Wooden Shelf Plank */}
+                    <div className="relative w-full mt-0">
+                      {/* Top Surface of the Shelf Plank (Highlight & Surface Depth) */}
+                      <div
+                        className="w-full h-3 rounded-t-sm"
+                        style={{
+                          background:
+                            "linear-gradient(to bottom, #7c4d29 0%, #523117 100%)",
+                          boxShadow:
+                            "inset 0 1px 1px rgba(255,255,255,0.35), 0 -2px 4px rgba(0,0,0,0.5)",
+                        }}
+                      />
+
+                      {/* Front Beveled Lip of the Shelf (With Wood Grain & Brass Trim) */}
+                      <div
+                        className="w-full h-6 sm:h-7 rounded-b-sm flex items-center justify-between px-4 border-t border-amber-500/20"
+                        style={{
+                          background:
+                            "linear-gradient(to bottom, #42250f 0%, #2a1608 100%)",
+                          boxShadow:
+                            "0 15px 25px -5px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.15)",
+                        }}
+                      >
+                        <div className="text-[9px] font-mono text-amber-400/40 tracking-widest hidden sm:block">
+                          ZEEBEE SHELF REF. {tier.id.toUpperCase()}
+                        </div>
+                        <div className="text-[9px] font-mono text-emerald-400/70 tracking-widest hidden sm:block font-bold">
+                          100% FREE DOWNLOAD · OFFLINE-FIRST
+                        </div>
+                      </div>
+
+                      {/* Deep Shelf Under-Shadow casting onto the wall behind */}
+                      <div className="w-full h-8 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none" />
+                    </div>
                   </div>
                 </div>
-              </div>
+
+                {/* In-Between Shelves Sponsored Placement */}
+                {index === 0 && (
+                  <AdBanner
+                    variant="shelf"
+                    customTitle="Mở Thẻ Ngân Hàng Số Techcombank / MB Miễn Phí — Tặng 100K Cho Chủ Shop & Cai Thầu"
+                    customSubtitle="Chuyển khoản 0 đồng trọn đời, hỗ trợ quét mã VietQR tự động không lo phí duy trì"
+                    customCta="Mở Tài Khoản Số 0đ"
+                    customUrl="https://techcombank.com.vn"
+                  />
+                )}
+              </React.Fragment>
             );
           })}
 
@@ -264,9 +292,9 @@ export default function BookshelfSection() {
                   setSearchQuery("");
                   setSelectedCategory("all");
                 }}
-                className="px-4 py-2 rounded-xl bg-[var(--zb-gold)] text-[var(--zb-navy-dark)] text-xs font-bold"
+                className="px-4 py-2 rounded-xl bg-amber-400 text-neutral-950 text-xs font-bold"
               >
-                Xem Toàn Bộ 15 Ứng Dụng
+                Xem Toàn Bộ 15 Ứng Dụng Miễn Phí
               </button>
             </div>
           )}
@@ -279,6 +307,13 @@ export default function BookshelfSection() {
         onClose={() => setSelectedBook(null)}
         isInStack={selectedBook ? stack.some((s) => s.slug === selectedBook.slug) : false}
         onToggleStack={handleToggleStack}
+      />
+
+      {/* Standalone Offerwall Modal */}
+      <AffiliateMissionModal
+        isOpen={isOfferwallOpen}
+        onClose={() => setIsOfferwallOpen(false)}
+        targetFeature="Mã Master Unlock kích hoạt toàn bộ tính năng PRO trên 15 ứng dụng"
       />
 
       {/* Floating Sticky Bottom Drawer: "YOUR STACK" */}

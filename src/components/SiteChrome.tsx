@@ -19,21 +19,21 @@ export function SiteHeader() {
             className="hidden md:inline-flex items-center gap-1.5 hover:text-[var(--zb-gold)] transition-colors"
             style={{ color: "var(--zb-muted)" }}
           >
-            Sản phẩm Tải về
+            Kho Ứng Dụng Miễn Phí
           </Link>
           <Link
-            href="/mua-key"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-amber-300 bg-amber-400/10 border border-amber-400/30 hover:bg-amber-400/20 transition-all shadow-sm"
+            href="/#san-pham"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all shadow-sm"
           >
-            <Key size={14} className="text-[var(--zb-gold)]" />
-            <span>Mua Key Mở Khóa</span>
+            <Key size={14} className="text-emerald-400" />
+            <span>Nhận Key PRO (0đ)</span>
           </Link>
           <Link
             href="/#combo"
             className="hidden lg:inline-flex items-center gap-1.5 hover:text-[var(--zb-gold)] transition-colors"
             style={{ color: "var(--zb-muted)" }}
           >
-            <Sparkles size={14} className="text-[var(--zb-gold)]" /> Combo giảm 35%
+            <Sparkles size={14} className="text-[var(--zb-gold)]" /> Gói Combo 0đ
           </Link>
           <Link
             href="/build"
@@ -65,12 +65,12 @@ export function SiteFooter() {
     <footer className="border-t border-[rgba(255,255,255,0.08)] bg-[#071f31] text-sm py-10 px-6 space-y-4 text-center" style={{ color: "var(--zb-muted)" }}>
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
         <div className="flex items-center gap-2">
-          <ShieldCheck size={18} className="text-[var(--zb-gold)]" />
-          <span>Dùng thử 7 ngày miễn phí · Bản quyền mở khóa vĩnh viễn · 100% Offline</span>
+          <ShieldCheck size={18} className="text-emerald-400" />
+          <span>100% Miễn phí tải về · Mở khóa PRO qua nhiệm vụ đối tác · 100% Offline</span>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/#san-pham" className="hover:underline">Kho sản phẩm</Link>
-          <Link href="/mua-key" className="hover:underline text-[var(--zb-gold)]">Mua Key Bản Quyền</Link>
+          <Link href="/#san-pham" className="hover:underline text-[var(--zb-gold)]">Nhiệm Vụ Nhận Key PRO</Link>
           <Link href="/build" className="hover:underline">Báo giá làm phần mềm</Link>
           <a href="https://zalo.me/0976094453" target="_blank" rel="noopener noreferrer" className="hover:underline text-[var(--zb-gold)]">
             Hỗ trợ Zalo: 0976.094.453
