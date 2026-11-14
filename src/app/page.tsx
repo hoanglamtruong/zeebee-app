@@ -15,7 +15,7 @@ import {
   Layers,
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/SiteChrome";
-import ProductCatalogSection from "@/components/ProductCatalogSection";
+import BookshelfSection from "@/components/BookshelfSection";
 import { BUNDLES, formatVnd } from "@/lib/catalog";
 
 const TRUST_BADGES = [
@@ -133,8 +133,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Catalog Section (#san-pham) */}
-      <ProductCatalogSection />
+      {/* Bookshelf Section (#san-pham) */}
+      <BookshelfSection />
 
       {/* Bundle / Combo Tiết Kiệm (#combo) */}
       <section id="combo" className="max-w-6xl mx-auto px-4 sm:px-6 py-12 scroll-mt-20">

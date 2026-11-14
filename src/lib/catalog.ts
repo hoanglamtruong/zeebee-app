@@ -11,6 +11,15 @@ export type ProductStatus = "available" | "coming_soon";
 export type ProductModel = "download";
 export type ProductCategory = "pro-tools" | "business" | "games";
 
+export interface ProductVisualTheme {
+  spineColor: string;
+  textColor: string;
+  accentColor: string;
+  pattern: "geometric" | "stripes" | "circles" | "diamonds" | "vintage" | "grid";
+  symbol: string;
+  serialTag: string;
+}
+
 export interface Product {
   slug: string;
   name: string;
@@ -31,6 +40,7 @@ export interface Product {
   devicePrefix?: string;
   status: ProductStatus;
   mockupIdea?: string;
+  theme?: ProductVisualTheme;
 }
 
 export interface CaseStudy {
@@ -643,4 +653,141 @@ export function formatVnd(n: number): string {
 /** Nhãn giá: "79.000đ" */
 export function priceLabel(p: Product): string {
   return formatVnd(p.price);
+}
+
+export const PRODUCT_THEMES: Record<string, ProductVisualTheme> = {
+  "concrete-volume-estimator": {
+    spineColor: "#8b3a2b",
+    textColor: "#fff8f0",
+    accentColor: "#f3c77c",
+    pattern: "geometric",
+    symbol: "🏗️",
+    serialTag: "VOL. 01 · CONST",
+  },
+  "3d-print-cost-calculator": {
+    spineColor: "#18202f",
+    textColor: "#f0f9ff",
+    accentColor: "#38bdf8",
+    pattern: "grid",
+    symbol: "🖨️",
+    serialTag: "VOL. 02 · 3D FAB",
+  },
+  "electrical-calculator": {
+    spineColor: "#172554",
+    textColor: "#fefce8",
+    accentColor: "#fbbf24",
+    pattern: "stripes",
+    symbol: "⚡",
+    serialTag: "VOL. 03 · ELEC",
+  },
+  "paint-tile-calculator": {
+    spineColor: "#064e3b",
+    textColor: "#f0fdf4",
+    accentColor: "#6ee7b7",
+    pattern: "grid",
+    symbol: "🎨",
+    serialTag: "VOL. 04 · DECOR",
+  },
+  "unit-converter-pro": {
+    spineColor: "#312e81",
+    textColor: "#f5f3ff",
+    accentColor: "#a5b4fc",
+    pattern: "diamonds",
+    symbol: "📐",
+    serialTag: "VOL. 05 · METRIC",
+  },
+  "pricing-profit-margin-pro": {
+    spineColor: "#065f46",
+    textColor: "#fefce8",
+    accentColor: "#fde047",
+    pattern: "geometric",
+    symbol: "📈",
+    serialTag: "VOL. 06 · MARGIN",
+  },
+  "quotation-invoice-maker": {
+    spineColor: "#1e3a8a",
+    textColor: "#fef2f2",
+    accentColor: "#f87171",
+    pattern: "stripes",
+    symbol: "📝",
+    serialTag: "VOL. 07 · INVOICE",
+  },
+  "mini-inventory-offline": {
+    spineColor: "#701a75",
+    textColor: "#fdf4ff",
+    accentColor: "#fcd34d",
+    pattern: "diamonds",
+    symbol: "📦",
+    serialTag: "VOL. 08 · STOCK",
+  },
+  "tailor-measurement-book": {
+    spineColor: "#881337",
+    textColor: "#fff1f2",
+    accentColor: "#fde047",
+    pattern: "vintage",
+    symbol: "✂️",
+    serialTag: "VOL. 09 · TAILOR",
+  },
+  "freelancer-rate-calculator": {
+    spineColor: "#0f766e",
+    textColor: "#ecfeff",
+    accentColor: "#67e8f9",
+    pattern: "circles",
+    symbol: "💼",
+    serialTag: "VOL. 10 · RATE",
+  },
+  "game-tic-tac-toe-pro": {
+    spineColor: "#78350f",
+    textColor: "#fffbeb",
+    accentColor: "#fcd34d",
+    pattern: "grid",
+    symbol: "⚔️",
+    serialTag: "GAME. 01 · CARO",
+  },
+  "game-battleship-duel": {
+    spineColor: "#082f49",
+    textColor: "#f0fdfa",
+    accentColor: "#34d399",
+    pattern: "geometric",
+    symbol: "⚓",
+    serialTag: "GAME. 02 · NAVY",
+  },
+  "game-rock-paper-scissors": {
+    spineColor: "#7f1d1d",
+    textColor: "#fffbeb",
+    accentColor: "#fbbf24",
+    pattern: "circles",
+    symbol: "✊",
+    serialTag: "GAME. 03 · RPS",
+  },
+  "game-quiz-duel": {
+    spineColor: "#4c1d95",
+    textColor: "#fbfbfe",
+    accentColor: "#c4b5fd",
+    pattern: "diamonds",
+    symbol: "🧠",
+    serialTag: "GAME. 04 · QUIZ",
+  },
+  "game-bluetooth-party-pack": {
+    spineColor: "#831843",
+    textColor: "#ecfeff",
+    accentColor: "#22d3ee",
+    pattern: "vintage",
+    symbol: "🎉",
+    serialTag: "GAME. 05 · PARTY",
+  },
+};
+
+export function getProductTheme(p: Product): ProductVisualTheme {
+  return (
+    p.theme ||
+    PRODUCT_THEMES[p.slug] || {
+      spineColor: "#1e293b",
+      textColor: "#ffffff",
+      accentColor: "#eabd17",
+      pattern: "geometric",
+      symbol: "📱",
+      serialTag: "APP. 2026",
+    }
+  );
 }
