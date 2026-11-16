@@ -1,10 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+export const viewport: Viewport = {
+  themeColor: "#0b1f32",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: "Zeebee Game Vault — Kho Game Offline & Bluetooth Đối Kháng",
+  title: "Zeebee Game Vault — Kho Game Đối Kháng 2 Người & Boardgame PWA",
   description:
-    "Kho game Retro & Bluetooth 2 người chơi offline không cần mạng, dung lượng siêu nhẹ dưới 25KB. Dịch vụ lập trình mini game và tool theo yêu cầu.",
+    "Kho 15 game đối kháng 2 người, Co-op & Boardgame chơi ngay trên Android, iPhone (iOS) và Offline. Tạo phòng Online 4 số hoặc đấu 2 người chung 1 máy.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Zeebee Game",
+  },
 };
 
 export default function RootLayout({
@@ -14,7 +27,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body>{children}</body>
+      <body>
+        {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function() {});
+                });
+              }
+            `,
+          }}
+        />
+      </body>
     </html>
   );
 }

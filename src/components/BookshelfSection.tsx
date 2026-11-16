@@ -31,8 +31,8 @@ const SHELF_TIERS: ShelfTier[] = [
   {
     id: "bluetooth-pvp",
     category: "bluetooth-pvp",
-    title: "Đối Kháng Bluetooth 2 Người (PvP)",
-    subtitle: "Kết nối trực tiếp 2 máy qua Bluetooth không cần mạng: Cờ Caro, Hải Chiến, Oẳn Tù Tì, Đố Vui & Party Pack",
+    title: "Đối Kháng 2 Người: 1 Máy & Phòng Online (PvP)",
+    subtitle: "Chơi chung 1 màn hình điện thoại hoặc tạo Phòng Online 4 số / Quét QR: Cờ Caro, Hải Chiến, Oẳn Tù Tì, Đố Vui & Party Pack",
     icon: "⚔️",
     badge: "5 Tựa Game",
   },
@@ -40,7 +40,7 @@ const SHELF_TIERS: ShelfTier[] = [
     id: "coop-arcade",
     category: "coop-arcade",
     title: "Hợp Tác Chiến Thuật & Arcade Co-op",
-    subtitle: "Cùng bạn bè hợp lực vượt ải: Bóng Bàn Pong, Mê Cung Co-op, Thủ Thành, Đặt Bom & Bắn Thiên Thạch",
+    subtitle: "Cùng bạn bè hợp lực vượt ải 60FPS: Bóng Bàn Pong, Mê Cung Co-op, Thủ Thành, Đặt Bom & Bắn Thiên Thạch",
     icon: "🎮",
     badge: "5 Tựa Game",
   },
@@ -48,7 +48,7 @@ const SHELF_TIERS: ShelfTier[] = [
     id: "puzzle-board",
     category: "puzzle-board",
     title: "Game Boardgame & Trí Tuệ Cổ Điển",
-    subtitle: "Thư giãn đấu trí rèn luyện trí não: Cờ Cá Ngựa, Xếp Hình Gỗ, Nối Thú Onet, Cờ Tào Cáo & Lật Hình",
+    subtitle: "Thư giãn đấu trí rèn luyện trí não (1-4 Người & AI): Cờ Cá Ngựa, Xếp Hình Gỗ, Nối Thú Onet, Cờ Tào Cáo & Lật Hình",
     icon: "🧩",
     badge: "5 Tựa Game",
   },
@@ -105,15 +105,15 @@ export default function BookshelfSection() {
         <div className="mb-10 text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-xs font-mono font-bold text-amber-300">
             <Gamepad2 size={14} />
-            <span>KHO GAME RETRO &amp; BLUETOOTH OFFLINE VAULT 2026</span>
+            <span>KHO GAME PWA ĐA NỀN TẢNG · CHƠI NGAY &amp; OFFLINE VAULT 2026</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-serif uppercase">
-            Tủ Trưng Bày Game Offline &amp; Bluetooth
+            Tủ Trưng Bày Game Đối Kháng &amp; Boardgame
           </h2>
 
           <p className="text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto opacity-90 leading-relaxed font-sans">
-            Mỗi tựa game là một trò chơi hoàn chỉnh độc lập — Tải về chạy trực tiếp 100% offline — Kết nối Bluetooth ngang hàng 2 máy mọi lúc mọi nơi.
+            Mỗi tựa game mở lên chơi ngay lập tức trên Android, iPhone &amp; Máy tính — Đấu 2 người chung 1 máy, vào Phòng Online 4 số hoặc lưu PWA chơi Offline mọi lúc mọi nơi.
           </p>
 
           {/* Quick Mission Trigger Button */}

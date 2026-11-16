@@ -25,45 +25,45 @@ import AdBanner from "@/components/AdBanner";
 
 const TRUST_BADGES = [
   {
-    icon: Radio,
-    title: "100% Offline & Bluetooth",
-    desc: "Chơi mượt mà không cần internet hay 4G. Kết nối trực tiếp giữa hai máy.",
+    icon: Zap,
+    title: "Chơi Ngay Không Cần Cài APK",
+    desc: "Mở lên chơi ngay lập tức trên cả iPhone (iOS), Android và Máy tính. Lưu ra màn hình chính (PWA) chỉ với 1 chạm.",
     color: "var(--zb-gold)",
   },
   {
     icon: Swords,
-    title: "Đấu Ngang Hàng 2 Máy (P2P)",
-    desc: "Kết nối trong 3 giây. Tự do so tài tại quán cafe, công viên hay trường học.",
+    title: "Đấu 2 Người: 1 Máy hoặc Online",
+    desc: "Chơi chung trên 1 màn hình điện thoại hoặc tạo phòng Online 4 số / Quét QR so tài từ xa trong 2 giây.",
     color: "#34d399",
   },
   {
-    icon: Zap,
-    title: "Dung Lượng Siêu Nhẹ (<25KB)",
-    desc: "Cài đặt trong nháy mắt, không tốn bộ nhớ điện thoại, mở lên chơi ngay.",
+    icon: Radio,
+    title: "Hỗ Trợ Offline & AI Thông Minh",
+    desc: "Tự động lưu bộ nhớ đệm PWA để giải trí mọi lúc ngay cả khi mất mạng hoặc trên máy bay.",
     color: "var(--zb-orange)",
   },
 ];
 
 const STEPS = [
   {
-    icon: Download,
-    title: "1. Tải Game APK Về Máy",
-    desc: "Chọn tựa game yêu thích trên kệ, tải file APK cài đặt trong 3 giây trên điện thoại Android.",
-  },
-  {
-    icon: Radio,
-    title: "2. Bật Bluetooth & Kết Nối",
-    desc: "Mở game trên cả hai máy, bật Bluetooth để hai thiết bị tự động nhận diện và ghép cặp.",
-  },
-  {
     icon: Gamepad2,
-    title: "3. So Tài Cùng Bạn Bè",
-    desc: "Thưởng thức các trận đấu cờ caro, hải chiến, oẳn tù tì hay vượt mê cung kịch tính.",
+    title: "1. Chọn Game & Mở Ngay",
+    desc: "Bấm vào tựa game bất kỳ trên kệ để khởi chạy tức thì trên trình duyệt mà không cần tải file cài đặt phức tạp.",
+  },
+  {
+    icon: Users,
+    title: "2. Chọn Chế Độ Đấu",
+    desc: "Chơi 2 người chung 1 màn hình, tạo Mã Phòng 4 Số để bạn bè vào đấu Online, hoặc đấu với AI thông minh.",
+  },
+  {
+    icon: Download,
+    title: "3. Lưu Ra Màn Hình Chính (PWA)",
+    desc: "Chọn 'Thêm vào màn hình chính' trên Safari/Chrome để có biểu tượng game full màn hình chạy cả khi Offline.",
   },
   {
     icon: Gift,
-    title: "4. Vượt Ải & Mở Khóa Quà Tặng",
-    desc: "Ghé thăm nhà tài trợ 5 giây để hồi sinh thêm mạng chơi và mở khóa các bàn cờ, map mới.",
+    title: "4. Làm Nhiệm Vụ Nhận Mạng & VIP",
+    desc: "Ghé thăm gian hàng đối tác 5 giây để nhận thêm +3 mạng hồi sinh, gợi ý nước đi và mở khóa vật phẩm VIP.",
   },
 ];
 
@@ -77,8 +77,8 @@ export default function Home() {
         variant="leaderboard"
         tag="TÀI TRỢ GAMING"
         sponsorName="Shopee Gaming Store"
-        customTitle="Săn Deal Tay Cầm Chơi Game & Phụ Kiện Điện Thoại Bluetooth Giảm Đến 50%"
-        customSubtitle="Trải nghiệm chiến game đối kháng 2 người mượt mà"
+        customTitle="Săn Deal Tay Cầm Chơi Game & Phụ Kiện Điện Thoại Giảm Đến 50%"
+        customSubtitle="Trải nghiệm chiến game đối kháng 2 người mượt mà trên mọi thiết bị"
         customCta="Xem Phụ Kiện Game"
         className="pt-4"
       />
@@ -86,16 +86,16 @@ export default function Home() {
       {/* Hero Section */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 pb-14 text-center">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-xs font-bold text-amber-300 mb-5">
-          <Gamepad2 size={14} /> Kho Game Retro &amp; Bluetooth Đối Kháng Android 2026
+          <Gamepad2 size={14} /> Kho Game PWA Đa Nền Tảng (Android · iPhone · Web) 2026
         </div>
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight tracking-tight max-w-4xl mx-auto uppercase">
-          KHO GAME OFFLINE &amp; BLUETOOTH ĐỐI KHÁNG &amp;{" "}
+          KHO GAME ĐỐI KHÁNG 2 NGƯỜI, CO-OP &amp;{" "}
           <span style={{ color: "var(--zb-gold)" }}>DỊCH VỤ PHÁT TRIỂN GAME THEO YÊU CẦU</span>
         </h1>
 
         <p className="mt-5 text-base sm:text-lg max-w-3xl mx-auto text-[var(--zb-off-white)] opacity-90 leading-relaxed font-normal">
-          &ldquo;Kết nối trực tiếp 2 máy qua Bluetooth — Trải nghiệm mượt mà không cần internet — Cài đặt siêu nhẹ (&lt;25KB) trên mọi điện thoại Android — Mở khóa thêm màn chơi và vật phẩm qua nhiệm vụ tài trợ.&rdquo;
+          &ldquo;Bấm là chơi ngay trong 1 giây trên cả Android &amp; iOS — Đấu 2 người chung 1 máy hoặc tạo phòng Online 4 số — Hỗ trợ lưu PWA chơi Offline không cần mạng — Nhận thêm mạng &amp; vật phẩm VIP qua nhiệm vụ đối tác.&rdquo;
         </p>
 
         {/* Action Buttons */}

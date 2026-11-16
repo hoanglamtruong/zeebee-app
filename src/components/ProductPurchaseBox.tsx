@@ -57,36 +57,31 @@ export default function ProductPurchaseBox({ product }: { product: Product }) {
             <span className="text-cyan-300 font-bold">{product.playerCount}</span>
           </div>
           <p className="flex items-center gap-1.5 text-amber-300 font-semibold">
-            <Radio size={14} /> Kết nối Bluetooth ngang hàng 2 máy (P2P)
+            <Radio size={14} /> Chơi 2 người 1 máy · Tạo phòng Online 4 số · Đấu AI
           </p>
           <p className="flex items-center gap-1.5 text-neutral-400">
             <ShieldCheck size={14} className="text-cyan-400" />
-            <span>Chơi 100% Offline không tốn data mạng</span>
+            <span>Hỗ trợ Android, iPhone (iOS) &amp; Lưu PWA chơi Offline</span>
           </p>
         </div>
       </div>
 
-      {/* Trạng thái game: Placeholder / Đang build lại */}
-      <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-amber-950/30 to-neutral-900 border border-amber-400/30 shadow-lg">
-        <div className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-wide">
-          <Sparkles size={15} /> Trạng Thái Game (Placeholder)
+      {/* Hành động 1: Vào chơi ngay PWA */}
+      <div className="zb-card p-5 space-y-3 bg-gradient-to-br from-emerald-950/40 to-neutral-900 border border-emerald-400/40 shadow-lg">
+        <div className="flex items-center gap-2 text-xs font-bold text-emerald-300 uppercase tracking-wide">
+          <Sparkles size={15} /> Bước 1: Mở Game Chơi Trực Tiếp (PWA)
         </div>
 
-        <div className="p-3.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-xs text-neutral-300 space-y-2">
-          <p className="font-bold text-amber-300 text-sm flex items-center gap-1.5">
-            <Clock size={16} /> Sắp Ra Mắt — Đang Trong Lộ Trình Build Lại
-          </p>
-          <p className="text-[11px] leading-relaxed">
-            Phiên bản game đang được hoàn thiện và đóng gói lại bản cài đặt APK hoàn chỉnh. Quý khách vui lòng quay lại sau hoặc tham gia bảng nhiệm vụ bên dưới để nhận thông báo và vật phẩm khi ra mắt!
-          </p>
-        </div>
-
-        <button
-          disabled
-          className="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-neutral-800 text-neutral-400 border border-neutral-700 flex items-center justify-center gap-2 cursor-not-allowed opacity-80"
+        <Link
+          href={product.demoUrl || `/choi-game/${product.slug}`}
+          className="w-full py-3.5 px-4 rounded-xl font-black text-sm bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 hover:brightness-110 text-neutral-950 shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
         >
-          <Gamepad2 size={18} /> Đang Build Lại Bản APK...
-        </button>
+          <Gamepad2 size={18} /> ▶ Vào Chơi Ngay (Online / 1 Máy / AI)
+        </Link>
+
+        <p className="text-[11px] text-neutral-400 leading-relaxed pt-1">
+          * Mẹo: Mở bằng Safari (iPhone) hoặc Chrome (Android) rồi chọn <b>&ldquo;Thêm vào màn hình chính&rdquo;</b> để chơi full màn hình Offline mọi lúc!
+        </p>
       </div>
 
       {/* Hành động 2: Nhận thêm mạng / Mở khóa màn */}

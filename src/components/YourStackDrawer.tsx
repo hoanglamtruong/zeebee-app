@@ -191,9 +191,13 @@ export default function YourStackDrawer({
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 font-mono text-[10px] font-bold">
-                          Sắp Ra Mắt
-                        </span>
+                        <Link
+                          href={p.demoUrl || `/choi-game/${p.slug}`}
+                          onClick={() => setIsOpenModal(false)}
+                          className="px-2.5 py-1 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-neutral-950 font-black text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                        >
+                          <span>▶ Chơi Ngay</span>
+                        </Link>
                         <button
                           onClick={() => onRemoveFromStack(p.slug)}
                           className="p-1 rounded text-neutral-400 hover:text-red-400 transition-colors ml-1"

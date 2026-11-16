@@ -1,0 +1,18 @@
+{
+  "name": "Zeebee Game Vault — Kho Game Đối Kháng & Boardgame PWA",
+  "short_name": "Zeebee Game",
+  "description": "Kho 15 game đối kháng 2 người, Co-op & Boardgame chơi ngay trên Android, iPhone và Offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#071725",
+  "theme_color": "#0b1f32",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/zeebee_logo_horizontal_white.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

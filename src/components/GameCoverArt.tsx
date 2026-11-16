@@ -22,7 +22,11 @@ export default function GameCoverArt({ product, className = "" }: GameCoverArtPr
           </span>
         </div>
         <span className="text-[7px] font-black font-mono px-1.5 py-0.5 rounded bg-amber-400 text-neutral-950 uppercase tracking-tight">
-          SẮP RA MẮT
+          {product.category === "bluetooth-pvp"
+            ? "2P · ONLINE"
+            : product.category === "coop-arcade"
+            ? "CO-OP · PWA"
+            : "BOARD · PWA"}
         </span>
       </div>
 
@@ -41,10 +45,10 @@ export default function GameCoverArt({ product, className = "" }: GameCoverArtPr
         {/* Footer Badges */}
         <div className="flex items-center justify-between pt-0.5 border-t border-white/15 text-[8px] font-mono">
           <span className="text-amber-300 font-bold uppercase tracking-wider">
-            {product.devicePrefix || "APK"}
+            {product.devicePrefix || "PWA"}
           </span>
-          <span className="text-amber-300/90 font-mono text-[8px] uppercase tracking-wider font-bold">
-            PLACEHOLDER
+          <span className="text-emerald-300 font-mono text-[8px] uppercase tracking-wider font-bold">
+            PWA · CHƠI NGAY
           </span>
         </div>
       </div>

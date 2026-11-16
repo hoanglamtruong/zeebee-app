@@ -93,15 +93,15 @@ export default function BookDetailModal({
             <div className="w-full space-y-2 text-xs">
               <div className="flex items-center justify-between py-1.5 border-b border-white/5 text-neutral-300">
                 <span className="flex items-center gap-1.5 text-neutral-400">
-                  <HardDrive size={13} /> Dung lượng:
+                  <HardDrive size={13} /> Nền tảng:
                 </span>
-                <span className="font-mono font-bold text-amber-300">&lt; 25 KB (Siêu nhẹ)</span>
+                <span className="font-mono font-bold text-amber-300">PWA (Android / iOS / Web)</span>
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-white/5 text-neutral-300">
                 <span className="flex items-center gap-1.5 text-neutral-400">
                   <Radio size={13} /> Kết nối:
                 </span>
-                <span className="font-mono text-neutral-200">Bluetooth P2P / Offline</span>
+                <span className="font-mono text-neutral-200">Online Room / 1 Máy / Offline</span>
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-white/5 text-neutral-300">
                 <span className="flex items-center gap-1.5 text-neutral-400">
@@ -168,10 +168,21 @@ export default function BookDetailModal({
 
             {/* Action CTAs Button Group */}
             <div className="pt-4 border-t border-white/10 space-y-3">
+              {/* Primary Play Game PWA Button */}
+              <div className="flex flex-col sm:flex-row gap-2.5">
+                <Link
+                  href={product.demoUrl || `/choi-game/${product.slug}`}
+                  className="flex-1 py-3.5 px-5 rounded-xl font-black text-sm sm:text-base bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-neutral-950 hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 cursor-pointer"
+                >
+                  <Play size={18} fill="currentColor" />
+                  <span>Vào Chơi Ngay (Đấu 2 Người / Online / AI)</span>
+                </Link>
+              </div>
+
               {/* Mission Unlock Button */}
               <button
                 onClick={() => setIsMissionModalOpen(true)}
-                className="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-neutral-950 hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer"
+                className="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-400/20 via-amber-300/20 to-amber-500/20 border border-amber-400/40 text-amber-300 hover:bg-amber-400/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Gift size={16} />
                 <span>
@@ -180,23 +191,6 @@ export default function BookDetailModal({
                     : "🎁 Nhiệm Vụ Đối Tác: Nhận Thêm Mạng & Mở Khóa Màn Kế Tiếp"}
                 </span>
               </button>
-
-                {/* Placeholder Notice when game is not ready / rebuilding */}
-                {!product.downloadUrl && !product.demoUrl && (
-                  <div className="w-full p-3.5 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
-                      <Gamepad2 size={16} />
-                    </div>
-                    <div className="space-y-1 text-left">
-                      <h4 className="text-xs sm:text-sm font-bold text-amber-300">
-                        Sắp Ra Mắt (Placeholder) · Đang Trong Lộ Trình Build
-                      </h4>
-                      <p className="text-[11px] text-neutral-300 leading-relaxed">
-                        Tựa game đang được hoàn thiện và đóng gói lại bản cài đặt APK độc lập. Bạn có thể thêm vào bộ sưu tập để theo dõi ngày phát hành.
-                      </p>
-                    </div>
-                  </div>
-                )}
 
               <div className="flex flex-col sm:flex-row gap-2.5">
                 {/* Toggle Stack Button */}
