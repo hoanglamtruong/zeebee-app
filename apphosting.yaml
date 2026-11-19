@@ -1,0 +1,13 @@
+kind: "AppHosting"
+schemaVersion: "v1"
+
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 5
+  concurrency: 80
+
+env:
+  - variable: NODE_ENV
+    value: production
