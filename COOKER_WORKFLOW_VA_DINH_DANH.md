@@ -102,6 +102,18 @@ Game chỉ được nghiệm thu đưa lên sàn khi đạt 100% các chỉ số
 * KPI-07: Cơ chế trừ Tim, Hồi Tim, Mở khóa Nhiệm vụ Affiliate và Hiển thị Banner tài trợ hiển thị đúng vị trí, không che khuất màn chơi.
 * KPI-08: Kiểm tra nội dung: 0% xuất hiện các từ "Free", "Miễn phí", "0đ".
 * KPI-09: Vượt qua toàn bộ checklist kiểm thử trong file QC_CHECKLIST_VA_KPI_GAME.md.
+
+===================================================================
+4. MÔ HÌNH AI ĐỀ XUẤT (RECOMMENDED AI MODEL FOR CHATBOX)
+===================================================================
+*(Dựa theo chuẩn Ma trận kiến thức ZOS: `zos-matrix-model-knowledge-20261119`)*
+
+* **Model chính cho Chatbox này:** **[Orchestrator (Neon) / Gemini 4 Neon / Claude Sonnet 5.5]**
+* **Chiến lược phân bổ theo công đoạn sản xuất:**
+  - **Phát triển toàn diện E2E (Mặc định cho Cooker):** Chọn `Orchestrator (Neon)` (Bộ não Neon lập kế hoạch + Đôi tay Hydrogen gõ code & build Docker, tiết kiệm 60% token, tự phục hồi lỗi).
+  - **Lập trình tính năng nhanh, viết CSS Animation, Canvas 60FPS:** Chọn `Claude Sonnet 5.5` hoặc `Gemini 4 Neon`.
+  - **Thiết kế thuật toán AI khó (Minimax cờ, giải đố logic) & Audit bảo mật:** Chuyển sang `Gemini 4 Argon` hoặc `Claude Opus 5.5`.
+  - **Sửa cú pháp, viết test hàng loạt, refactor đơn lẻ:** Sử dụng `Gemini 4 Hydrogen` hoặc `Gemini 3.8 Flash`.
 ```
 
 ---
